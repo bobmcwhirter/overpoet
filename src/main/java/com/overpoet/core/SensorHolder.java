@@ -5,23 +5,31 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
 
+import com.overpoet.Keyed;
+import com.overpoet.sensor.SenseException;
+import com.overpoet.core.state.StateException;
 import com.overpoet.core.state.StateStream;
 import com.overpoet.sensor.Sensor;
-import com.overpoet.spi.Monitor;
+import com.overpoet.manipulator.Manipulator;
 
 class SensorHolder<T> implements Sensor.Sink<T> {
 
-    SensorHolder(StateStream state, Sensor<T> sensor) {
+    SensorHolder(StateStream state, Keyed.Key key, Sensor<T> sensor) {
         this.state = state;
         this.sensor = sensor;
         this.sensor.initialize(this);
+        this.key = key;
     }
 
     @Override
-    public void sink(T value) {
-        this.state.add(this.sensor, value);
-        for (MonitorSensor monitor : this.monitors) {
-            monitor.accept(value);
+    public void sink(T value) throws SenseException {
+        try {
+            this.state.add(this.sensor, value);
+            for (ManipulatorSensor monitor : this.monitors) {
+                monitor.accept(value);
+            }
+        } catch (StateException e) {
+            throw new SenseException(e);
         }
     }
 
@@ -29,20 +37,31 @@ class SensorHolder<T> implements Sensor.Sink<T> {
         return this.sensor.datatype();
     }
 
-    Monitor.Sensor<T> forMonitor(Monitor monitor) {
-        MonitorSensor monitorSensor = new MonitorSensor(monitor);
-        this.monitors.add(monitorSensor);
-        return monitorSensor;
+    Manipulator.Sensor<T> forManipulator(Manipulator monitor) {
+        ManipulatorSensor manipulatorSensor = new ManipulatorSensor(monitor);
+        this.monitors.add(manipulatorSensor);
+        return manipulatorSensor;
     }
 
     private final StateStream state;
     private final Sensor<T> sensor;
-    private final Set<MonitorSensor> monitors = new HashSet<>();
+    private final Set<ManipulatorSensor> monitors = new HashSet<>();
+    private final Keyed.Key key;
 
-    class MonitorSensor implements Monitor.Sensor<T>, Consumer<T> {
+    class ManipulatorSensor implements Manipulator.Sensor<T>, Consumer<T> {
 
-        MonitorSensor(Monitor monitor) {
-            this.monitor = monitor;
+        ManipulatorSensor(Manipulator manipulator) {
+            this.manipulator = manipulator;
+        }
+
+        @Override
+        public String id() {
+            return SensorHolder.this.sensor.id();
+        }
+
+        @Override
+        public Key key() {
+            return SensorHolder.this.key;
         }
 
         @Override
@@ -62,7 +81,7 @@ class SensorHolder<T> implements Sensor.Sink<T> {
             }
         }
 
-        private final Monitor monitor;
+        private final Manipulator manipulator;
         private Consumer<T> listener = null;
     }
 }

@@ -17,40 +17,20 @@ public class StateStream {
         return this.currentHead;
     }
 
-    public <T> StateStream add(Sensor<T> sensor, T value) {
-        return add(new Sense<T>() {
-            @Override
-            public Sensor<T> sensor() {
-                return sensor;
-            }
-
-            @Override
-            public T value() {
-                return value;
-            }
-        });
+    public <T> StateStream add(Sensor<T> sensor, T value) throws StateException {
+        return add(new SimpleSense<>(sensor, value));
     }
 
-    private synchronized <T> StateStream add(Sense<T> sense) {
+    private synchronized <T> StateStream add(Sense<T> sense) throws StateException {
         this.currentHead = this.currentHead.add(sense);
         return this;
     }
 
-    public <T> StateStream add(Actuator<T> actuator, T value) {
-        return add(new Actuation<T>() {
-            @Override
-            public Actuator<T> actuator() {
-                return actuator;
-            }
-
-            @Override
-            public T value() {
-                return value;
-            }
-        });
+    public <T> StateStream add(Actuator<T> actuator, T value) throws StateException {
+        return add(new SimpleActuation<>(actuator, value));
     }
 
-    private synchronized <T> StateStream add(Actuation<T> actuation) {
+    private synchronized <T> StateStream add(Actuation<T> actuation) throws StateException {
         this.currentHead = this.currentHead.add(actuation);
         return this;
     }

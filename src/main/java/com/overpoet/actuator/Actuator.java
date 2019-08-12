@@ -1,6 +1,8 @@
 package com.overpoet.actuator;
 
-public interface Actuator<T> {
+import com.overpoet.Identified;
+
+public interface Actuator<T> extends Identified {
     Class<T> datatype();
-    void actuate(T value);
+    void actuate(T value) throws ActuationException;
 }

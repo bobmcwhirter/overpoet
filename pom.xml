@@ -13,6 +13,7 @@
     <maven.compiler.source>11</maven.compiler.source>
     <maven.compiler.target>11</maven.compiler.target>
     <version.junit>4.12</version.junit>
+    <version.fest>2.0M10</version.fest>
   </properties>
 
   <dependencies>
@@ -20,6 +21,12 @@
       <groupId>junit</groupId>
       <artifactId>junit</artifactId>
       <version>${version.junit}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert-core</artifactId>
+      <version>${version.fest}</version>
       <scope>test</scope>
     </dependency>
   </dependencies>

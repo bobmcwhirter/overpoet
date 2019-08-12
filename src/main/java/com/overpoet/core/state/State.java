@@ -3,9 +3,9 @@ package com.overpoet.core.state;
 import java.util.HashMap;
 import java.util.Map;
 
+import com.overpoet.actuator.Actuator;
 import com.overpoet.core.Actuation;
 import com.overpoet.core.Sense;
-import com.overpoet.actuator.Actuator;
 import com.overpoet.sensor.Sensor;
 
 public class State {
@@ -32,14 +32,37 @@ public class State {
         this.actuations.put(actuation.actuator(), actuation.value());
     }
 
-    public <T> State add(Sense<T> sense) {
-        return new State(this, sense);
+    public synchronized  <T> State add(Sense<T> sense) throws StateException {
+        if ( this.locked ) {
+            throw new StateException("state locked, branches are not allowed");
+        }
+        try {
+            return new State(this, sense);
+        } finally {
+            if ( this != NIL ) {
+                this.locked = true;
+            }
+        }
     }
 
-    public <T> State add(Actuation<T> actuation) {
-        return new State(this, actuation);
+    public synchronized  <T> State add(Actuation<T> actuation) throws StateException {
+        if ( this.locked ) {
+            throw new StateException("state locked, branches are not allowed");
+        }
+        try {
+            return new State(this, actuation);
+        } finally {
+            if ( this != NIL ) {
+                this.locked = true;
+            }
+        }
     }
 
+    public <T> T value(Sensor<T> sensor) {
+        return (T) this.senses.get(sensor);
+    }
+
+    private boolean locked;
     private final State previousState;
     private Map<Sensor<?>, Object> senses = new HashMap<>();
     private Map<Actuator<?>, Object> actuations = new HashMap<>();

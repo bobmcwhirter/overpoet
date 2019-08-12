@@ -1,13 +1,14 @@
 package com.overpoet.sensor;
 
-public interface Sensor<T> {
+import com.overpoet.Identified;
+
+public interface Sensor<T> extends Identified {
 
     interface Sink<T> {
-        void sink(T value);
+        void sink(T value) throws SenseException;
     }
 
     Class<T> datatype();
-
     void initialize(Sink<T> sink);
 
     default T current() {
