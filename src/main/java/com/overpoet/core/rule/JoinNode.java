@@ -7,16 +7,20 @@ class JoinNode extends AbstractNode {
         OR,
     }
 
+    JoinNode() {
+        this(Type.AND);
+    }
+
     JoinNode(Type type) {
         this.type = type;
     }
 
     @Override
     boolean matched() {
-        return false;
+        return this.matched;
     }
 
-    void checkMatch() {
+    private void checkMatch(Agenda agenda) {
         boolean newValue = this.matched;
         if ( this.type == Type.AND ) {
             newValue = this.leftValue && this.rightValue;
@@ -25,30 +29,30 @@ class JoinNode extends AbstractNode {
         }
         if ( this.matched != newValue ) {
             this.matched = newValue;
-            propagate();
+            propagate(agenda);
         }
     }
 
-    void assertValueLeft(boolean value) {
+    private void assertValueLeft(Agenda agenda, boolean value) {
         if ( this.leftValue != value ) {
             this.leftValue = value;
-            checkMatch();
+            checkMatch(agenda);
         }
     }
 
-    void assertValueRight(boolean value) {
+    private void assertValueRight(Agenda agenda, boolean value) {
         if ( this.rightValue != value ) {
             this.rightValue = value;
-            checkMatch();
+            checkMatch(agenda);
         }
     }
 
-    Input getLeftInput() {
-        return value -> assertValueLeft(value);
+    TokenInput getLeftInput() {
+        return this::assertValueLeft;
     }
 
-    Input getRightInput() {
-        return value -> assertValueRight(value);
+    TokenInput getRightInput() {
+        return this::assertValueRight;
     }
 
     private final Type type;

@@ -12,12 +12,14 @@ class RootNode {
     }
 
     <T> void assertSensor(Key key, T value) {
-        getSensorNode(key).assertValue(value);
+        Agenda agenda = new Agenda();
+        getSensorNode(key).assertValue(agenda, value);
+        agenda.process(Throwable::printStackTrace);
     }
 
     @SuppressWarnings("unchecked")
     <T> SensorNode<T> getSensorNode(Key key) {
-        return (SensorNode<T>) inputNodes.computeIfAbsent(key, (mapKey)-> new SensorNode<T>(key));
+        return (SensorNode<T>) inputNodes.computeIfAbsent(key, (mapKey) -> new SensorNode<T>(key));
     }
 
     private ConcurrentMap<Key, SensorNode<?>> inputNodes = new ConcurrentHashMap<>();

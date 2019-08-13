@@ -27,6 +27,11 @@ class KeyImpl implements Key {
         return Arrays.hashCode(this.parts);
     }
 
+    @Override
+    public String toString() {
+        return String.join(".", this.parts);
+    }
+
     private final String[] parts;
 
 }

@@ -5,18 +5,18 @@ import java.util.Set;
 
 public abstract class AbstractNode {
 
-    void addInput(Input input) {
+    void addInput(TokenInput input) {
         this.inputs.add(input);
     }
 
     abstract boolean matched();
 
-    void propagate() {
+    void propagate(Agenda agenda) {
         boolean value = matched();
-        for (Input input : inputs) {
-            input.assertValue(value);
+        for (TokenInput input : inputs) {
+            input.assertToken(agenda, value);
         }
     }
 
-    private final Set<Input> inputs = new HashSet<>();
+    private final Set<TokenInput> inputs = new HashSet<>();
 }

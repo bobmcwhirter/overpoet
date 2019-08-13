@@ -1,7 +1,5 @@
 package com.overpoet.core.rule;
 
-import java.util.HashSet;
-import java.util.Set;
 import java.util.function.Function;
 
 class AlphaNode<T> extends AbstractNode {
@@ -10,26 +8,25 @@ class AlphaNode<T> extends AbstractNode {
         this.condition = condition;
     }
 
-    void addInput(Input input) {
-        this.inputs.add( input );
-    }
-
     @Override
     boolean matched() {
         return this.matched;
     }
 
-    void assertValue(T value) {
+    void assertValue(Agenda agenda, T value) {
         if ( this.condition.apply(value)) {
-            this.matched = true;
+            if ( ! this.matched ) {
+                this.matched = true;
+                propagate(agenda);
+            }
         } else {
-            this.matched = false;
+            if ( this.matched ) {
+                this.matched = false;
+                propagate(agenda);
+            }
         }
-
-        propagate();
     }
 
     private final Function<T, Boolean> condition;
-    private final Set<Input> inputs = new HashSet<>();
     private boolean matched;
 }

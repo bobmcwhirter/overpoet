@@ -8,23 +8,26 @@ import com.overpoet.Key;
 class SensorNode<T> {
 
     SensorNode(Key key) {
-
+        this.key = key;
     }
 
     void addAlphaNode(AlphaNode<T> alphaNode) {
         this.alphaNodes.add( alphaNode );
-        if ( this.value != null ) {
-            alphaNode.assertValue(this.value);
-        }
     }
 
-    void assertValue(T value) {
+    void assertValue(Agenda agenda, T value) {
         this.value = value;
         for (AlphaNode<T> each : alphaNodes) {
-            each.assertValue(value);
+            each.assertValue(agenda, value);
         }
     }
 
+    @Override
+    public String toString() {
+        return "[SensorNode: " + this.key + "]";
+    }
+
+    private final Key key;
     private T value;
     private Set<AlphaNode<T>> alphaNodes = new HashSet<>();
 }

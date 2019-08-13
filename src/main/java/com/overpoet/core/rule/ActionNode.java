@@ -1,19 +1,17 @@
 package com.overpoet.core.rule;
 
-public class ActionNode implements Input {
+public class ActionNode implements TokenInput {
 
     ActionNode(Action action) {
         this.action = action;
     }
 
     @Override
-    public void assertValue(boolean value) {
-        if ( value ) {
-            try {
-                action.run();
-            } catch (Exception e) {
-                e.printStackTrace();
-            }
+    public void assertToken(Agenda agenda, boolean value) {
+        if (value) {
+            agenda.addAction(this.action);
+        } else {
+            agenda.removeAction(this.action);
         }
     }
 
