@@ -1,13 +1,17 @@
 package com.overpoet.synthetic;
 
-import com.overpoet.core.AbstractIdentified;
 import com.overpoet.core.actuator.Switch;
 import com.overpoet.core.sensor.SenseException;
 
-public class SyntheticSwitch extends AbstractIdentified implements Switch {
+public class SyntheticSwitch implements Switch {
 
     public SyntheticSwitch(String id) {
-        super(id);
+        this.id = id;
+    }
+
+    @Override
+    public String id() {
+        return this.id;
     }
 
     @Override
@@ -37,6 +41,8 @@ public class SyntheticSwitch extends AbstractIdentified implements Switch {
     public void initialize(Sink<Boolean> sink) {
         this.sink = sink;
     }
+
+    private final String id;
 
     private Sink<Boolean> sink;
 }

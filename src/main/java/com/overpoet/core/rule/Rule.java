@@ -2,10 +2,11 @@ package com.overpoet.core.rule;
 
 import java.util.concurrent.Callable;
 
+import com.overpoet.Identified;
 import com.overpoet.Key;
 import com.overpoet.core.AbstractIdentified;
 
-public class Rule extends AbstractIdentified {
+public class Rule implements Identified {
 
     interface Sensor<T> {
         Class<T> datatype();
@@ -13,7 +14,12 @@ public class Rule extends AbstractIdentified {
     }
 
     public Rule(String id) {
-        super(id);
+        this.id = id;
+    }
+
+    @Override
+    public String id() {
+        return this.id;
     }
 
     Rule when(Callable<Condition> condition) {
@@ -31,6 +37,7 @@ public class Rule extends AbstractIdentified {
         this.then = then;
     }
 
+    private final String id;
     private Condition when;
     private Action then;
 
