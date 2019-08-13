@@ -1,6 +1,6 @@
 package com.overpoet.core;
 
-import com.overpoet.actuator.Actuator;
+import com.overpoet.core.actuator.Actuator;
 
 public interface Actuation<T> {
 

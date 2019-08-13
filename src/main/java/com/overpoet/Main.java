@@ -1,6 +1,6 @@
 package com.overpoet;
 
-import com.overpoet.core.Engine;
+import com.overpoet.core.engine.Engine;
 
 public class Main {
 
