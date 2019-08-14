@@ -11,7 +11,6 @@ public class RuleEngine implements Manipulator {
     }
 
     public void addRule(Rule rule) {
-        System.err.println( "process: " + rule);
         rule.build(this.rootNode);
     }
 
