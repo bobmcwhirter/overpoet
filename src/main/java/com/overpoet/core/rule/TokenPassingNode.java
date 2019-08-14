@@ -3,7 +3,7 @@ package com.overpoet.core.rule;
 import java.util.HashSet;
 import java.util.Set;
 
-public abstract class AbstractNode {
+public abstract class TokenPassingNode {
 
     void addInput(TokenInput input) {
         this.inputs.add(input);

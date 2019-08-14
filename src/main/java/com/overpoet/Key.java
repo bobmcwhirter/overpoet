@@ -7,4 +7,8 @@ public interface Key {
     static Key of(String...parts) {
         return new KeyImpl(parts);
     }
+
+    static Key keyOf(String...parts) {
+        return of(parts);
+    }
 }

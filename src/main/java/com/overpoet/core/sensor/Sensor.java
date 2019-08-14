@@ -1,18 +1,10 @@
 package com.overpoet.core.sensor;
 
-import com.overpoet.Identified;
+import com.overpoet.Keyed;
+import com.overpoet.core.metadata.Metadata;
 
-public interface Sensor<T> extends Identified {
-
-    interface Sink<T> {
-        void sink(T value) throws SenseException;
-    }
-
+public interface Sensor<T> extends Keyed {
     Class<T> datatype();
-    void initialize(Sink<T> sink);
-
-    default T current() {
-        return null;
-    }
-
+    Metadata<T> metadata();
+    void onChange(Sink<T> sink);
 }

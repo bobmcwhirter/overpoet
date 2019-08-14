@@ -2,7 +2,7 @@ package com.overpoet.core.rule;
 
 import java.util.function.Function;
 
-class AlphaNode<T> extends AbstractNode {
+class AlphaNode<T> extends TokenPassingNode {
 
     AlphaNode(Function<T,Boolean> condition) {
         this.condition = condition;

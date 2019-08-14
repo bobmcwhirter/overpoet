@@ -1,13 +1,15 @@
 package com.overpoet.core.rule;
 
 import java.util.concurrent.atomic.AtomicBoolean;
-import java.util.concurrent.atomic.AtomicReference;
 
 import com.overpoet.Key;
+import com.overpoet.core.metadata.IntegerMetadata;
+import com.overpoet.core.sensor.BaseSensorLogic;
+import com.overpoet.core.sensor.IntegerSensor;
 import org.junit.Test;
 
+import static com.overpoet.Key.keyOf;
 import static org.fest.assertions.api.Assertions.assertThat;
-import static org.fest.assertions.api.Assertions.extractProperty;
 
 
 public class DecisionTreeTest {
@@ -17,17 +19,14 @@ public class DecisionTreeTest {
 
         RootNode root = new RootNode();
 
-        SensorNode<Integer> sensor1 = root.getSensorNode(Key.of("sensor-1"));
-        AlphaNode<Integer> greaterThan3 = new AlphaNode<>((v) -> v > 3);
-        AlphaNode<Integer> lessThan10 = new AlphaNode<>((v) -> v < 10);
+        IntegerSensor sensor1 = new IntegerSensor(keyOf("sensor-1"), IntegerMetadata.DEFAULT, new BaseSensorLogic<>());
+        IntegerSensor sensor2 = new IntegerSensor(keyOf("sensor-2"), IntegerMetadata.DEFAULT, new BaseSensorLogic<>());
 
-        sensor1.addAlphaNode(greaterThan3);
-        sensor1.addAlphaNode(lessThan10);
+        SensorNode<Integer> sensorNode1 = root.getSensorNode(sensor1);
+        AlphaNode<Integer> greaterThan3 = sensorNode1.addAlphaNode((v -> v > 3));
+        AlphaNode<Integer> lessThan10 = sensorNode1.addAlphaNode(v -> v < 10);
 
-        JoinNode join = new JoinNode();
-
-        greaterThan3.addInput(join.getLeftInput());
-        lessThan10.addInput(join.getRightInput());
+        JoinNode join = new JoinNode(JoinNode.Type.AND, greaterThan3, lessThan10);
 
         AtomicBoolean result = new AtomicBoolean(false);
 
@@ -37,30 +36,30 @@ public class DecisionTreeTest {
 
         join.addInput(action);
 
-        root.assertSensor(Key.of("sensor-2"), 7);
+        root.assertSensor(sensor2, 7);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 1);
+        root.assertSensor(sensor1, 1);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 22);
+        root.assertSensor(sensor1, 22);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 7);
+        root.assertSensor(sensor1, 7);
         assertThat(result.get()).isTrue();
 
         result.set(false);
 
-        root.assertSensor(Key.of("sensor-1"), 7);
+        root.assertSensor(sensor1, 7);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 8);
+        root.assertSensor(sensor1, 8);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 1);
+        root.assertSensor(sensor1, 1);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(Key.of("sensor-1"), 8);
+        root.assertSensor(sensor1, 8);
         assertThat(result.get()).isTrue();
 
 

@@ -1,11 +1,11 @@
 package com.overpoet.core.manipulator;
 
 import java.util.Set;
-import java.util.function.Consumer;
 
 import com.overpoet.Identified;
 import com.overpoet.Keyed;
 import com.overpoet.core.actuator.ActuationException;
+import com.overpoet.core.sensor.Sensor;
 
 public interface Manipulator {
 
@@ -17,11 +17,6 @@ public interface Manipulator {
     interface Actuator<T> extends Identified, Keyed {
         Class<T> datatype();
         void actuate(T value) throws ActuationException;
-    }
-
-    interface Sensor<T> extends Identified, Keyed {
-        Class<T> datatype();
-        void onChange(Consumer<T> listener);
     }
 
     void register(Apparatus apparatus);

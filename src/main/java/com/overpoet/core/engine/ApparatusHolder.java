@@ -1,5 +1,6 @@
 package com.overpoet.core.engine;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
@@ -26,9 +27,13 @@ class ApparatusHolder {
     }
 
     Manipulator.Apparatus forManipulator(Manipulator manipulator) {
-        HashSet<Manipulator.Sensor<?>> wrappedSensors = new HashSet<>();
+        HashSet<Sensor<?>> wrappedSensors = new HashSet<>();
         for (SensorHolder<?> sensor : this.sensors) {
-            wrappedSensors.add( sensor.forManipulator(manipulator));
+            try {
+                wrappedSensors.add( sensor.forManipulator(manipulator));
+            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
+                e.printStackTrace();
+            }
         }
 
         HashSet<Manipulator.Actuator<?>> wrappedActuators = new HashSet<>();
@@ -39,7 +44,7 @@ class ApparatusHolder {
     }
 
     private <T> SensorHolder<T> wrap(Sensor<T> sensor) {
-        return new SensorHolder<>(this.state, this.key.append( sensor.id()), sensor);
+        return new SensorHolder<>(this.state, sensor);
     }
 
     private <T> ActuatorHolder<T> wrap(Actuator<T> actuator) {
@@ -55,7 +60,7 @@ class ApparatusHolder {
 
     class ManipulatorApparatus implements Manipulator.Apparatus {
 
-        ManipulatorApparatus(Set<Manipulator.Sensor<?>> sensors, Set<Manipulator.Actuator<?>> actuators) {
+        ManipulatorApparatus(Set<Sensor<?>> sensors, Set<Manipulator.Actuator<?>> actuators) {
             this.sensors = sensors;
             this.actuators = actuators;
         }
@@ -71,7 +76,7 @@ class ApparatusHolder {
         }
 
         @Override
-        public Set<Manipulator.Sensor<?>> sensors() {
+        public Set<Sensor<?>> sensors() {
             return this.sensors;
         }
 
@@ -80,7 +85,7 @@ class ApparatusHolder {
             return this.actuators;
         }
 
-        private final Set<Manipulator.Sensor<?>> sensors;
+        private final Set<Sensor<?>> sensors;
 
         private final Set<Manipulator.Actuator<?>> actuators;
     }

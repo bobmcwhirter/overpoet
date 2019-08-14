@@ -1,17 +1,8 @@
 package com.overpoet.core.rule;
 
-import java.util.concurrent.Callable;
-
 import com.overpoet.Identified;
-import com.overpoet.Key;
-import com.overpoet.core.AbstractIdentified;
 
 public class Rule implements Identified {
-
-    interface Sensor<T> {
-        Class<T> datatype();
-        Key key();
-    }
 
     public Rule(String id) {
         this.id = id;
@@ -22,23 +13,23 @@ public class Rule implements Identified {
         return this.id;
     }
 
-    Rule when(Callable<Condition> condition) {
-        try {
-            this.when = condition.call();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
-
+    Rule when(Condition condition) {
+        this.condition = condition;
         return this;
-
     }
 
-    void then(Action then) {
-        this.then = then;
+    void build(RootNode root) {
+        TokenPassingNode tail = this.condition.build(root);
+        ActionNode actionNode = new ActionNode(this.action);
+        tail.addInput(actionNode);
+    }
+
+    void then(Action action) {
+        this.action = action;
     }
 
     private final String id;
-    private Condition when;
-    private Action then;
+    private Condition condition;
+    private Action action;
 
 }

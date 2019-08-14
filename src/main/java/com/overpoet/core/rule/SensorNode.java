@@ -2,6 +2,7 @@ package com.overpoet.core.rule;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.Function;
 
 import com.overpoet.Key;
 
@@ -11,8 +12,14 @@ class SensorNode<T> {
         this.key = key;
     }
 
-    void addAlphaNode(AlphaNode<T> alphaNode) {
+    private void addAlphaNode(AlphaNode<T> alphaNode) {
         this.alphaNodes.add( alphaNode );
+    }
+
+    AlphaNode<T> addAlphaNode(Function<T, Boolean> condition) {
+        AlphaNode<T> alpha = new AlphaNode<>(condition);
+        addAlphaNode(alpha);
+        return alpha;
     }
 
     void assertValue(Agenda agenda, T value) {

@@ -1,18 +1,16 @@
 package com.overpoet.core.rule;
 
-class JoinNode extends AbstractNode {
+class JoinNode extends TokenPassingNode {
 
     enum Type {
         AND,
         OR,
     }
 
-    JoinNode() {
-        this(Type.AND);
-    }
-
-    JoinNode(Type type) {
+    JoinNode(Type type, TokenPassingNode left, TokenPassingNode right) {
         this.type = type;
+        left.addInput(getLeftInput());
+        right.addInput(getRightInput());
     }
 
     @Override

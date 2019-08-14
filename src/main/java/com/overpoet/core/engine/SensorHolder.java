@@ -1,35 +1,35 @@
 package com.overpoet.core.engine;
 
 
+import java.lang.reflect.Constructor;
+import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.function.Consumer;
 
 import com.overpoet.Key;
-import com.overpoet.core.sensor.SenseException;
 import com.overpoet.core.engine.state.StateException;
 import com.overpoet.core.engine.state.StateStream;
-import com.overpoet.core.sensor.Sensor;
 import com.overpoet.core.manipulator.Manipulator;
+import com.overpoet.core.sensor.Sensor;
+import com.overpoet.core.sensor.SensorLogic;
+import com.overpoet.core.sensor.Sink;
 
-class SensorHolder<T> implements Sensor.Sink<T> {
+class SensorHolder<T> {
 
-    SensorHolder(StateStream state, Key key, Sensor<T> sensor) {
+    SensorHolder(StateStream state, Sensor<T> sensor) {
         this.state = state;
         this.sensor = sensor;
-        this.sensor.initialize(this);
-        this.key = key;
+        this.sensor.onChange(this::sink);
     }
 
-    @Override
-    public void sink(T value) throws SenseException {
+    public void sink(T value) {
         try {
             this.state.add(this.sensor, value);
-            for (ManipulatorSensor monitor : this.monitors) {
-                monitor.accept(value);
+            for (ManipulatorSensorLogic each : this.logics) {
+                each.delegate(value);
             }
         } catch (StateException e) {
-            throw new SenseException(e);
+            e.printStackTrace();
         }
     }
 
@@ -37,51 +37,33 @@ class SensorHolder<T> implements Sensor.Sink<T> {
         return this.sensor.datatype();
     }
 
-    Manipulator.Sensor<T> forManipulator(Manipulator monitor) {
-        ManipulatorSensor manipulatorSensor = new ManipulatorSensor(monitor);
-        this.monitors.add(manipulatorSensor);
+    Sensor<T> forManipulator(Manipulator manipulator) throws NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+        Constructor<? extends Sensor> ctor = this.sensor.getClass().getDeclaredConstructor(Key.class, this.sensor.metadata().getClass(), SensorLogic.class);
+        ManipulatorSensorLogic logic = new ManipulatorSensorLogic();
+        Sensor manipulatorSensor = ctor.newInstance(this.sensor.key(), this.sensor.metadata(), logic);
+        this.manipulatorSensors.add(manipulatorSensor);
+        this.logics.add( logic );
         return manipulatorSensor;
     }
 
     private final StateStream state;
+
     private final Sensor<T> sensor;
-    private final Set<ManipulatorSensor> monitors = new HashSet<>();
-    private final Key key;
 
-    class ManipulatorSensor implements Manipulator.Sensor<T>, Consumer<T> {
+    private final Set<Sensor<?>> manipulatorSensors = new HashSet<>();
+    private final Set<ManipulatorSensorLogic<?>> logics  = new HashSet<>();
 
-        ManipulatorSensor(Manipulator manipulator) {
-            this.manipulator = manipulator;
+    private static class ManipulatorSensorLogic<T> implements SensorLogic<T> {
+        void delegate(T value) {
+            this.sink.sink(value);
         }
 
         @Override
-        public String id() {
-            return SensorHolder.this.sensor.id();
+        public void start(Sink<T> sink) {
+            this.sink = sink;
         }
 
-        @Override
-        public Key key() {
-            return SensorHolder.this.key;
-        }
-
-        @Override
-        public Class<T> datatype() {
-            return SensorHolder.this.sensor.datatype();
-        }
-
-        @Override
-        public void onChange(Consumer<T> listener) {
-            this.listener = listener;
-        }
-
-        @Override
-        public void accept(T t) {
-            if ( this.listener != null) {
-                this.listener.accept(t);
-            }
-        }
-
-        private final Manipulator manipulator;
-        private Consumer<T> listener = null;
+        private Sink<T> sink;
     }
+
 }
