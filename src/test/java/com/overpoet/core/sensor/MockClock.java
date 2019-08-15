@@ -3,6 +3,8 @@ package com.overpoet.core.sensor;
 import java.time.Duration;
 import java.time.LocalDateTime;
 
+import com.overpoet.core.spacetime.TimeSlice;
+
 public class MockClock extends BaseSensorLogic<TimeSlice> {
 
     public MockClock(LocalDateTime currentTime) {

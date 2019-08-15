@@ -8,6 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.overpoet.Key;
+import com.overpoet.core.spacetime.Location;
 import com.overpoet.core.metadata.IntegerMetadata;
 import com.overpoet.core.sensor.BaseSensorLogic;
 import com.overpoet.core.sensor.IntegerSensor;
@@ -123,6 +124,34 @@ public class RuleTest {
         clock.tick(Duration.of(4, ChronoUnit.SECONDS));
         engine.assertSensor(sensor, clock.current());
         assertThat(result.get()).isFalse();
+
+    }
+
+    public void testSunset() {
+
+        MockClock clock = new MockClock(LocalDateTime.of(
+                2019,
+                Month.AUGUST,
+                14,
+                15,
+                40,
+                00));
+
+        TimeSensor sensor = new TimeSensor(Key.keyOf("system.time"), TimeMetadata.INSTANCE, clock);
+
+        Rule rule = new Rule("yo");
+
+        AtomicBoolean result = new AtomicBoolean(false);
+
+        Location location = null;
+
+        /*
+        rule.when(
+                sensor(sensor, v -> v.includes(location.sunset().minus(30, ChronoUnit.MINUTES)))
+        ).then(() -> {
+            result.set(true);
+        });
+         */
 
     }
 }

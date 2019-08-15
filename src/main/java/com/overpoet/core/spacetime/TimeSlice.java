@@ -1,6 +1,5 @@
-package com.overpoet.core.sensor;
+package com.overpoet.core.spacetime;
 
-import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 

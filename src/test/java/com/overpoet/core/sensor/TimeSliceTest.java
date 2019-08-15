@@ -3,8 +3,8 @@ package com.overpoet.core.sensor;
 import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.temporal.ChronoUnit;
-import java.util.concurrent.TimeUnit;
 
+import com.overpoet.core.spacetime.TimeSlice;
 import org.junit.Test;
 
 import static org.fest.assertions.api.Assertions.assertThat;
