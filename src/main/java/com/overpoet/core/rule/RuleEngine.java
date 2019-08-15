@@ -1,6 +1,6 @@
 package com.overpoet.core.rule;
 
-import com.overpoet.Key;
+import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
 
@@ -15,20 +15,24 @@ public class RuleEngine implements Manipulator {
     }
 
     @Override
-    public void register(Apparatus apparatus) {
+    public void connect(Apparatus apparatus) {
         for (Sensor<?> sensor : apparatus.sensors()) {
-            sensor.onChange( (value)->{
-                //onChange( sensor.key(), value);
-            });
+            register(sensor);
         }
+    }
+
+    public <T> void register(Sensor<T> sensor) {
+        sensor.onChange( (value)->{
+            onChange(sensor, value);
+        });
     }
 
     public <T> void assertSensor(Sensor<T> sensor, T value) {
         this.rootNode.assertSensor(sensor, value);
     }
 
-    private void onChange(Key sensor, Object value) {
-        //root.assertFact(sensor, value);
+    private <T> void onChange(Sensor<T> sensor, T value) {
+        this.rootNode.assertSensor(sensor, value);
     }
 
     private final RootNode rootNode = new RootNode();

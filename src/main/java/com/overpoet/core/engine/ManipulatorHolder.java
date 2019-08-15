@@ -1,5 +1,6 @@
 package com.overpoet.core.engine;
 
+import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.manipulator.Manipulator;
 
 class ManipulatorHolder {
@@ -8,10 +9,10 @@ class ManipulatorHolder {
         this.manipulator = manipulator;
     }
 
-    public void register(ApparatusHolder apparatus) {
-        Manipulator.Apparatus forManipulator = apparatus.forManipulator(this.manipulator);
+    public void connect(ApparatusHolder apparatus) {
+        Apparatus forManipulator = apparatus.forManipulator(this.manipulator);
         if ( forManipulator != null ) {
-            this.manipulator.register(forManipulator);
+            this.manipulator.connect(forManipulator);
         }
     }
 

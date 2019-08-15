@@ -1,15 +1,17 @@
 package com.overpoet.core.actuator;
 
+import com.overpoet.Key;
+
 public class SimpleActuator<T> implements Actuator<T> {
 
-    protected SimpleActuator(String id, Class<T> datatype) {
-        this.id = id;
+    protected SimpleActuator(Key key, Class<T> datatype) {
+        this.key = key;
         this.datatype = datatype;
     }
 
     @Override
-    public String id() {
-        return this.id;
+    public Key key() {
+        return this.key;
     }
 
     @Override
@@ -22,6 +24,6 @@ public class SimpleActuator<T> implements Actuator<T> {
         // intentional no-op.
     }
 
-    private final String id;
+    private final Key key;
     private final Class<T> datatype;
 }

@@ -1,14 +1,11 @@
 package com.overpoet.core.rule;
 
-import com.overpoet.Identified;
-
-public class Rule implements Identified {
+public class Rule {
 
     public Rule(String id) {
         this.id = id;
     }
 
-    @Override
     public String id() {
         return this.id;
     }

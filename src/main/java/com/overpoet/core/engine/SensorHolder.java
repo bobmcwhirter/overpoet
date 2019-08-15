@@ -7,8 +7,9 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.overpoet.Key;
+import com.overpoet.core.engine.state.Sense;
 import com.overpoet.core.engine.state.StateException;
-import com.overpoet.core.engine.state.StateStream;
+import com.overpoet.core.engine.state.InMemoryStateStream;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
 import com.overpoet.core.sensor.SensorLogic;
@@ -16,7 +17,7 @@ import com.overpoet.core.sensor.Sink;
 
 class SensorHolder<T> {
 
-    SensorHolder(StateStream state, Sensor<T> sensor) {
+    SensorHolder(InMemoryStateStream state, Sensor<T> sensor) {
         this.state = state;
         this.sensor = sensor;
         this.sensor.onChange(this::sink);
@@ -24,7 +25,7 @@ class SensorHolder<T> {
 
     public void sink(T value) {
         try {
-            this.state.add(this.sensor, value);
+            this.state.add(new Sense<>(this.sensor, value));
             for (ManipulatorSensorLogic each : this.logics) {
                 each.delegate(value);
             }
@@ -46,7 +47,7 @@ class SensorHolder<T> {
         return manipulatorSensor;
     }
 
-    private final StateStream state;
+    private final InMemoryStateStream state;
 
     private final Sensor<T> sensor;
 

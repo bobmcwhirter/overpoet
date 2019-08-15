@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.overpoet.core.apparatus.Apparatus;
-import com.overpoet.core.engine.state.StateStream;
+import com.overpoet.core.engine.state.InMemoryStateStream;
 import com.overpoet.core.manipulator.Manipulator;
 
 public class Engine {
@@ -18,7 +18,7 @@ public class Engine {
         this.apparatuses.add(wrapped);
 
         for (ManipulatorHolder manipulator : this.manipulators) {
-            manipulator.register(wrapped);
+            manipulator.connect(wrapped);
         }
     }
 
@@ -28,7 +28,7 @@ public class Engine {
 
     public synchronized void connect(Manipulator manipulator) {
         for (ApparatusHolder apparatus : this.apparatuses) {
-            manipulator.register(apparatus.forManipulator(manipulator));
+            manipulator.connect(apparatus.forManipulator(manipulator));
         }
 
         this.manipulators.add(wrap(manipulator));
@@ -39,7 +39,7 @@ public class Engine {
     }
 
 
-    private StateStream state = new StateStream();
+    private InMemoryStateStream state = new InMemoryStateStream();
 
     private Set<ApparatusHolder> apparatuses = new HashSet<>();
     private Set<ManipulatorHolder> manipulators = new HashSet<>();

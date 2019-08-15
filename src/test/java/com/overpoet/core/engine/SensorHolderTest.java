@@ -2,7 +2,7 @@ package com.overpoet.core.engine;
 
 import java.util.concurrent.atomic.AtomicReference;
 
-import com.overpoet.core.engine.state.StateStream;
+import com.overpoet.core.engine.state.InMemoryStateStream;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.BaseSensorLogic;
 import com.overpoet.core.metadata.StringMetadata;
@@ -16,7 +16,7 @@ public class SensorHolderTest {
 
     @Test
     public void wiringToState() throws Exception {
-        StateStream state = new StateStream();
+        InMemoryStateStream state = new InMemoryStateStream();
         BaseSensorLogic<String> logic = new BaseSensorLogic<>();
         StringSensor sensor = new StringSensor(keyOf("sensor-1"), new StringMetadata(), logic);
         SensorHolder<String> holder = new SensorHolder<>(state, sensor);
@@ -30,7 +30,7 @@ public class SensorHolderTest {
 
     @Test
     public void wiringToManipulators() throws Exception {
-        StateStream state = new StateStream();
+        InMemoryStateStream state = new InMemoryStateStream();
         BaseSensorLogic<String> logic = new BaseSensorLogic<>();
         StringSensor sensor = new StringSensor(keyOf("sensor-1"), new StringMetadata(), logic);
         SensorHolder<String> holder = new SensorHolder<>(state, sensor);

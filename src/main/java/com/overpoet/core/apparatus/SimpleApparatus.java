@@ -3,12 +3,13 @@ package com.overpoet.core.apparatus;
 import java.util.HashSet;
 import java.util.Set;
 
+import com.overpoet.Key;
 import com.overpoet.core.actuator.Actuator;
 import com.overpoet.core.sensor.Sensor;
 
 public class SimpleApparatus implements Apparatus {
-    public SimpleApparatus(String id, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
-        this.id = id;
+    public SimpleApparatus(Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
+        this.key = key;
         if ( sensors != null ) {
             this.sensors.addAll(sensors);
         }
@@ -17,8 +18,8 @@ public class SimpleApparatus implements Apparatus {
         }
     }
 
-    public String id() {
-        return this.id;
+    public Key key() {
+        return this.key;
     }
 
     @Override
@@ -32,7 +33,7 @@ public class SimpleApparatus implements Apparatus {
     }
 
 
-    private final String id;
+    private final Key key;
     final private Set<Sensor<?>> sensors = new HashSet<>();
     final private Set<Actuator<?>> actuators = new HashSet<>();
 }
