@@ -1,22 +1,20 @@
 package com.overpoet.core.spacetime;
 
-import java.time.Instant;
-import java.time.LocalDate;
-import java.time.LocalTime;
-import java.time.OffsetDateTime;
-import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
-import java.time.temporal.JulianFields;
 
+import static com.overpoet.core.spacetime.Sun.degrees;
+import static com.overpoet.core.spacetime.Sun.julianCycle;
+import static com.overpoet.core.spacetime.Sun.julianToZoned;
+import static com.overpoet.core.spacetime.Sun.radians;
 import static java.lang.Math.acos;
 import static java.lang.Math.cos;
-import static java.lang.Math.round;
 import static java.lang.Math.sin;
+import static java.time.temporal.ChronoUnit.DAYS;
 
-public class SolarTimes {
+public class SunTimes {
 
+    /*
     public static ZonedDateTime sunrise(Point point, ZonedDateTime date) {
         return sunriseSunset(point, date)[0];
     }
@@ -24,8 +22,49 @@ public class SolarTimes {
     public static ZonedDateTime sunset(Point point, ZonedDateTime date) {
         return sunriseSunset(point, date)[1];
     }
+     */
 
-    public static ZonedDateTime[] sunriseSunset(Point point, ZonedDateTime date) {
+    public static ZonedDateTime sunriseBefore(Point point, ZonedDateTime date) {
+        ZonedDateTime[] pair = sunriseSunset(point, date);
+        ZonedDateTime curDate = date;
+        while ( pair[0].isAfter(date)) {
+            curDate = curDate.minus(1, DAYS);
+            pair = sunriseSunset(point, curDate);
+        }
+        return pair[0];
+    }
+
+    public static ZonedDateTime sunriseAfter(Point point, ZonedDateTime date) {
+        ZonedDateTime[] pair = sunriseSunset(point, date);
+        ZonedDateTime curDate = date;
+        while ( pair[0].isBefore(date)) {
+            curDate = curDate.plus(1, DAYS);
+            pair = sunriseSunset(point, curDate);
+        }
+        return pair[0];
+    }
+
+    public static ZonedDateTime sunsetBefore(Point point, ZonedDateTime date) {
+        ZonedDateTime[] pair = sunriseSunset(point, date);
+        ZonedDateTime curDate = date;
+        while ( pair[1].isAfter(date)) {
+            curDate = curDate.minus(1, DAYS);
+            pair = sunriseSunset(point, curDate);
+        }
+        return pair[1];
+    }
+
+    public static ZonedDateTime sunsetAfter(Point point, ZonedDateTime date) {
+        ZonedDateTime[] pair = sunriseSunset(point, date);
+        ZonedDateTime curDate = date;
+        while ( pair[1].isBefore(date)) {
+            curDate = curDate.plus(1, DAYS);
+            pair = sunriseSunset(point, curDate);
+        }
+        return pair[1];
+    }
+
+    private static ZonedDateTime[] sunriseSunset(Point point, ZonedDateTime date) {
         long julianCycle = julianCycle(date, point.longitude());
         double meanSolarNoon = meanSolarNoon(point.longitude(), julianCycle);
 
@@ -51,7 +90,6 @@ public class SolarTimes {
         };
     }
 
-
     public static ZonedDateTime solarNoon(Point point, ZonedDateTime date) {
         long julianCycle = julianCycle(date, point.longitude());
         double meanSolarNoon = meanSolarNoon(point.longitude(), julianCycle);
@@ -63,45 +101,6 @@ public class SolarTimes {
         double solarTransit = solarTransit(meanSolarNoon, solarMeanAnomaly, eclipticLongitude);
 
         return julianToZoned(solarTransit, date.getZone());
-    }
-
-    static ZonedDateTime julianToZoned(double julian, ZoneId zone) {
-        LocalDate date = LocalDate.MIN.with(JulianFields.JULIAN_DAY, (long) julian);
-
-        double remainder = (julian - ((long) julian));
-
-        long totalSeconds = (long) (remainder * 86400) + (12 * 60 * 60);
-
-        int days, hours, minutes, seconds = 0;
-
-        days = (int) (totalSeconds / ( 60 * 60 * 24));
-        totalSeconds = totalSeconds - (days * 60 * 60 * 24);
-
-        date = date.plus(days, ChronoUnit.DAYS);
-
-        hours = (int) (totalSeconds / (60 * 60));
-        totalSeconds = totalSeconds - (hours * 60 * 60);
-
-        minutes = (int) (totalSeconds / 60);
-        totalSeconds = totalSeconds - (minutes * 60);
-
-        seconds = (int) totalSeconds;
-
-        LocalTime time = LocalTime.of(hours, minutes, seconds);
-
-        return OffsetDateTime.of(date, time, ZoneOffset.UTC).atZoneSameInstant(zone);
-    }
-
-    static double radians(double degrees) {
-        return degrees * Math.PI / 180;
-    }
-
-    static double degrees(double radians) {
-        return radians * 180 / Math.PI;
-    }
-
-    static long julianCycle(ZonedDateTime date, Longitude longitude) {
-        return round((date.getLong(JulianFields.JULIAN_DAY) - 2451545.0 - 0.0009) - (longitude.decimalDegrees() / 360));
     }
 
     static double meanSolarNoon(Longitude longitude, double julianCycle) {

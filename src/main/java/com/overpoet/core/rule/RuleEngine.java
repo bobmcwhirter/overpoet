@@ -1,13 +1,25 @@
 package com.overpoet.core.rule;
 
 import com.overpoet.core.apparatus.Apparatus;
+import com.overpoet.core.config.Configurable;
+import com.overpoet.core.config.Configuration;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
+import com.overpoet.core.spacetime.Location;
 
-public class RuleEngine implements Manipulator {
+public class RuleEngine implements Manipulator, Configurable {
 
     public RuleEngine() {
 
+    }
+
+    @Override
+    public void configure(Configuration config) {
+        this.location = config.location();
+    }
+
+    public Location location() {
+        return this.location;
     }
 
     public void addRule(Rule rule) {
@@ -35,6 +47,6 @@ public class RuleEngine implements Manipulator {
         this.rootNode.assertSensor(sensor, value);
     }
 
+    private Location location;
     private final RootNode rootNode = new RootNode();
-
 }

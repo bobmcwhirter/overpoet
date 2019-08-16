@@ -2,34 +2,46 @@ package com.overpoet.core.spacetime;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
+import java.time.ZonedDateTime;
 
 public class TimeSlice {
 
-    public TimeSlice(LocalDateTime lastTick, LocalDateTime now) {
+    public TimeSlice(ZonedDateTime lastTick, ZonedDateTime now) {
         this.lastTick = lastTick;
         this.now = now;
     }
 
-    public TimeSlice next(LocalDateTime now) {
+    public TimeSlice next(ZonedDateTime now) {
         if ( now.isBefore( this.now ) ) {
             throw new IllegalArgumentException( "Time only moves forward");
         }
         return new TimeSlice(this.now, now);
     }
 
-    public LocalDateTime now() {
+    public ZonedDateTime now() {
         return this.now;
     }
 
-    public LocalDateTime lastTick() {
+    public ZonedDateTime lastTick() {
         return this.lastTick;
     }
 
-    public boolean includes(LocalDateTime time) {
+    public boolean includes(ZonedDateTime time) {
         if ( this.now.isEqual(time)) {
             return true;
         }
         if ( time.isBefore(this.now) && time.isAfter(this.lastTick)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public boolean includes(LocalDateTime time) {
+        if ( this.now.toLocalDateTime().isEqual(time)) {
+            return true;
+        }
+        if ( time.isBefore(this.now.toLocalDateTime()) && time.isAfter(this.lastTick.toLocalDateTime())) {
             return true;
         }
 
@@ -49,6 +61,6 @@ public class TimeSlice {
         return false;
     }
 
-    private final LocalDateTime now;
-    private final LocalDateTime lastTick;
+    private final ZonedDateTime now;
+    private final ZonedDateTime lastTick;
 }

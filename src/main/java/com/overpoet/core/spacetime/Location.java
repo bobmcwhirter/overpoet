@@ -1,11 +1,8 @@
 package com.overpoet.core.spacetime;
 
-import java.time.LocalDateTime;
+import java.time.ZoneId;
 
 public interface Location {
-    LocalDateTime sunriseOnOrBefore(TimeSlice target);
-    LocalDateTime sunriseOnOrAfter(TimeSlice target);
-
-    LocalDateTime sunsetOnOrBefore(TimeSlice target);
-    LocalDateTime sunsetOnOrAfter(TimeSlice target);
+    Point point();
+    ZoneId getZoneId();
 }

@@ -4,10 +4,13 @@ import java.time.Duration;
 import java.time.LocalDateTime;
 import java.time.LocalTime;
 import java.time.Month;
+import java.time.ZoneId;
+import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.overpoet.Key;
+import com.overpoet.core.spacetime.Latitude;
 import com.overpoet.core.spacetime.Location;
 import com.overpoet.core.metadata.IntegerMetadata;
 import com.overpoet.core.sensor.BaseSensorLogic;
@@ -15,11 +18,14 @@ import com.overpoet.core.sensor.IntegerSensor;
 import com.overpoet.core.sensor.MockClock;
 import com.overpoet.core.sensor.TimeMetadata;
 import com.overpoet.core.sensor.TimeSensor;
+import com.overpoet.core.spacetime.Longitude;
+import com.overpoet.core.spacetime.Point;
 import org.junit.Test;
 
 import static com.overpoet.Key.keyOf;
 import static com.overpoet.core.rule.Condition.and;
 import static com.overpoet.core.rule.Condition.sensor;
+import static com.overpoet.core.rule.TimeCondition.beforeSunset;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class RuleTest {
@@ -76,13 +82,15 @@ public class RuleTest {
     @Test
     public void testTime() {
 
-        MockClock clock = new MockClock(LocalDateTime.of(
+        MockClock clock = new MockClock(ZonedDateTime.of(
                 2019,
-                Month.AUGUST,
+                8,
                 14,
                 15,
                 40,
-                00));
+                00,
+                00,
+                ZoneId.of("America/New_York")));
 
         LocalTime fourPM = LocalTime.of(
                 16,
@@ -127,15 +135,31 @@ public class RuleTest {
 
     }
 
+    @Test
     public void testSunset() {
 
-        MockClock clock = new MockClock(LocalDateTime.of(
+        Location location = new Location() {
+            @Override
+            public Point point() {
+                return new Point(new Latitude(36.9485), new Longitude(81.0848));
+            }
+
+            @Override
+            public ZoneId getZoneId() {
+                return ZoneId.of("America/New_York");
+            }
+        };
+
+        MockClock clock = new MockClock(ZonedDateTime.of(
                 2019,
-                Month.AUGUST,
+                8,
                 14,
-                15,
-                40,
-                00));
+                19,
+                30,
+                00,
+                00,
+                ZoneId.of("America/New_York")
+        ));
 
         TimeSensor sensor = new TimeSensor(Key.keyOf("system.time"), TimeMetadata.INSTANCE, clock);
 
@@ -143,15 +167,53 @@ public class RuleTest {
 
         AtomicBoolean result = new AtomicBoolean(false);
 
-        Location location = null;
-
-        /*
         rule.when(
-                sensor(sensor, v -> v.includes(location.sunset().minus(30, ChronoUnit.MINUTES)))
+                beforeSunset(sensor, location, 30, ChronoUnit.MINUTES)
         ).then(() -> {
             result.set(true);
         });
-         */
+
+        RuleEngine engine = new RuleEngine();
+        engine.addRule(rule);
+
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        // 7:50pm, 30 prior to actual sunset
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isTrue();
+
+        result.set(false);
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
+        clock.tick(Duration.of(5, ChronoUnit.MINUTES));
+        engine.assertSensor(sensor, clock.current());
+        assertThat(result.get()).isFalse();
+
 
     }
 }
