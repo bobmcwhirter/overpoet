@@ -2,17 +2,34 @@ package com.overpoet.core.engine;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.concurrent.CountDownLatch;
 
-import com.overpoet.core.config.Configurable;
-import com.overpoet.core.config.Configuration;
 import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.engine.state.InMemoryStateStream;
 import com.overpoet.core.manipulator.Manipulator;
 
 public class Engine {
 
-    public Engine(Configuration config) {
+    public Engine(EngineConfiguration config) {
         this.config = config;
+    }
+
+    EngineConfiguration configuration() {
+        return this.config;
+    }
+
+    public void start() {
+        System.err.println( "start");
+        new PlatformManager(this).initialize();
+        try {
+            this.latch.await();
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public void stop() {
+
     }
 
     public synchronized void connect(Apparatus apparatus) {
@@ -29,9 +46,6 @@ public class Engine {
     }
 
     public synchronized void connect(Manipulator manipulator) {
-        if ( manipulator instanceof Configurable ) {
-            ((Configurable) manipulator).configure(this.config);
-        }
         for (ApparatusHolder apparatus : this.apparatuses) {
             manipulator.connect(apparatus.forManipulator(manipulator));
         }
@@ -43,10 +57,12 @@ public class Engine {
         return new ManipulatorHolder(manipulator);
     }
 
-    private final Configuration config;
+    private final EngineConfiguration config;
 
     private InMemoryStateStream state = new InMemoryStateStream();
 
     private Set<ApparatusHolder> apparatuses = new HashSet<>();
     private Set<ManipulatorHolder> manipulators = new HashSet<>();
+
+    private CountDownLatch latch = new CountDownLatch(1);
 }

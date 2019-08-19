@@ -1,21 +1,15 @@
 package com.overpoet.core.rule;
 
 import com.overpoet.core.apparatus.Apparatus;
-import com.overpoet.core.config.Configurable;
-import com.overpoet.core.config.Configuration;
+import com.overpoet.core.engine.EngineConfiguration;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
 import com.overpoet.core.geo.Location;
 
-public class RuleEngine implements Manipulator, Configurable {
+public class RuleEngine implements Manipulator {
 
-    public RuleEngine() {
-
-    }
-
-    @Override
-    public void configure(Configuration config) {
-        this.location = config.location();
+    public RuleEngine(Location location) {
+        this.location = location;
     }
 
     public Location location() {

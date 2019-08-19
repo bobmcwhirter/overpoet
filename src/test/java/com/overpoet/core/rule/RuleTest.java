@@ -48,7 +48,7 @@ public class RuleTest {
             result.set(true);
         });
 
-        RuleEngine engine = new RuleEngine();
+        RuleEngine engine = new RuleEngine(null);
         engine.addRule(rule);
 
         engine.assertSensor(sensor2, 7);
@@ -108,7 +108,7 @@ public class RuleTest {
             result.set(true);
         });
 
-        RuleEngine engine = new RuleEngine();
+        RuleEngine engine = new RuleEngine(null);
         engine.addRule(rule);
 
         engine.assertSensor(sensor, clock.current());
@@ -177,7 +177,7 @@ public class RuleTest {
             result.set(true);
         });
 
-        RuleEngine engine = new RuleEngine();
+        RuleEngine engine = new RuleEngine(null);
         engine.addRule(rule);
 
         engine.assertSensor(sensor, clock.current());
