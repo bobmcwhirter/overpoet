@@ -1,10 +1,9 @@
 package com.overpoet.core.sensor;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.ZonedDateTime;
 
-import com.overpoet.core.spacetime.TimeSlice;
+import com.overpoet.core.chrono.TimeSlice;
 
 public class MockClock extends BaseSensorLogic<TimeSlice> {
 

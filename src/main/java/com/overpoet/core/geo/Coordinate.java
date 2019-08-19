@@ -1,4 +1,4 @@
-package com.overpoet.core.spacetime;
+package com.overpoet.core.geo;
 
 public class Coordinate {
 
@@ -6,7 +6,7 @@ public class Coordinate {
         this.decimalDegrees = decimalDegrees;
     }
 
-    double decimalDegrees() {
+    public double decimalDegrees() {
         return this.decimalDegrees;
     }
 

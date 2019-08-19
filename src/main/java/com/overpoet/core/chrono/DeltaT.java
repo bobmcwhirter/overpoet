@@ -1,14 +1,11 @@
-package com.overpoet.core.spacetime.grena3;
-
+package com.overpoet.core.chrono;
 
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoField;
-import java.time.temporal.ChronoUnit;
-import java.time.temporal.TemporalField;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
 
 import static java.lang.Math.pow;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * Finding values for Delta T, the difference between Terrestrial Time (TT) and Universal Time (UT1).
@@ -85,13 +82,12 @@ public final class DeltaT {
     }
 
     private static double decimalYear(ZonedDateTime forDate) {
-        int rawYear = forDate.get(ChronoField.YEAR);
-        if (forDate.get(ChronoField.ERA) == 0) {
+        double rawYear = forDate.get(YEAR);
+        if (forDate.get(ChronoField.ERA) == 0 ) {
             rawYear = -rawYear;
         }
 
-        return rawYear + (forDate.get(ChronoField.MONTH_OF_YEAR) - 0.5) / 12;
+        return rawYear + (forDate.get(MONTH_OF_YEAR) - 0.5) / 12;
     }
 
 }
-

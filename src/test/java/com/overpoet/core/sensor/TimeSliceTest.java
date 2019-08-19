@@ -4,9 +4,8 @@ import java.time.LocalDateTime;
 import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoUnit;
 
-import com.overpoet.core.spacetime.TimeSlice;
+import com.overpoet.core.chrono.TimeSlice;
 import org.junit.Test;
 
 import static java.time.temporal.ChronoUnit.MINUTES;

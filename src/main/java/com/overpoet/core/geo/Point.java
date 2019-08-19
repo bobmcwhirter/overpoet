@@ -1,8 +1,13 @@
-package com.overpoet.core.spacetime;
+package com.overpoet.core.geo;
 
 public class Point {
 
     public Point(Latitude latitude, Longitude longitude) {
+        this.latitude = latitude;
+        this.longitude = longitude;
+    }
+
+    public Point(Longitude longitude, Latitude latitude) {
         this.latitude = latitude;
         this.longitude = longitude;
     }

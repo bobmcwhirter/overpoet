@@ -1,28 +1,27 @@
 package com.overpoet.core.rule;
 
 import java.time.Duration;
-import java.time.LocalDateTime;
 import java.time.LocalTime;
-import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.overpoet.Key;
-import com.overpoet.core.spacetime.Latitude;
-import com.overpoet.core.spacetime.Location;
+import com.overpoet.core.geo.Length;
+import com.overpoet.core.geo.Location;
 import com.overpoet.core.metadata.IntegerMetadata;
 import com.overpoet.core.sensor.BaseSensorLogic;
 import com.overpoet.core.sensor.IntegerSensor;
 import com.overpoet.core.sensor.MockClock;
 import com.overpoet.core.sensor.TimeMetadata;
 import com.overpoet.core.sensor.TimeSensor;
-import com.overpoet.core.spacetime.Longitude;
-import com.overpoet.core.spacetime.Point;
+import com.overpoet.core.geo.Point;
 import org.junit.Test;
 
 import static com.overpoet.Key.keyOf;
+import static com.overpoet.core.geo.Latitude.north;
+import static com.overpoet.core.geo.Longitude.west;
 import static com.overpoet.core.rule.Condition.and;
 import static com.overpoet.core.rule.Condition.sensor;
 import static com.overpoet.core.rule.TimeCondition.beforeSunset;
@@ -141,12 +140,17 @@ public class RuleTest {
         Location location = new Location() {
             @Override
             public Point point() {
-                return new Point(new Latitude(36.9485), new Longitude(81.0848));
+                return new Point(north(36.9485), west(81.0848));
             }
 
             @Override
             public ZoneId getZoneId() {
                 return ZoneId.of("America/New_York");
+            }
+
+            @Override
+            public Length elevation() {
+                return Length.feet(3000);
             }
         };
 

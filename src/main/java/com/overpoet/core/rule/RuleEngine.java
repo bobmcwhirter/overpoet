@@ -5,7 +5,7 @@ import com.overpoet.core.config.Configurable;
 import com.overpoet.core.config.Configuration;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
-import com.overpoet.core.spacetime.Location;
+import com.overpoet.core.geo.Location;
 
 public class RuleEngine implements Manipulator, Configurable {
 

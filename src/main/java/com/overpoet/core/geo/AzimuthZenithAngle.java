@@ -1,4 +1,4 @@
-package com.overpoet.core.spacetime.grena3;
+package com.overpoet.core.geo;
 
 /**
  * A simple wrapper class for keeping an azimuth/zenith angle pair of values.
@@ -26,4 +26,3 @@ public class AzimuthZenithAngle {
     }
 
 }
-

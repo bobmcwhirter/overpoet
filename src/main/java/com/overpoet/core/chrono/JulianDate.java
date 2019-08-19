@@ -1,12 +1,15 @@
-package com.overpoet.core.spacetime.grena3;
-
+package com.overpoet.core.chrono;
 
 import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
-import java.time.temporal.ChronoField;
-import java.util.Calendar;
-import java.util.GregorianCalendar;
-import java.util.TimeZone;
+
+import static java.time.temporal.ChronoField.DAY_OF_MONTH;
+import static java.time.temporal.ChronoField.ERA;
+import static java.time.temporal.ChronoField.HOUR_OF_DAY;
+import static java.time.temporal.ChronoField.MINUTE_OF_HOUR;
+import static java.time.temporal.ChronoField.MONTH_OF_YEAR;
+import static java.time.temporal.ChronoField.SECOND_OF_MINUTE;
+import static java.time.temporal.ChronoField.YEAR;
 
 /**
  * Calculate Julian date for a given point in time. This follows the algorithm described in Reda, I.; Andreas, A.
@@ -25,8 +28,8 @@ public final class JulianDate {
      * @param date date and time
      */
     public JulianDate(final ZonedDateTime date) {
-        ZonedDateTime utc = createUtcCalendar(date);
-        this.julianDate = calcJulianDate(utc);
+        ZonedDateTime utcCalendar = createUtcCalendar(date);
+        this.julianDate = calcJulianDate(utcCalendar);
         this.deltaT = 0.0;
     }
 
@@ -59,17 +62,17 @@ public final class JulianDate {
     }
 
     private double calcJulianDate(ZonedDateTime calendar) {
-        int y = (calendar.get(ChronoField.ERA) == 1) ? calendar.get(ChronoField.YEAR) : -calendar
-                .get(ChronoField.YEAR);
-        int m = calendar.get(ChronoField.MONTH_OF_YEAR);
+        int y = (calendar.get(ERA) == 1) ? calendar.get(YEAR) : -calendar
+                .get(YEAR);
+        int m = calendar.get(MONTH_OF_YEAR);
 
         if (m < 3) {
             y = y - 1;
             m = m + 12;
         }
 
-        final double d = calendar.get(ChronoField.DAY_OF_MONTH)
-                + (calendar.get(ChronoField.HOUR_OF_DAY) + (calendar.get(ChronoField.MINUTE_OF_HOUR) + calendar.get(ChronoField.SECOND_OF_MINUTE) / 60.0) / 60.0)
+        final double d = calendar.get(DAY_OF_MONTH)
+                + (calendar.get(HOUR_OF_DAY) + (calendar.get(MINUTE_OF_HOUR) + calendar.get(SECOND_OF_MINUTE) / 60.0) / 60.0)
                 / 24.0;
         final double jd = Math.floor(365.25 * (y + 4716.0)) + Math.floor(30.6001 * (m + 1)) + d - 1524.5;
         final double a = Math.floor(y / 100.0);
@@ -102,4 +105,5 @@ public final class JulianDate {
     public String toString() {
         return String.format("%.5f", julianDate);
     }
+
 }

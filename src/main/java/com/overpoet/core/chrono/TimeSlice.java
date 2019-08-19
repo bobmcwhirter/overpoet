@@ -1,4 +1,4 @@
-package com.overpoet.core.spacetime;
+package com.overpoet.core.chrono;
 
 import java.time.LocalDateTime;
 import java.time.LocalTime;
@@ -59,6 +59,10 @@ public class TimeSlice {
         }
 
         return false;
+    }
+
+    public String toString() {
+        return "[TimeSlice: " + this.lastTick + " >> " + this.now + "]";
     }
 
     private final ZonedDateTime now;
