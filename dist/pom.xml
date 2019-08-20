@@ -23,6 +23,10 @@
       <groupId>com.overpoet</groupId>
       <artifactId>overpoet-netatmo</artifactId>
     </dependency>
+    <dependency>
+      <groupId>com.overpoet</groupId>
+      <artifactId>overpoet-homekit</artifactId>
+    </dependency>
   </dependencies>
 
   <build>

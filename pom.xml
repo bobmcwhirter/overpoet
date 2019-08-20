@@ -22,8 +22,6 @@
     <version.junit>4.12</version.junit>
     <version.netty>4.1.29.Final</version.netty>
     <version.nimbusds>2.0.2</version.nimbusds>
-    <version.zeromq>0.1.0</version.zeromq>
-    <version.javax-json>1.0</version.javax-json>
     <version.glassfish-json>1.0.4</version.glassfish-json>
     <version.jmdns>3.5.4</version.jmdns>
 
@@ -49,17 +47,22 @@
       <!-- Homekit -->
       <dependency>
         <groupId>com.overpoet</groupId>
-        <artifactId>overpoet-homekit-common</artifactId>
+        <artifactId>overpoet-homekit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.overpoet</groupId>
-        <artifactId>overpoet-homekit-client</artifactId>
+        <artifactId>overpoet-hap-common</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
         <groupId>com.overpoet</groupId>
-        <artifactId>overpoet-homekit-server</artifactId>
+        <artifactId>overpoet-hap-client</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+      <dependency>
+        <groupId>com.overpoet</groupId>
+        <artifactId>overpoet-hap-server</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
@@ -73,18 +76,11 @@
         <artifactId>netty-all</artifactId>
         <version>${version.netty}</version>
       </dependency>
-<!--
-      <dependency>
-        <groupId>javax.json</groupId>
-        <artifactId>javax.json-api</artifactId>
-        <version>${version.javax-json}</version>
-      </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
         <version>${version.glassfish-json}</version>
       </dependency>
--->
       <dependency>
         <groupId>org.jmdns</groupId>
         <artifactId>jmdns</artifactId>
@@ -100,13 +96,6 @@
         <artifactId>bcprov-debug-jdk15on</artifactId>
         <version>${version.bouncycastle}</version>
       </dependency>
-      <dependency>
-        <groupId>org.zeromq</groupId>
-        <artifactId>curve25519-java</artifactId>
-        <version>${version.zeromq}</version>
-      </dependency>
-
-
 
 
       <dependency>
@@ -140,6 +129,11 @@
       <artifactId>junit</artifactId>
       <scope>test</scope>
     </dependency>
+    <dependency>
+      <groupId>org.easytesting</groupId>
+      <artifactId>fest-assert-core</artifactId>
+      <scope>test</scope>
+    </dependency>
   </dependencies>
 
   <build>
@@ -156,6 +150,9 @@
   <modules>
     <module>core</module>
     <module>netatmo</module>
+
+    <module>hap</module>
+    <module>homekit</module>
 
     <module>dist</module>
   </modules>
