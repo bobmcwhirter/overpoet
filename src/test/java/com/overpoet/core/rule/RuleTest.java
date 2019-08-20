@@ -8,7 +8,7 @@ import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
 import com.overpoet.Key;
-import com.overpoet.core.geo.Length;
+import com.overpoet.core.measurement.Distance;
 import com.overpoet.core.geo.Location;
 import com.overpoet.core.metadata.IntegerMetadata;
 import com.overpoet.core.sensor.BaseSensorLogic;
@@ -149,8 +149,8 @@ public class RuleTest {
             }
 
             @Override
-            public Length elevation() {
-                return Length.feet(3000);
+            public Distance elevation() {
+                return Distance.feet(3000);
             }
         };
 

@@ -3,6 +3,7 @@ package com.overpoet.core.platform;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.manipulator.Manipulator;
@@ -12,5 +13,6 @@ public interface PlatformContext {
     void connect(Manipulator manipulator);
 
     Properties configuration();
+    ScheduledExecutorService executor();
 }
 

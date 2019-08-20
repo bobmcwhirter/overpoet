@@ -5,26 +5,22 @@ import java.time.LocalDate;
 import java.time.LocalTime;
 import java.time.Month;
 import java.time.ZoneId;
-import java.time.ZoneOffset;
 import java.time.ZonedDateTime;
 
 import com.overpoet.core.chrono.DeltaT;
 import com.overpoet.core.geo.AzimuthZenithAngle;
-import com.overpoet.core.geo.Length;
+import com.overpoet.core.measurement.Distance;
 import com.overpoet.core.geo.Location;
 import com.overpoet.core.geo.Point;
-import com.overpoet.core.solar.SPA;
-import com.overpoet.core.solar.Sun;
 import org.fest.assertions.data.Offset;
 import org.junit.Test;
 
 import static com.overpoet.core.geo.Latitude.north;
-import static com.overpoet.core.geo.Length.feet;
+import static com.overpoet.core.measurement.Distance.feet;
 import static com.overpoet.core.geo.Longitude.west;
 import static java.time.ZoneId.of;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MINUTES;
-import static java.time.temporal.ChronoUnit.SECONDS;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class SunTest {
@@ -41,7 +37,7 @@ public class SunTest {
         }
 
         @Override
-        public Length elevation() {
+        public Distance elevation() {
             return feet(3000);
         }
     };

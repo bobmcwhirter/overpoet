@@ -18,6 +18,7 @@ class ApparatusHolder {
         this.apparatus = apparatus;
 
         for (Sensor<?> sensor : apparatus.sensors()) {
+            System.err.println( "register sensor: " + sensor.key());
             this.sensors.add(wrap( sensor));
         }
         for (Actuator<?> actuator : apparatus.actuators()) {

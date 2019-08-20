@@ -8,12 +8,12 @@ import com.overpoet.core.engine.Engine;
 import com.overpoet.core.engine.EngineConfiguration;
 import com.overpoet.core.engine.FilesystemConfigurationProvider;
 import com.overpoet.core.engine.SimpleEngineConfiguration;
-import com.overpoet.core.geo.Length;
+import com.overpoet.core.measurement.Distance;
 import com.overpoet.core.geo.Location;
 import com.overpoet.core.geo.Point;
 
 import static com.overpoet.core.geo.Latitude.north;
-import static com.overpoet.core.geo.Length.feet;
+import static com.overpoet.core.measurement.Distance.feet;
 import static com.overpoet.core.geo.Longitude.west;
 import static java.time.ZoneId.of;
 
@@ -32,7 +32,7 @@ public class Main {
             }
 
             @Override
-            public Length elevation() {
+            public Distance elevation() {
                 return feet(3000);
             }
         };

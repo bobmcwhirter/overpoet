@@ -14,6 +14,7 @@ public class InMemoryStateStream implements StateStream {
     }
 
     public synchronized <T> InMemoryStateStream add(Sense<T> sense) throws StateException {
+        System.err.println( "state change: " + sense);
         this.currentHead = this.currentHead.add(sense);
         return this;
     }

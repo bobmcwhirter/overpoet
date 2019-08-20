@@ -2,10 +2,10 @@ package com.overpoet.core.geo;
 
 import java.time.ZoneId;
 
-import com.overpoet.core.geo.Point;
+import com.overpoet.core.measurement.Distance;
 
 public interface Location {
     Point point();
     ZoneId getZoneId();
-    Length elevation();
+    Distance elevation();
 }

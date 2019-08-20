@@ -2,6 +2,7 @@ package com.overpoet.core.engine;
 
 import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.manipulator.Manipulator;
@@ -47,6 +48,11 @@ class PlatformManager {
         @Override
         public Properties configuration() {
             return this.configuration;
+        }
+
+        @Override
+        public ScheduledExecutorService executor() {
+            return PlatformManager.this.engine.executor();
         }
 
         private final Properties configuration;

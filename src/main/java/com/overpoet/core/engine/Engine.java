@@ -3,6 +3,8 @@ package com.overpoet.core.engine;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
 
 import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.engine.state.InMemoryStateStream;
@@ -12,10 +14,15 @@ public class Engine {
 
     public Engine(EngineConfiguration config) {
         this.config = config;
+        this.executor = Executors.newScheduledThreadPool(10);
     }
 
     EngineConfiguration configuration() {
         return this.config;
+    }
+
+    public ScheduledExecutorService executor() {
+        return this.executor;
     }
 
     public void start() {
@@ -58,6 +65,8 @@ public class Engine {
     }
 
     private final EngineConfiguration config;
+
+    private final ScheduledExecutorService executor;
 
     private InMemoryStateStream state = new InMemoryStateStream();
 

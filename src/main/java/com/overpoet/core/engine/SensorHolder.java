@@ -7,9 +7,10 @@ import java.util.HashSet;
 import java.util.Set;
 
 import com.overpoet.Key;
+import com.overpoet.core.engine.state.InMemoryStateStream;
 import com.overpoet.core.engine.state.Sense;
 import com.overpoet.core.engine.state.StateException;
-import com.overpoet.core.engine.state.InMemoryStateStream;
+import com.overpoet.core.engine.state.StateStream;
 import com.overpoet.core.manipulator.Manipulator;
 import com.overpoet.core.sensor.Sensor;
 import com.overpoet.core.sensor.SensorLogic;
@@ -47,7 +48,7 @@ class SensorHolder<T> {
         return manipulatorSensor;
     }
 
-    private final InMemoryStateStream state;
+    private final StateStream state;
 
     private final Sensor<T> sensor;
 

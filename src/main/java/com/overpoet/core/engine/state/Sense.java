@@ -16,6 +16,11 @@ public class Sense<T> {
         return this.value;
     }
 
+    @Override
+    public String toString() {
+        return "[" + this.sensor.key() + " = " + this.value + "]";
+    }
+
     private final Sensor<T> sensor;
     private final T value;
 }

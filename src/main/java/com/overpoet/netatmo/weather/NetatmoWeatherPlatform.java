@@ -5,8 +5,6 @@ import java.net.URI;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.TimeUnit;
 
 import com.jayway.jsonpath.JsonPath;
@@ -14,21 +12,21 @@ import com.jayway.jsonpath.ReadContext;
 import com.overpoet.Key;
 import com.overpoet.core.apparatus.Apparatus;
 import com.overpoet.core.apparatus.SimpleApparatus;
+import com.overpoet.core.measurement.Speed;
 import com.overpoet.core.platform.Platform;
 import com.overpoet.core.platform.PlatformContext;
+import com.overpoet.core.sensor.AbstractJSONSensorLogic;
 import com.overpoet.core.sensor.Sensor;
-import com.overpoet.core.sensor.SensorLogic;
-import com.overpoet.netatmo.weather.wind.BaseNetatamoSensorLogic;
 import com.overpoet.netatmo.weather.wind.GustAngleSensorLogic;
 import com.overpoet.netatmo.weather.wind.GustStrengthSensorLogic;
 import com.overpoet.netatmo.weather.wind.WindAngleSensorLogic;
 import com.overpoet.netatmo.weather.wind.WindStrengthSensorLogic;
+import net.minidev.json.JSONArray;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
-import org.json.JSONObject;
 
 import static java.net.URI.create;
 
@@ -43,21 +41,18 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
     private static final URI stationsDataURI = baseURI.resolve(create("/api/getstationsdata"));
 
     public NetatmoWeatherPlatform() {
-        this.timer = new Timer();
     }
 
     @Override
     public void configure(PlatformContext context) {
         this.context = context;
-
         try {
             String data = getData();
             initialize(data);
         } catch (IOException e) {
             e.printStackTrace();
         }
-
-        this.timer.scheduleAtFixedRate(new Task(), 1000, 2000);
+        context.executor().scheduleAtFixedRate(this::poll, 2, 2, TimeUnit.SECONDS);
     }
 
     private void initialize(String data) {
@@ -65,30 +60,47 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
         initializeWind(ctx);
     }
 
-    private void poll() throws IOException {
-        String data = getData();
-        ReadContext ctx = JsonPath.parse(data);
+    private void poll() {
+        try {
+            String data = getData();
+            ReadContext ctx = JsonPath.parse(data);
 
-        for (BaseNetatamoSensorLogic<?> logic : this.logics) {
-            logic.process(ctx);
+            for (AbstractJSONSensorLogic<?, ?> logic : this.logics) {
+                logic.process(ctx);
+            }
+        } catch (IOException e) {
+            e.printStackTrace();
         }
     }
 
     private void initializeWind(ReadContext ctx) {
+
         Key key = KEY.append("wind");
+
+        int windUnit = (int) ((JSONArray)ctx.read(".user.administrative.windunit")).get(0);
+
+        AbstractJSONSensorLogic.Converter<Speed,Integer> converter = null;
+
+        if ( windUnit == 0 ) {
+            converter = Speed::kilometersPerHour;
+        } else if ( windUnit == 1 ) {
+            converter = Speed::milesPerHour;
+        } else if ( windUnit == 4 ) {
+            converter = Speed::knots;
+        }
 
         Set<Sensor<?>> sensors = new HashSet<>();
         if (WindStrengthSensorLogic.isApplicable(ctx)) {
-            sensors.add(WindStrengthSensorLogic.of(key, this));
+            sensors.add(WindStrengthSensorLogic.of(key, converter, this));
         }
         if (WindAngleSensorLogic.isApplicable(ctx)) {
             sensors.add(WindAngleSensorLogic.of(key, this));
         }
         if (GustStrengthSensorLogic.isApplicable(ctx)) {
-            sensors.add(GustStrengthSensorLogic.of(key, this));
+            sensors.add(GustStrengthSensorLogic.of(key, converter, this));
         }
         if (GustAngleSensorLogic.isApplicable(ctx)) {
-            sensors.add(GustStrengthSensorLogic.of(key, this));
+            sensors.add(GustAngleSensorLogic.of(key, this));
         }
         if (sensors.isEmpty()) {
             return;
@@ -123,8 +135,9 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
                 .build();
 
         Response response = client.newCall(request).execute();
-        JSONObject result = new JSONObject(response.body().string());
-        return result.get("access_token").toString();
+        //JSONObject result = new JSONObject(response.body().string());
+        return JsonPath.read(response.body().string(), "access_token");
+        //return result.get("access_token").toString();
     }
 
     private String getData() throws IOException {
@@ -152,27 +165,12 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
     }
 
     @Override
-    public <T extends BaseNetatamoSensorLogic<?>> T register(T logic) {
+    public <T extends AbstractJSONSensorLogic<?,?>> T register(T logic) {
         this.logics.add(logic);
         return logic;
     }
 
-    private final Timer timer;
-
     private PlatformContext context;
 
-    private Set<BaseNetatamoSensorLogic<?>> logics = new HashSet<>();
-
-    private class Task extends TimerTask {
-
-        @Override
-        public void run() {
-            try {
-                poll();
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
-
-    }
+    private Set<AbstractJSONSensorLogic<?,?>> logics = new HashSet<>();
 }
