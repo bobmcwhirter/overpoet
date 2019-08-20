@@ -2,7 +2,7 @@
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
 
-  <groupId>com.overpoet</groupId>
+  <groupId>io.overpoet</groupId>
   <artifactId>overpoet-parent</artifactId>
   <description>Overpoet Parent</description>
   <version>1.0.0-SNAPSHOT</version>
@@ -33,35 +33,35 @@
   <dependencyManagement>
     <dependencies>
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-netatmo</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
 
 
-      <!-- Homekit -->
+      <!-- HomeKit -->
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-homekit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-hap-common</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-hap-client</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
       <dependency>
-        <groupId>com.overpoet</groupId>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-hap-server</artifactId>
         <version>1.0.0-SNAPSHOT</version>
       </dependency>
