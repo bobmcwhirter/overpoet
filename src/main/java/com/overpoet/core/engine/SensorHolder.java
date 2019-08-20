@@ -26,9 +26,11 @@ class SensorHolder<T> {
 
     public void sink(T value) {
         try {
-            this.state.add(new Sense<>(this.sensor, value));
-            for (ManipulatorSensorLogic each : this.logics) {
-                each.delegate(value);
+            boolean changed = this.state.add(new Sense<>(this.sensor, value));
+            if ( changed ) {
+                for (ManipulatorSensorLogic each : this.logics) {
+                    each.delegate(value);
+                }
             }
         } catch (StateException e) {
             e.printStackTrace();

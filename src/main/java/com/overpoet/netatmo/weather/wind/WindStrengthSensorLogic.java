@@ -7,7 +7,7 @@ import com.overpoet.core.measurement.Speed;
 import com.overpoet.core.metadata.SpeedMetadata;
 import com.overpoet.core.sensor.Sensor;
 import com.overpoet.core.sensor.SpeedSensor;
-import com.overpoet.core.sensor.AbstractJSONSensorLogic;
+import com.overpoet.json.AbstractJSONSensorLogic;
 import com.overpoet.netatmo.weather.LogicRegistry;
 
 public class WindStrengthSensorLogic extends AbstractJSONSensorLogic<Speed,Integer> {
@@ -20,12 +20,13 @@ public class WindStrengthSensorLogic extends AbstractJSONSensorLogic<Speed,Integ
 
     public static boolean isApplicable(ReadContext document) {
         Object result = document.read(PATH);
-        System.err.println( "----> " + result);
         return result != null;
     }
 
     public static Sensor<?> of(Key key, Converter<Speed,Integer> converter, LogicRegistry registry) {
-        return new SpeedSensor(key.append("wind-strength"), SpeedMetadata.DEFAULT.DEFAULT, registry.register(new WindStrengthSensorLogic(converter)));
+        return new SpeedSensor(key.append("wind-strength"),
+                               SpeedMetadata.DEFAULT.DEFAULT,
+                               registry.register(new WindStrengthSensorLogic(converter)));
     }
 
 }

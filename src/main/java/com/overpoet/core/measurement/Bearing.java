@@ -19,6 +19,14 @@ public interface Bearing {
             }
 
             @Override
+            public boolean equals(Object obj) {
+                if ( obj instanceof Bearing ) {
+                    return ((Bearing) obj).degrees() == this.degrees();
+                }
+                return false;
+            }
+
+            @Override
             public String toString() {
                 return "[bearing: " + degrees + "°]";
             }

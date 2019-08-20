@@ -31,28 +31,33 @@ public class InMemoryState implements State {
     }
 
     @Override
-    public synchronized  <T> InMemoryState add(Sense<T> sense) throws StateException {
-        if ( this.locked ) {
+    public synchronized <T> InMemoryState add(Sense<T> sense) throws StateException {
+        if (this.locked) {
             throw new StateException("state locked, branches are not allowed");
         }
-        try {
-            return new InMemoryState(this, sense);
-        } finally {
-            if ( this != NIL ) {
-                this.locked = true;
+        Object prevValue = this.senses.get(sense.sensor());
+        if (prevValue == null || !prevValue.equals(sense.value())) {
+            System.err.println("change: " + sense);
+            try {
+                return new InMemoryState(this, sense);
+            } finally {
+                if (this != NIL) {
+                    this.locked = true;
+                }
             }
         }
+        return this;
     }
 
     @Override
-    public synchronized  <T> InMemoryState add(Actuation<T> actuation) throws StateException {
-        if ( this.locked ) {
+    public synchronized <T> InMemoryState add(Actuation<T> actuation) throws StateException {
+        if (this.locked) {
             throw new StateException("state locked, branches are not allowed");
         }
         try {
             return new InMemoryState(this, actuation);
         } finally {
-            if ( this != NIL ) {
+            if (this != NIL) {
                 this.locked = true;
             }
         }
@@ -64,7 +69,10 @@ public class InMemoryState implements State {
     }
 
     private boolean locked;
+
     private final InMemoryState previousState;
+
     private Map<Sensor<?>, Object> senses = new HashMap<>();
+
     private Map<Actuator<?>, Object> actuations = new HashMap<>();
 }

@@ -13,14 +13,21 @@ public class InMemoryStateStream implements StateStream {
         return this.currentHead;
     }
 
-    public synchronized <T> InMemoryStateStream add(Sense<T> sense) throws StateException {
-        System.err.println( "state change: " + sense);
-        this.currentHead = this.currentHead.add(sense);
-        return this;
+    public synchronized <T> boolean add(Sense<T> sense) throws StateException {
+        InMemoryState newHead = this.currentHead.add(sense);
+        if ( newHead == this.currentHead ) {
+            return false;
+        }
+        this.currentHead = newHead;
+        return true;
     }
 
-    public synchronized <T> InMemoryStateStream add(Actuation<T> actuation) throws StateException {
-        this.currentHead = this.currentHead.add(actuation);
-        return this;
+    public synchronized <T> boolean add(Actuation<T> actuation) throws StateException {
+        InMemoryState newHead = this.currentHead.add(actuation);
+        if ( newHead == this.currentHead ) {
+            return false;
+        }
+        this.currentHead = newHead;
+        return true;
     }
 }

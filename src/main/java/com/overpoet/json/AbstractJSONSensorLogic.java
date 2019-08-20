@@ -1,7 +1,8 @@
-package com.overpoet.core.sensor;
+package com.overpoet.json;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
+import com.overpoet.core.sensor.BaseSensorLogic;
 import net.minidev.json.JSONArray;
 
 public abstract class AbstractJSONSensorLogic<T, JSONTYPE> extends BaseSensorLogic<T> {

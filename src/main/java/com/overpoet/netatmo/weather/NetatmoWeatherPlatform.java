@@ -15,7 +15,7 @@ import com.overpoet.core.apparatus.SimpleApparatus;
 import com.overpoet.core.measurement.Speed;
 import com.overpoet.core.platform.Platform;
 import com.overpoet.core.platform.PlatformContext;
-import com.overpoet.core.sensor.AbstractJSONSensorLogic;
+import com.overpoet.json.AbstractJSONSensorLogic;
 import com.overpoet.core.sensor.Sensor;
 import com.overpoet.netatmo.weather.wind.GustAngleSensorLogic;
 import com.overpoet.netatmo.weather.wind.GustStrengthSensorLogic;
@@ -135,9 +135,7 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
                 .build();
 
         Response response = client.newCall(request).execute();
-        //JSONObject result = new JSONObject(response.body().string());
         return JsonPath.read(response.body().string(), "access_token");
-        //return result.get("access_token").toString();
     }
 
     private String getData() throws IOException {

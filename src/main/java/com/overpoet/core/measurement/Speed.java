@@ -35,6 +35,16 @@ public interface Speed {
             }
 
             @Override
+            public boolean equals(Object obj) {
+                if ( obj instanceof Speed ) {
+                    return ( milesPerHour() == ((Speed) obj).milesPerHour() ) ||
+                            ( kilometersPerHour() == ((Speed) obj).kilometersPerHour() ) ||
+                            ( knots() == ((Speed) obj).knots() );
+                }
+                return false;
+            }
+
+            @Override
             public String toString() {
                 return "[speed: " + milesPerHour() + "mph; " + kilometersPerHour() + "kph; " + knots() + "knots]";
             }

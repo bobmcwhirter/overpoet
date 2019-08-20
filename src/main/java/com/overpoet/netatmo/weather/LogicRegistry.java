@@ -1,6 +1,6 @@
 package com.overpoet.netatmo.weather;
 
-import com.overpoet.core.sensor.AbstractJSONSensorLogic;
+import com.overpoet.json.AbstractJSONSensorLogic;
 
 public interface LogicRegistry {
     <T extends AbstractJSONSensorLogic<?,?>> T register(T logic);
