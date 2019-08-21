@@ -18,7 +18,7 @@ public class HAPServer {
         this.authStorage = authStorage;
     }
 
-    public void start(InetSocketAddress bind) throws InterruptedException {
+    public int start(InetSocketAddress bind) throws InterruptedException {
         EventLoopGroup workerGroup = new NioEventLoopGroup();
         ServerBootstrap b = new ServerBootstrap(); // (1)
         b.group(workerGroup); // (2)
@@ -27,6 +27,11 @@ public class HAPServer {
         b.childHandler(new ServerInitializer(this.authStorage));
 
         this.channel = b.bind(bind.getAddress(), bind.getPort()).sync().channel();
+        return ((InetSocketAddress)this.channel.localAddress()).getPort();
+    }
+
+    public Channel channel() {
+        return this.channel;
     }
 
     private final ServerAuthStorage authStorage;

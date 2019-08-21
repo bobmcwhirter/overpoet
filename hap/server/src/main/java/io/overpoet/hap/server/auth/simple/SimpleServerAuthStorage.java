@@ -61,6 +61,11 @@ public class SimpleServerAuthStorage implements ServerAuthStorage {
         return this.pairings.get(identifier);
     }
 
+    @Override
+    public boolean isPaired() {
+        return ! this.pairings.isEmpty();
+    }
+
     private final String pairingID;
 
     private final String pin;

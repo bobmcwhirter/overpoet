@@ -12,4 +12,6 @@ public interface ServerAuthStorage extends AuthStorage {
 
     void addPairing(String identifier, byte[] ltpk);
     byte[] getPairedLTPK(String identifier);
+
+    boolean isPaired();
 }

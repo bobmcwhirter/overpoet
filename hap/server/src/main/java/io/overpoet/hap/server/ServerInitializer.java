@@ -35,8 +35,8 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new HttpResponseEncoder());
         ch.pipeline().addLast(new HttpObjectAggregator(4096));
         ch.pipeline().addLast(new EncryptableMessageHandler());
-        ch.pipeline().addLast(new DebugHandler("server-crypto-down"));
-        ch.pipeline().addLast(new DebugHandler("server-crypto-up"));
+        //ch.pipeline().addLast(new DebugHandler("server-crypto-down"));
+        //ch.pipeline().addLast(new DebugHandler("server-crypto-up"));
 
         ch.pipeline().addLast(new TLVResponseEncoder());
         ch.pipeline().addLast(new TLVDecoder());

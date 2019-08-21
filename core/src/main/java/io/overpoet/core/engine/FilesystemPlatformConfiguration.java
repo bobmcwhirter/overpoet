@@ -10,6 +10,7 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 import java.time.ZonedDateTime;
 import java.util.Properties;
+import java.util.Set;
 
 import io.overpoet.core.platform.PlatformConfiguration;
 
@@ -51,6 +52,11 @@ public class FilesystemPlatformConfiguration implements PlatformConfiguration  {
     @Override
     public String get(String key) {
         return this.props.getProperty(key);
+    }
+
+    @Override
+    public Set<String> keys() {
+        return this.props.stringPropertyNames();
     }
 
     private final Path file;

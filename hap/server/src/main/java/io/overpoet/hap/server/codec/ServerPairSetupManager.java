@@ -66,6 +66,14 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
 
     private TLV doSRPStartResponse(TLV in) {
         this.currentState = 2;
+
+        if ( getAuthStorage().isPaired()) {
+            TLV out = new TLV();
+            Type.STATE.set(out, this.currentState);
+            Type.ERROR.set(out, TLVError.UNAVAILABLE.getValue());
+            return out;
+        }
+
         SRP6CryptoParams config = new SRP6CryptoParams(N_3072, G, "SHA-512");
         this.session = new SRP6ServerSession(config);
         this.session.setClientEvidenceRoutine(new ClientEvidenceRoutineImpl());

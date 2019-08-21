@@ -1,10 +1,12 @@
 package io.overpoet.core.engine;
 
-import java.util.Properties;
 import java.util.ServiceLoader;
+import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.stream.Collectors;
 
 import io.overpoet.core.apparatus.Apparatus;
+import io.overpoet.core.concurrent.Async;
 import io.overpoet.core.manipulator.Manipulator;
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformConfiguration;
@@ -17,15 +19,13 @@ class PlatformManager {
     }
 
     void initialize() {
-        System.err.println( "initialize platforms");
         ServiceLoader<Platform> platforms = ServiceLoader.load(Platform.class);
 
-        for (Platform platform : platforms) {
-            System.err.println( "--> " + platform);
-            PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(platform);
-            platform.configure( new Context(config) );
-        }
-        System.err.println( "done");
+        Async.forEach(platforms.stream().map(ServiceLoader.Provider::get),
+                      e -> {
+                          PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
+                          e.configure(new Context(config));
+                      });
     }
 
     private final Engine engine;

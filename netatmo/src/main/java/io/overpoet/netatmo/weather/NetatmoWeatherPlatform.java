@@ -48,16 +48,23 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
         this.context = context;
         try {
             String data = getData();
-            initialize(data);
+            if ( ! initialize(data) ) {
+                return;
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
-        context.executor().scheduleAtFixedRate(this::poll, 2, 2, TimeUnit.SECONDS);
+        context.executor().scheduleAtFixedRate(this::poll, 0, 10, TimeUnit.MINUTES);
     }
 
-    private void initialize(String data) {
+    private boolean initialize(String data) {
+        System.err.println( "--> " + data);
+        if ( data.contains("error")) {
+            return false;
+        }
         ReadContext ctx = JsonPath.parse(data);
         initializeWind(ctx);
+        return true;
     }
 
     private void poll() {
