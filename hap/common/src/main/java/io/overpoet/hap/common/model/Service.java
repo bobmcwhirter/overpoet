@@ -7,8 +7,8 @@ public interface Service {
     Accessory getAccessory();
     int getIID();
     ServiceType getType();
-    List<Characteristic> getCharacteristics();
-    Optional<Characteristic> findCharacteristic(CharacteristicType type);
+    List<? extends Characteristic> getCharacteristics();
+    Optional<? extends Characteristic> findCharacteristic(CharacteristicType type);
 
     String getName();
 }

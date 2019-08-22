@@ -12,6 +12,7 @@ import org.junit.Test;
 
 public class ClientServerTest {
 
+    /*
     @Test
     public void testInteraction() throws Exception {
 
@@ -27,4 +28,5 @@ public class ClientServerTest {
 
         System.err.println( "accessories: " + paired.accessories());
     }
+     */
 }

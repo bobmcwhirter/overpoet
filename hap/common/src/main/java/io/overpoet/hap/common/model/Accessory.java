@@ -11,7 +11,7 @@ public interface Accessory {
     int getAID();
     List<? extends Service> getServices();
     Optional<? extends Service> findService(int iid);
-    Optional<Characteristic> findCharacteristic(int iid);
+    Optional<? extends Characteristic> findCharacteristic(int iid);
 
     String getManufacturer();
     String getModel();

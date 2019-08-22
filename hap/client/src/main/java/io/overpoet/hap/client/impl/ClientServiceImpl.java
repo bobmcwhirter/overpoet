@@ -6,9 +6,9 @@ import io.overpoet.hap.client.model.ClientService;
 import io.overpoet.hap.client.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.ServiceType;
-import io.overpoet.hap.common.model.impl.ServiceImpl;
+import io.overpoet.hap.common.model.impl.AbstractServiceImpl;
 
-public class ClientServiceImpl extends ServiceImpl implements ClientService {
+public class ClientServiceImpl extends AbstractServiceImpl implements ClientService {
 
     public ClientServiceImpl(ClientAccessoryImpl accessory, int iid, ServiceType type) {
         super( accessory, iid, type);

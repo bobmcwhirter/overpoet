@@ -1,5 +1,6 @@
 package io.overpoet.hap.common.model.impl;
 
+import java.util.Collections;
 import java.util.EnumSet;
 import java.util.Set;
 
@@ -23,6 +24,11 @@ public class PermissionsImpl implements Permissions {
     @Override
     public boolean contains(Permission permission) {
         return this.permissions.contains(permission);
+    }
+
+    @Override
+    public EnumSet<Permission> values() {
+        return permissions.clone();
     }
 
     public void addPermission(Permission permission) {

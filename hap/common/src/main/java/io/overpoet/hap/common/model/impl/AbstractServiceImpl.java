@@ -3,7 +3,6 @@ package io.overpoet.hap.common.model.impl;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
-import java.util.function.Consumer;
 
 import io.overpoet.hap.common.model.Accessory;
 import io.overpoet.hap.common.model.Characteristic;
@@ -12,9 +11,9 @@ import io.overpoet.hap.common.model.Characteristics;
 import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.ServiceType;
 
-public class ServiceImpl implements Service {
+public class AbstractServiceImpl<CHARACTERISTIC_TYPE extends Characteristic> implements Service {
 
-    public ServiceImpl(Accessory accessory, int iid, ServiceType type) {
+    public AbstractServiceImpl(Accessory accessory, int iid, ServiceType type) {
         this.accessory = accessory;
         this.iid = iid;
         this.type = type;
@@ -35,23 +34,23 @@ public class ServiceImpl implements Service {
         return this.type;
     }
 
-    public void addCharacteristic(Characteristic characteristic) {
+    public void addCharacteristic(CHARACTERISTIC_TYPE characteristic) {
         this.characteristics.add(characteristic);
     }
 
     @Override
-    public List<Characteristic> getCharacteristics() {
+    public List<CHARACTERISTIC_TYPE> getCharacteristics() {
         return this.characteristics;
     }
 
     @Override
-    public Optional<Characteristic> findCharacteristic(CharacteristicType type) {
+    public Optional<CHARACTERISTIC_TYPE> findCharacteristic(CharacteristicType type) {
         return this.characteristics.stream().filter(e->e.getType() == type).findFirst();
     }
 
     @Override
     public String getName() {
-        Optional<Characteristic> chr = findCharacteristic(Characteristics.NAME);
+        Optional<CHARACTERISTIC_TYPE> chr = findCharacteristic(Characteristics.NAME);
         if ( chr.isPresent() ) {
             return (String) chr.get().getValue();
         }
@@ -69,5 +68,5 @@ public class ServiceImpl implements Service {
 
     private final Accessory accessory;
 
-    private List<Characteristic> characteristics = new ArrayList<>();
+    private List<CHARACTERISTIC_TYPE> characteristics = new ArrayList<>();
 }

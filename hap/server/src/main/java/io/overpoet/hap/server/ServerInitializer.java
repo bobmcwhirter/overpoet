@@ -3,6 +3,7 @@ package io.overpoet.hap.server;
 import io.overpoet.hap.common.codec.EncryptableMessageHandler;
 import io.overpoet.hap.common.codec.HttpDebugHandler;
 import io.overpoet.hap.common.codec.TLVDebugHandler;
+import io.overpoet.hap.common.model.Accessory;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.codec.AccessoriesRequestHandler;
 import io.overpoet.hap.server.codec.ServerPairSetupHandler;
@@ -17,14 +18,16 @@ import io.netty.channel.socket.SocketChannel;
 import io.netty.handler.codec.http.HttpObjectAggregator;
 import io.netty.handler.codec.http.HttpRequestDecoder;
 import io.netty.handler.codec.http.HttpResponseEncoder;
+import io.overpoet.hap.server.model.ServerAccessory;
 
 /**
  * Created by bob on 8/29/18.
  */
 public class ServerInitializer extends ChannelInitializer<SocketChannel> {
 
-    public ServerInitializer(ServerAuthStorage authStorage) {
+    public ServerInitializer(ServerAuthStorage authStorage, ServerAccessory bridgeAccessory) {
         this.authStorage = authStorage;
+        this.bridgeAccessory = bridgeAccessory;
     }
 
     @Override
@@ -46,7 +49,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast("Pair-Setup", new ServerPairSetupHandler(new ServerPairSetupManager(this.authStorage)));
         ch.pipeline().addLast("Pair-Verify", new ServerPairVerifyHandler(new ServerPairVerifyManager(this.authStorage)));
 
-        ch.pipeline().addLast(new AccessoriesRequestHandler());
+        ch.pipeline().addLast(new AccessoriesRequestHandler(this.bridgeAccessory));
 
 
         //ch.pipeline().addLast(new DebugHandler("server-tail"));
@@ -54,4 +57,5 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     private final ServerAuthStorage authStorage;
+    private final ServerAccessory bridgeAccessory;
 }

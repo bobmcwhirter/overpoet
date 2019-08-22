@@ -10,7 +10,10 @@ import javax.jmdns.ServiceInfo;
 
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformContext;
+import io.overpoet.hap.common.model.Accessory;
 import io.overpoet.hap.server.HAPServer;
+import io.overpoet.hap.server.model.ServerAccessory;
+import io.overpoet.homekit.server.BridgeAccessoryBuilder;
 import io.overpoet.homekit.server.ServerStorage;
 
 public class HomeKitPlatform implements Platform {
@@ -22,9 +25,10 @@ public class HomeKitPlatform implements Platform {
     @Override
     public void configure(PlatformContext context) {
         this.serverStorage = new ServerStorage(context.configuration());
+        this.bridgeAccessory = BridgeAccessoryBuilder.build();
         InetSocketAddress bind = new InetSocketAddress(0);
         try {
-            this.hapServer = new HAPServer(this.serverStorage);
+            this.hapServer = new HAPServer(this.serverStorage, this.bridgeAccessory);
             int port = this.hapServer.start(bind);
             startBonjour();
             register(port);
@@ -73,4 +77,5 @@ public class HomeKitPlatform implements Platform {
     private HAPServer hapServer;
     private JmDNS bonjour;
 
+    private ServerAccessory bridgeAccessory;
 }
