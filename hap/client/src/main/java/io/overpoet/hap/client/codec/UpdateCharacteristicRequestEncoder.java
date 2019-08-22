@@ -8,7 +8,6 @@ import javax.json.JsonObjectBuilder;
 import javax.json.JsonValue;
 import javax.json.JsonWriter;
 
-import io.overpoet.hap.client.model.Characteristic;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
@@ -17,6 +16,7 @@ import io.netty.handler.codec.http.DefaultFullHttpRequest;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpVersion;
+import io.overpoet.hap.common.model.Characteristic;
 
 import static java.nio.charset.StandardCharsets.UTF_8;
 import static javax.json.Json.createArrayBuilder;

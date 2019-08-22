@@ -36,25 +36,27 @@ public class SessionCryptoHandler extends ChannelDuplexHandler {
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
         if (msg instanceof SessionKeys) {
+            System.err.println("crypto: enabled");
             this.keys = (SessionKeys) msg;
             return;
         } else if (this.keys != null && msg instanceof ByteBuf) {
+            System.err.println("crypto: encrypting");
             ByteBuf original = (ByteBuf) msg;
-            System.err.println("adding encrypting " + original + "// " + original.toString(UTF_8));
+            //System.err.println("adding encrypting " + original + "// " + original.toString(UTF_8));
             this.keys.encrypt(original);
             //System.err.println("encrypted " + original + "// " + original.toString(UTF_8) + " to " + encrypted.readableBytes());
             //super.write(ctx, encrypted, promise);
             return;
         } else if (this.keys != null && msg instanceof EncryptableMessageComplete) {
-            System.err.println("doing encryption");
+            System.err.println("crypto: outbound complete");
             List<ByteBuf> result = this.keys.doEncrypt();
             int numChunks = result.size();
             for (int i = 0; i < numChunks; ++i) {
                 if (i + 1 == numChunks) {
-                    System.err.println( "forward promise: " + promise );
+                    //System.err.println( "forward promise: " + promise );
                     super.write(ctx, result.get(i), promise);
                 } else {
-                    System.err.println( "forward void promise");
+                    //System.err.println( "forward void promise");
                     super.write(ctx, result.get(i), ctx.voidPromise());
                 }
             }

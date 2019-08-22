@@ -2,12 +2,15 @@ package io.overpoet.hap.client.model;
 
 import java.util.function.Consumer;
 
-import io.overpoet.hap.common.model.Characteristic;
+import io.overpoet.hap.common.model.Accessory;
 
-public interface EventableCharacteristic extends Characteristic {
+/**
+ * Created by bob on 9/10/18.
+ */
+public interface ClientAccessory extends Accessory {
+    AccessoryDB getAccessoriesDB();
 
     void addListener(Consumer<EventableCharacteristic> listener);
     void removeListener(Consumer<EventableCharacteristic> listener);
     void removeAllListeners();
-
 }

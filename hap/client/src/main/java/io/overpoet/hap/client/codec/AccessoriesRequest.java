@@ -3,11 +3,11 @@ package io.overpoet.hap.client.codec;
 import java.io.IOException;
 import java.util.concurrent.CompletableFuture;
 
-import io.overpoet.hap.client.impl.AccessoriesImpl;
+import io.overpoet.hap.client.impl.AccessoryDBImpl;
+import io.overpoet.hap.client.model.AccessoryDB;
 import io.overpoet.hap.client.model.parse.AccessoriesParser;
 import io.overpoet.hap.client.SimpleClient;
 import io.overpoet.hap.client.impl.PairedConnectionImpl;
-import io.overpoet.hap.client.model.Accessories;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
@@ -25,7 +25,7 @@ public class AccessoriesRequest extends ChannelDuplexHandler {
         this.future = new CompletableFuture<>();
     }
 
-    public CompletableFuture<Accessories> getFuture() {
+    public CompletableFuture<AccessoryDB> getFuture() {
         return this.future;
     }
 
@@ -38,7 +38,7 @@ public class AccessoriesRequest extends ChannelDuplexHandler {
 
         try {
             PairedConnectionImpl pairedConn = ctx.channel().attr(SimpleClient.PAIRED_CONNECTION).get();
-            AccessoriesImpl db = new AccessoriesParser(pairedConn).parse(((FullHttpResponse) msg).content());
+            AccessoryDBImpl db = new AccessoriesParser(pairedConn).parse(((FullHttpResponse) msg).content());
             this.future.complete(db);
         } catch (IOException e) {
             this.future.completeExceptionally(e);
@@ -56,5 +56,5 @@ public class AccessoriesRequest extends ChannelDuplexHandler {
         }
     }
 
-    private final CompletableFuture<Accessories> future;
+    private final CompletableFuture<AccessoryDB> future;
 }

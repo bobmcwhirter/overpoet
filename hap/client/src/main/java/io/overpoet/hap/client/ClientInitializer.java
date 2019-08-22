@@ -31,7 +31,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
         //ch.pipeline().addLast(new DebugHandler("client-head"));
         ch.pipeline().addLast(new SessionCryptoHandler());
-        ch.pipeline().addLast(new DebugHandler("client-http-after-encoded"));
+        //ch.pipeline().addLast(new DebugHandler("client-http-after-encoded"));
         ch.pipeline().addLast(new HttpRequestEncoder());
         //ch.pipeline().addLast(new DebugHandler("client-http-before-encoded"));
         ch.pipeline().addLast(new HttpResponseDecoder());

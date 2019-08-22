@@ -2,11 +2,12 @@ package io.overpoet.hap.client.codec;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.overpoet.hap.client.model.Characteristic;
+import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.Characteristic;
 
 public class CharacteristicEventsRequest implements SyncRequest {
 
-    public CharacteristicEventsRequest(Characteristic characteristic, boolean enable) {
+    public CharacteristicEventsRequest(EventableCharacteristic characteristic, boolean enable) {
         this.characteristic = characteristic;
         this.enable = enable;
         this.future = new CompletableFuture<>();
@@ -16,7 +17,7 @@ public class CharacteristicEventsRequest implements SyncRequest {
         return this.future;
     }
 
-    public Characteristic getCharacteristic() {
+    public EventableCharacteristic getCharacteristic() {
         return this.characteristic;
     }
 
@@ -32,7 +33,7 @@ public class CharacteristicEventsRequest implements SyncRequest {
         return this.enable;
     }
 
-    private final Characteristic characteristic;
+    private final EventableCharacteristic characteristic;
     private final boolean enable;
 
     private final CompletableFuture<Object> future;

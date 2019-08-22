@@ -7,9 +7,10 @@ import io.overpoet.hap.client.codec.AccessoriesRequest;
 import io.overpoet.hap.client.codec.CharacteristicEventsRequest;
 import io.overpoet.hap.client.codec.UpdateCharacteristicRequest;
 import io.overpoet.hap.client.PairedConnection;
-import io.overpoet.hap.client.model.Accessories;
-import io.overpoet.hap.client.model.Characteristic;
+import io.overpoet.hap.client.model.AccessoryDB;
 import io.netty.channel.Channel;
+import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.Characteristic;
 
 /**
  * Created by bob on 8/30/18.
@@ -25,7 +26,7 @@ public class PairedConnectionImpl implements PairedConnection {
     //}
 
     @Override
-    public Accessories accessories() throws ExecutionException, InterruptedException {
+    public AccessoryDB accessories() throws ExecutionException, InterruptedException {
         return this.accessories.updateAndGet((result) -> {
             if (result != null) {
                 return result;
@@ -52,13 +53,13 @@ public class PairedConnectionImpl implements PairedConnection {
         System.err.println("**** WRITE AND FLUSH COMPLETE");
     }
 
-    void enableEvents(Characteristic characteristic) throws ExecutionException, InterruptedException {
+    void enableEvents(EventableCharacteristic characteristic) throws ExecutionException, InterruptedException {
         CharacteristicEventsRequest req = new CharacteristicEventsRequest(characteristic, true);
         this.channel.pipeline().writeAndFlush(req);
         req.getFuture().get();
     }
 
-    void disableEvents(Characteristic characteristic) throws ExecutionException, InterruptedException {
+    void disableEvents(EventableCharacteristic characteristic) throws ExecutionException, InterruptedException {
         CharacteristicEventsRequest req = new CharacteristicEventsRequest(characteristic, false);
         this.channel.pipeline().writeAndFlush(req);
         req.getFuture().get();
@@ -66,5 +67,5 @@ public class PairedConnectionImpl implements PairedConnection {
 
     private final Channel channel;
 
-    private AtomicReference<Accessories> accessories = new AtomicReference<>();
+    private AtomicReference<AccessoryDB> accessories = new AtomicReference<>();
 }

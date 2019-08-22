@@ -4,7 +4,7 @@ import java.io.IOException;
 
 import io.overpoet.hap.client.model.EventableCharacteristic;
 import io.overpoet.hap.client.auth.ClientAuthStorage;
-import io.overpoet.hap.client.model.Accessories;
+import io.overpoet.hap.client.model.AccessoryDB;
 import org.junit.Before;
 import org.junit.Ignore;
 import org.junit.Test;
@@ -32,9 +32,9 @@ public class ActualDeviceTest {
         Connection conn = client.connect("16:BD:8D:FE:CC:B6");
         PairedConnection pairedConn = conn.pairVerify();
 
-        Accessories accessories = pairedConn.accessories();
-        System.err.println( accessories );
-        accessories.find(1)
+        AccessoryDB accessoryDB = pairedConn.accessories();
+        System.err.println(accessoryDB);
+        accessoryDB.find(1)
                 .ifPresent( (acc)->{
                     acc.findCharacteristic(11).ifPresent( (chr)->{
                         ((EventableCharacteristic)chr).addListener((c)->{
@@ -50,13 +50,13 @@ public class ActualDeviceTest {
         Connection conn = client.connect("16:BD:8D:FE:CC:B6");
         PairedConnection pairedConn = conn.pairVerify();
 
-        Accessories accessories = pairedConn.accessories();
-        System.err.println( accessories );
-        accessories.find(1)
+        AccessoryDB accessoryDB = pairedConn.accessories();
+        System.err.println(accessoryDB);
+        accessoryDB.find(1)
                 .ifPresent( (acc)->{
                     acc.findCharacteristic(11).ifPresent( (chr)->{
                         System.err.println( "--> " + chr);
-                        ((EventableCharacteristic)chr).addListener( (c)->{
+                        ((EventableCharacteristic)chr).addListener((c)->{
                             System.err.println( "client-toggle " + c );
                         });
                         chr.updateValue( ! (Boolean)chr.getValue()  );

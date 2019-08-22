@@ -46,6 +46,7 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
     public TLV handle(TLV in) {
         Optional<Integer> state$ = Type.STATE.get(in);
         if (!state$.isPresent()) {
+            System.err.println( "pair-setup: error: state not present");
             return error(TLVError.UNKNOWN);
         }
 
@@ -65,6 +66,7 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
     }
 
     private TLV doSRPStartResponse(TLV in) {
+        System.err.println( "pair-setup: attempting 1->2");
         this.currentState = 2;
 
         if ( getAuthStorage().isPaired()) {
@@ -97,13 +99,16 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
     }
 
     private TLV doSRPVerifyResponse(TLV in) {
+        System.err.println( "pair-setup: attempting 3->4");
         this.currentState = 4;
         Optional<byte[]> publicKey$ = Type.PUBLIC_KEY.get(in);
         if (!publicKey$.isPresent()) {
+            System.err.println( "pair-setup: error: public-key not present");
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
         Optional<byte[]> proof$ = Type.PROOF.get(in);
         if (!proof$.isPresent()) {
+            System.err.println( "pair-setup: error: proof not present");
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -118,15 +123,18 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
             Type.PROOF.set(out, ByteUtils.toByteArray(result));
             return out;
         } catch (SRP6Exception e) {
+            System.err.println( "pair-setup: error: crypto error: " + e.getMessage());
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
     }
 
     private TLV doExchangeResponse(TLV in) {
+        System.err.println( "pair-setup: attempting 5->6");
         this.currentState = 6;
 
         Optional<byte[]> encryptedData$ = Type.ENCRYPTED_DATA.get(in);
         if (!encryptedData$.isPresent()) {
+            System.err.println( "pair-setup: error: encrypted-data not present");
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -139,6 +147,7 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
         try {
             subTlv = TLV.decodeFrom(decoder.decodeEncryptedData(encryptedData$.get()) );
         } catch (IOException e) {
+            System.err.println( "pair-setup: error: I/O error: " + e.getMessage());
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -146,7 +155,8 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
         Optional<byte[]> iOSDeviceLTPK$ = Type.PUBLIC_KEY.get(subTlv);
         Optional<byte[]> iOSDeviceSignature$ = Type.SIGNATURE.get(subTlv);
 
-        byte[] sharedSecret = getSRPSession().getSessionKey().toByteArray();
+        byte[] sharedSecret = getSRPSessionKey();
+
         byte[] iOSDeviceX = getSessionKey(getSRPSessionKey(),
                                           PAIR_SETUP_CONTROLLER_SALT,
                                           PAIR_SETUP_CONTROLLER_INFO);
@@ -157,9 +167,11 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
 
         try {
             if (!verifier.verify(iOSDeviceInfo, iOSDeviceSignature$.get())) {
+                System.err.println( "pair-setup: error: verification failed");
                 return error(this.currentState, TLVError.AUTHENTICATION);
             }
         } catch (Exception e) {
+            System.err.println( "pair-setup: error: verification failed: " + e.getMessage());
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -195,6 +207,7 @@ public class ServerPairSetupManager extends PairSetupManager<ServerAuthStorage> 
             Type.ENCRYPTED_DATA.set(out, encryptedData);
             return out;
         } catch (IOException | NoSuchAlgorithmException | SignatureException | InvalidKeyException e) {
+            System.err.println( "pair-setup: error: crypto error: " + e.getMessage());
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
     }

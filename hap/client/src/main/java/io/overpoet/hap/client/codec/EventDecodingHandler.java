@@ -9,12 +9,12 @@ import javax.json.JsonValue;
 import io.overpoet.hap.client.SimpleClient;
 import io.overpoet.hap.client.impl.EventableCharacteristicImpl;
 import io.overpoet.hap.client.impl.PairedConnectionImpl;
-import io.overpoet.hap.client.model.Accessories;
-import io.overpoet.hap.client.model.Format;
+import io.overpoet.hap.client.model.AccessoryDB;
 import io.netty.buffer.ByteBufInputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
 import io.netty.handler.codec.http.FullHttpResponse;
+import io.overpoet.hap.common.model.Format;
 
 public class EventDecodingHandler extends ChannelInboundHandlerAdapter {
 
@@ -24,7 +24,7 @@ public class EventDecodingHandler extends ChannelInboundHandlerAdapter {
             FullHttpResponse response = (FullHttpResponse) msg;
             if (response.protocolVersion().protocolName().equals("EVENT")) {
                 PairedConnectionImpl pairedConn = ctx.channel().attr(SimpleClient.PAIRED_CONNECTION).get();
-                Accessories db = pairedConn.accessories();
+                AccessoryDB db = pairedConn.accessories();
                 if (db == null) {
                     return;
                 }

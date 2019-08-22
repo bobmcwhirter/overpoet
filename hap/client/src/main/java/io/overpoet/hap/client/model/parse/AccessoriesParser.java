@@ -10,25 +10,27 @@ import javax.json.JsonReader;
 import javax.json.JsonString;
 import javax.json.JsonValue;
 
-import io.overpoet.hap.client.impl.AccessoriesImpl;
-import io.overpoet.hap.client.impl.AccessoryImpl;
-import io.overpoet.hap.client.impl.CharacteristicImpl;
+import io.overpoet.hap.client.impl.AccessoryDBImpl;
+import io.overpoet.hap.client.impl.ClientAccessoryImpl;
+import io.overpoet.hap.client.impl.ClientCharacteristicImpl;
+import io.overpoet.hap.client.model.ClientService;
+import io.overpoet.hap.common.model.Characteristic;
+import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.Format;
+import io.overpoet.hap.common.model.Permission;
+import io.overpoet.hap.common.model.Service;
+import io.overpoet.hap.common.model.ServiceType;
+import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 import io.overpoet.hap.client.impl.EventableCharacteristicImpl;
-import io.overpoet.hap.client.impl.ServiceImpl;
-import io.overpoet.hap.client.model.Service;
-import io.overpoet.hap.client.model.ServiceType;
-import io.overpoet.hap.client.model.Services;
+import io.overpoet.hap.client.impl.ClientServiceImpl;
+import io.overpoet.hap.common.model.Services;
 import io.overpoet.hap.client.impl.PairedConnectionImpl;
-import io.overpoet.hap.client.model.Accessory;
-import io.overpoet.hap.client.model.Characteristic;
-import io.overpoet.hap.client.model.CharacteristicType;
-import io.overpoet.hap.client.model.Characteristics;
-import io.overpoet.hap.client.model.Format;
-import io.overpoet.hap.client.model.Permission;
-import io.overpoet.hap.client.model.Permissions;
-import io.overpoet.hap.client.model.impl.PermissionsImpl;
+import io.overpoet.hap.client.model.ClientAccessory;
+import io.overpoet.hap.common.model.Characteristics;
+import io.overpoet.hap.common.model.Permissions;
 import io.netty.buffer.ByteBuf;
 import io.netty.buffer.ByteBufInputStream;
+import io.overpoet.hap.common.model.impl.PermissionsImpl;
 
 public class AccessoriesParser {
 
@@ -36,9 +38,9 @@ public class AccessoriesParser {
         this.pairedConnection = pairedConnection;
     }
 
-    public AccessoriesImpl parse(ByteBuf buf) throws IOException {
+    public AccessoryDBImpl parse(ByteBuf buf) throws IOException {
 
-        AccessoriesImpl accessories = new AccessoriesImpl(this.pairedConnection);
+        AccessoryDBImpl accessories = new AccessoryDBImpl(this.pairedConnection);
         try (InputStream in = new ByteBufInputStream(buf)) {
             JsonReader reader = Json.createReader(in);
             JsonObject object = reader.readObject();
@@ -53,20 +55,20 @@ public class AccessoriesParser {
         return accessories;
     }
 
-    protected Accessory parseAccessory(AccessoriesImpl accessories, JsonObject json) {
+    protected ClientAccessory parseAccessory(AccessoryDBImpl accessories, JsonObject json) {
         int aid = json.getInt("aid");
-        AccessoryImpl accessory = new AccessoryImpl(accessories, aid);
+        ClientAccessoryImpl accessory = new ClientAccessoryImpl(accessories, aid);
         json.getJsonArray("services").forEach(e -> {
             accessory.addService(parseService(accessory, (JsonObject) e));
         });
         return accessory;
     }
 
-    protected Service parseService(AccessoryImpl accessory, JsonObject json) {
+    protected ClientService parseService(ClientAccessoryImpl accessory, JsonObject json) {
         int iid = json.getInt("iid");
         String type = json.getString("type");
         ServiceType serviceType = Services.lookup(type);
-        ServiceImpl service = new ServiceImpl(accessory, iid, serviceType);
+        ClientServiceImpl service = new ClientServiceImpl(accessory, iid, serviceType);
         json.getJsonArray("characteristics").forEach(e -> {
             service.addCharacteristic(parseCharacteristic(service, (JsonObject) e));
         });
@@ -74,19 +76,19 @@ public class AccessoriesParser {
         return service;
     }
 
-    protected Characteristic parseCharacteristic(ServiceImpl service, JsonObject json) {
+    protected Characteristic parseCharacteristic(ClientServiceImpl service, JsonObject json) {
         int iid = json.getInt("iid");
         String type = json.getString("type");
 
         CharacteristicType characteristicType = Characteristics.lookup(type);
         Permissions permissions = parsePermissions(json.getJsonArray("perms"));
 
-        CharacteristicImpl characteristic = null;
+        AbstractCharacteristicImpl characteristic = null;
 
         if (permissions.contains(Permission.NOTIFY)) {
             characteristic = new EventableCharacteristicImpl(service, iid, characteristicType);
         } else {
-            characteristic = new CharacteristicImpl(service, iid, characteristicType);
+            characteristic = new ClientCharacteristicImpl(service, iid, characteristicType);
         }
 
         characteristic.setPermissions(parsePermissions(json.getJsonArray("perms")));

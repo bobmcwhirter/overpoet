@@ -2,6 +2,8 @@ package io.overpoet.hap.server.codec;
 
 import java.nio.charset.StandardCharsets;
 
+import javax.json.JsonObject;
+
 import io.overpoet.hap.common.util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
@@ -31,6 +33,8 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
             super.channelRead(ctx, msg);
             return;
         }
+
+        System.err.println( "accessories: requested");
 
         ByteBuf content = ctx.alloc().buffer();
         byte[] bytes = "{\"accessories\": []}".getBytes(StandardCharsets.UTF_8);

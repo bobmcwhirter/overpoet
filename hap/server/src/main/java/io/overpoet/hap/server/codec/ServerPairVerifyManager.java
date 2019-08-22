@@ -44,6 +44,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
     }
 
     private TLV doVerifyStartResponse(TLV in) {
+        System.err.println( "pair-verify: attempting 1->2");
         this.currentState = 2;
 
         this.curvePublicKey = new byte[32];
@@ -55,6 +56,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         Optional<byte[]> publicKey$ = Type.PUBLIC_KEY.get(in);
 
         if (!publicKey$.isPresent()) {
+            System.err.println( "pair-verify: error: public-key not present");
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -69,6 +71,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             signature = signer.sign(accessoryInfo);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
+            System.err.println( "pair-verify: error: crypto error: " + e.getMessage());
             return error(TLVError.UNKNOWN);
         }
 
@@ -84,6 +87,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             encryptedData = encoder.encodeCiphertext(subTlv.encode());
         } catch (IOException e) {
+            System.err.println( "pair-verify: error: I/O error: " + e.getMessage());
             return error(TLVError.UNKNOWN);
         }
 
@@ -95,9 +99,11 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
     }
 
     private TLV doVerifyFinishResponse(TLV in) {
+        System.err.println( "pair-verify: attempting 3->4");
         this.currentState = 4;
         Optional<byte[]> encryptedData$ = Type.ENCRYPTED_DATA.get(in);
         if ( ! encryptedData$.isPresent() ) {
+            System.err.println( "pair-verify: error: encrypted data not present");
             return error(TLVError.AUTHENTICATION);
         }
         Chacha chacha = new Chacha(this.sessionKey);
@@ -106,15 +112,18 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             subTlv = TLV.decodeFrom(decoder.decodeEncryptedData(encryptedData$.get()));
         } catch (IOException e) {
+            System.err.println( "pair-verify: error: I/O error: " + e.getMessage());
             return error(TLVError.AUTHENTICATION);
         }
 
         Optional<String> identifier$ = Type.IDENTIFIER.get(subTlv);
         if ( ! identifier$.isPresent() ) {
+            System.err.println( "pair-verify: error: identifier not present");
             return error(TLVError.AUTHENTICATION);
         }
         Optional<byte[]> signature$ = Type.SIGNATURE.get(subTlv);
         if ( ! signature$.isPresent() ) {
+            System.err.println( "pair-verify: error: signature not present");
             return error(TLVError.AUTHENTICATION);
         }
 
@@ -125,9 +134,11 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         EdsaVerifier verifier = new EdsaVerifier(ltpk);
         try {
             if ( ! verifier.verify(iosDeviceInfo, signature$.get()) ) {
+                System.err.println( "pair-verify: error: verification failed");
                 return error(TLVError.AUTHENTICATION);
             }
         } catch (Exception e) {
+            System.err.println( "pair-verify: error: verification failed: " + e.getMessage());
             return error(TLVError.AUTHENTICATION);
         }
 

@@ -3,12 +3,15 @@ package io.overpoet.hap.client.impl;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import io.overpoet.hap.client.model.CharacteristicType;
+import io.overpoet.hap.client.PairedConnection;
+import io.overpoet.hap.client.model.ClientAccessory;
 import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 
-public class EventableCharacteristicImpl extends CharacteristicImpl implements EventableCharacteristic {
+public class EventableCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
 
-    public EventableCharacteristicImpl(ServiceImpl service, int iid, CharacteristicType type) {
+    public EventableCharacteristicImpl(ClientServiceImpl service, int iid, CharacteristicType type) {
         super(service, iid, type);
         this.listeners = new LeafCharacteristicListenerSet();
     }
@@ -45,12 +48,17 @@ public class EventableCharacteristicImpl extends CharacteristicImpl implements E
         this.listeners.fireEvent(this);
     }
 
+    @Override
+    public void updateValue(Object value) {
+
+    }
+
     void enableEvents() throws ExecutionException, InterruptedException {
-        getService().getAccessory().getAccessoriesDB().getPairedConnection().enableEvents(this);
+        ((PairedConnectionImpl)((ClientAccessory)getService().getAccessory()).getAccessoriesDB().getPairedConnection()).enableEvents(this);
     }
 
     void disableEvents() throws ExecutionException, InterruptedException {
-        getService().getAccessory().getAccessoriesDB().getPairedConnection().disableEvents(this);
+        ((PairedConnectionImpl)((ClientAccessory)getService().getAccessory()).getAccessoriesDB().getPairedConnection()).disableEvents(this);
     }
 
     @Override

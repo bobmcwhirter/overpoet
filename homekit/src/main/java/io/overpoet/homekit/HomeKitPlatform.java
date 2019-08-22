@@ -1,7 +1,6 @@
 package io.overpoet.homekit;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.HashMap;
 import java.util.Map;
@@ -11,7 +10,6 @@ import javax.jmdns.ServiceInfo;
 
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformContext;
-import io.overpoet.hap.client.model.Service;
 import io.overpoet.hap.server.HAPServer;
 import io.overpoet.homekit.server.ServerStorage;
 
@@ -68,7 +66,6 @@ public class HomeKitPlatform implements Platform {
         txt.put("s#", "1");
         txt.put("sf", "" + (this.serverStorage.isPaired() ? 0 : 1));
         txt.put("ci", "2");
-        //txt.put("sh", "");
         return txt;
     }
 
