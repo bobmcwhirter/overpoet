@@ -57,6 +57,11 @@ public class SimpleServerAuthStorage implements ServerAuthStorage {
         addPairing(identifier, Base64.getDecoder().decode(ltpkBase64));
     }
 
+    @Override
+    public void removePairing(String identifier) {
+        this.pairings.remove(identifier);
+    }
+
     public byte[] getPairedLTPK(String identifier) {
         return this.pairings.get(identifier);
     }

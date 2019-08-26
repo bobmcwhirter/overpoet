@@ -11,6 +11,7 @@ public interface ServerAuthStorage extends AuthStorage {
     String getPIN();
 
     void addPairing(String identifier, byte[] ltpk);
+    void removePairing(String identifier);
     byte[] getPairedLTPK(String identifier);
 
     boolean isPaired();

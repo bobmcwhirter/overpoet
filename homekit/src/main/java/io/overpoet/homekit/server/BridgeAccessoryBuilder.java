@@ -2,6 +2,7 @@ package io.overpoet.homekit.server;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
+import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.Characteristics;
 import io.overpoet.hap.common.model.Services;
 import io.overpoet.hap.server.model.ServerAccessory;
@@ -21,25 +22,31 @@ public class BridgeAccessoryBuilder {
                     c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.MODEL, (c)->{
-                    c.setStoredValue("bridge");
+                    c.setStoredValue("opb");
                     c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, (c)->{
-                    c.setStoredValue("overpoet-bridge");
+                    c.setStoredValue("overpoetbridge");
                     c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.SERIAL_NUMBER, (c)->{
-                    c.setStoredValue("1");
+                    c.setStoredValue("8675309");
                     c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.FIRMWARE_REVISION, (c)->{
-                    c.setStoredValue("1.0.0-SNAPSHOT");
+                    c.setStoredValue("1.0.0");
                     c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.IDENTIFY, (c)->{
                     c.setStoredValue(null);
                     c.setPermissions(PAIRED_WRITE);
 
+                });
+            });
+            a.addService(iid.incrementAndGet(), Services.PROTOCOL_INFORMATION, (s) -> {
+                s.addCharacteristic(iid.incrementAndGet(), Characteristics.VERSION, (c)->{
+                    c.setStoredValue("1.1.0");
+                    c.setPermissions(PAIRED_READ);
                 });
             });
         });

@@ -1,4 +1,4 @@
-package io.overpoet.hap.client;
+package io.overpoet.hap.common;
 
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;

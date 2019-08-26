@@ -6,6 +6,8 @@ import io.overpoet.hap.common.codec.TLVDebugHandler;
 import io.overpoet.hap.common.model.Accessory;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.codec.AccessoriesRequestHandler;
+import io.overpoet.hap.server.codec.PairingsHandler;
+import io.overpoet.hap.server.codec.PairingsManager;
 import io.overpoet.hap.server.codec.ServerPairSetupHandler;
 import io.overpoet.hap.server.codec.ServerPairSetupManager;
 import io.overpoet.hap.server.codec.ServerPairVerifyHandler;
@@ -48,6 +50,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         //ch.pipeline().addLast(new TLVDebugHandler("server-tlv"));
         ch.pipeline().addLast("Pair-Setup", new ServerPairSetupHandler(new ServerPairSetupManager(this.authStorage)));
         ch.pipeline().addLast("Pair-Verify", new ServerPairVerifyHandler(new ServerPairVerifyManager(this.authStorage)));
+        ch.pipeline().addLast("Pairings", new PairingsHandler( new PairingsManager(this.authStorage)));
 
         ch.pipeline().addLast(new AccessoriesRequestHandler(this.bridgeAccessory));
 

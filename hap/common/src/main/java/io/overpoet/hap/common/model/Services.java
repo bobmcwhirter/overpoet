@@ -35,6 +35,12 @@ public class Services {
             .optional(Characteristics.HARDWARE_REVISION)
     );
 
+    public static final ServiceType PROTOCOL_INFORMATION = register("Protocol Information", s -> s
+            .uuid("A2")
+            .type("protocol.information.service")
+            .required(Characteristics.VERSION)
+    );
+
     public static final ServiceType SWITCH = register("Switch", s -> s
             .uuid("49")
             .type("switch")

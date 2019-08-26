@@ -30,7 +30,7 @@ public class ServiceTypeImpl implements ServiceType {
 
     @Override
     public String getEncodedType() {
-        String str = getUUID().toString();
+        String str = getUUID().toString().toUpperCase();
         if (str.endsWith(Constants.PRIMARY_UUID_SUFFIX)) {
             String t = str.substring(0, 8);
             int i = 0;

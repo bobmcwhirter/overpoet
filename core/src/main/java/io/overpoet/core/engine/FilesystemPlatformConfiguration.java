@@ -55,6 +55,12 @@ public class FilesystemPlatformConfiguration implements PlatformConfiguration  {
     }
 
     @Override
+    public void remove(String key) {
+        this.props.remove(key);
+        save();
+    }
+
+    @Override
     public Set<String> keys() {
         return this.props.stringPropertyNames();
     }

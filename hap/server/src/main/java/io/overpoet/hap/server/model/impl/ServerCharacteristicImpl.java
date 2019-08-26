@@ -33,10 +33,12 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
         builder.add("type", getType().getEncodedType());
         builder.add("format", getType().getFormat().toString().toLowerCase());
         builder.add("perms", permissionsToJSON());
-        if (getType().getFormat() == Format.STRING) {
-            builder.add("value", getValue().toString());
-        } else {
-            builder.add("value", JsonObject.NULL);
+        if ( getPermissions().contains(Permission.PAIRED_READ)) {
+            if (getType().getFormat() == Format.STRING) {
+                builder.add("value", getValue().toString());
+            } else {
+                builder.add("value", JsonObject.NULL);
+            }
         }
 
         return builder;

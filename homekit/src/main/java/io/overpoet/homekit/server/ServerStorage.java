@@ -105,11 +105,17 @@ public class ServerStorage implements ServerAuthStorage {
         boolean previouslyPaired = isPaired();
         this.config.set(LTPK(identifier), Base64.getEncoder().encodeToString(ltpk));
         this.config.set(CONFIGURATION_NUMBER, "" + (Integer.parseInt(this.config.get(CONFIGURATION_NUMBER))+1));
-        System.err.println( "** ADD PAIRING");
+        System.err.println( "** ADD PAIRING: " + identifier);
         if ( ! previouslyPaired ) {
             System.err.println( "** RUN PAIRING CALLBACK");
             this.callback.run();
         }
+    }
+
+    @Override
+    public void removePairing(String identifier) {
+        System.err.println( "** REMOVE PAIRING: " +identifier);
+        this.config.remove(LTPK(identifier));
     }
 
     public void setPairingCallback(Runnable callback) {

@@ -9,7 +9,8 @@ public enum Permission {
     NOTIFY("ev"),
     ADDITIONAL_AUTHORIZATION("aa"),
     TIMED_WRITE("tw"),
-    HIDDEN("h");
+    HIDDEN("hd"),
+    WRITE_RESPONSE("wr");
 
     Permission(String str) {
         this.str = str;

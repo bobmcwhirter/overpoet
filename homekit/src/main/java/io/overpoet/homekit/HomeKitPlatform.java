@@ -66,7 +66,7 @@ public class HomeKitPlatform implements Platform {
         txt.put("ff", "0");
         txt.put("id", this.serverStorage.getPairingID());
         txt.put("md", "OverPoet HomeKit Platform");
-        txt.put("pv", "1.0");
+        txt.put("pv", "1.1");
         txt.put("s#", "1");
         txt.put("sf", "" + (this.serverStorage.isPaired() ? 0 : 1));
         txt.put("ci", "2");

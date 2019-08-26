@@ -2,12 +2,15 @@ package io.overpoet.hap.server.codec;
 
 import java.io.ByteArrayOutputStream;
 import java.nio.charset.StandardCharsets;
+import java.util.HashMap;
+import java.util.Map;
 
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.spi.JsonProvider;
+import javax.json.stream.JsonGenerator;
 
 import io.overpoet.hap.common.model.Accessory;
 import io.overpoet.hap.common.util.ByteUtil;
@@ -57,7 +60,10 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
 
         byte[] bytes = null;
         try ( ByteArrayOutputStream byteStream = new ByteArrayOutputStream() ) {
-            JsonWriter writer = JsonProvider.provider().createWriter(byteStream);
+            Map<String, Object> config = new HashMap<>();
+            config.put(JsonGenerator.PRETTY_PRINTING, true);
+            JsonWriter writer = JsonProvider.provider().createWriterFactory(config).createWriter(byteStream);
+            //JsonWriter writer = JsonProvider.provider().createWriter(byteStream);
             writer.writeObject( builder.build() );
             bytes = byteStream.toByteArray();
         }
