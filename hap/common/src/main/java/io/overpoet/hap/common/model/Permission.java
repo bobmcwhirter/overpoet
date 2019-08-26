@@ -5,7 +5,7 @@ package io.overpoet.hap.common.model;
  */
 public enum Permission {
     PAIRED_READ("pr"),
-    PAIRED_WRITE("pr"),
+    PAIRED_WRITE("pw"),
     NOTIFY("ev"),
     ADDITIONAL_AUTHORIZATION("aa"),
     TIMED_WRITE("tw"),

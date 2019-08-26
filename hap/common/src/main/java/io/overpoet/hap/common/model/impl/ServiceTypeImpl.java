@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.Constants;
 import io.overpoet.hap.common.model.ServiceType;
 
 
@@ -25,6 +26,25 @@ public class ServiceTypeImpl implements ServiceType {
     @Override
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    @Override
+    public String getEncodedType() {
+        String str = getUUID().toString();
+        if (str.endsWith(Constants.PRIMARY_UUID_SUFFIX)) {
+            String t = str.substring(0, 8);
+            int i = 0;
+            for (i = 0; i < t.length(); ++i) {
+                if (t.charAt(i) == '0') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            return t.substring(i).toUpperCase();
+        }
+        return str;
     }
 
     @Override

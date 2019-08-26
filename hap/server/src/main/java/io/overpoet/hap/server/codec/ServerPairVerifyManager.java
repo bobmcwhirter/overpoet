@@ -92,7 +92,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         }
 
         TLV out = new TLV();
-        Type.STATE.set(out, 2);
+        Type.STATE.set(out, this.currentState);
         Type.PUBLIC_KEY.set(out, this.curvePublicKey);
         Type.ENCRYPTED_DATA.set(out, encryptedData);
         return out;
@@ -143,7 +143,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         }
 
         TLV out = new TLV();
-        Type.STATE.set(out, 4);
+        Type.STATE.set(out, this.currentState);
 
         setKeysForSharedSecret(this.curveSecretKey, this.otherCurvePublicKey);
 

@@ -8,6 +8,7 @@ import java.util.UUID;
 public interface CharacteristicType {
 
     UUID getUUID();
+    String getEncodedType();
     String getType();
     String getName();
     Permissions getPermissions();

@@ -18,13 +18,13 @@ public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicI
         config.accept(this);
     }
 
-    public void addCharacteristic(int iid, CharacteristicType type, Object value) {
-        addCharacteristic(new ServerCharacteristicImpl(this, iid, type, value));
+    public void addCharacteristic(int iid, CharacteristicType type, Consumer<ServerCharacteristicImpl> config) {
+        addCharacteristic(new ServerCharacteristicImpl(this, iid, type, config));
     }
 
     public JsonObjectBuilder toJSON() {
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
-        builder.add("type", getType().getUUID().toString());
+        builder.add("type", getType().getEncodedType());
         builder.add("iid", getIID());
         builder.add("characteristics", characteristicsToJSON());
         return builder;
@@ -39,4 +39,5 @@ public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicI
 
         return builder;
     }
+
 }

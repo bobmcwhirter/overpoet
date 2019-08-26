@@ -2,13 +2,12 @@ package io.overpoet.hap.server;
 
 import java.net.InetSocketAddress;
 
-import io.overpoet.hap.common.model.Accessory;
-import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.model.ServerAccessory;
 
 /**

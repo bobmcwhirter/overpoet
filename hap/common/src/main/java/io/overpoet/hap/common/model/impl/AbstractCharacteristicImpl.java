@@ -60,6 +60,14 @@ public abstract class AbstractCharacteristicImpl implements Characteristic {
         return getType().getPermissions().contains(Permission.PAIRED_WRITE);
     }
 
+    public void setPermissions(Permission...permissions) {
+        PermissionsImpl p = new PermissionsImpl();
+        for (Permission permission : permissions) {
+            p.addPermission(permission);
+        }
+        setPermissions(p);
+    }
+
     public void setPermissions(Permissions permissions) {
         this.permissions = permissions;
     }

@@ -1,5 +1,7 @@
 package io.overpoet.hap.server.model.impl;
 
+import java.util.function.Consumer;
+
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
@@ -13,9 +15,10 @@ import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 
 public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
 
-    public ServerCharacteristicImpl(Service service, int iid, CharacteristicType type, Object value) {
+    public ServerCharacteristicImpl(Service service, int iid, CharacteristicType type, Consumer<ServerCharacteristicImpl> config) {
         super(service, iid, type);
-        setStoredValue(value);
+        config.accept(this);
+        //setStoredValue(value);
     }
 
     @Override
@@ -27,7 +30,7 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
 
         builder.add("iid", getIID());
-        builder.add("type", getType().getUUID().toString());
+        builder.add("type", getType().getEncodedType());
         builder.add("format", getType().getFormat().toString().toLowerCase());
         builder.add("perms", permissionsToJSON());
         if (getType().getFormat() == Format.STRING) {

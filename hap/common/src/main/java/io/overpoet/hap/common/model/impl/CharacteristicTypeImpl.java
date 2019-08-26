@@ -4,6 +4,7 @@ import java.util.Set;
 import java.util.UUID;
 
 import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.Constants;
 import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Unit;
@@ -36,6 +37,25 @@ public class CharacteristicTypeImpl implements CharacteristicType {
     @Override
     public UUID getUUID() {
         return this.uuid;
+    }
+
+    @Override
+    public String getEncodedType() {
+        String str = getUUID().toString();
+        if (str.endsWith(Constants.PRIMARY_UUID_SUFFIX)) {
+            String t = str.substring(0, 8);
+            int i = 0;
+            for (i = 0; i < t.length(); ++i) {
+                if (t.charAt(i) == '0') {
+                    continue;
+                } else {
+                    break;
+                }
+            }
+
+            return t.substring(i).toUpperCase();
+        }
+        return str;
     }
 
     @Override
@@ -84,6 +104,7 @@ public class CharacteristicTypeImpl implements CharacteristicType {
     }
 
     private final UUID uuid;
+
     private final String type;
 
     private final String name;
@@ -91,9 +112,12 @@ public class CharacteristicTypeImpl implements CharacteristicType {
     private final PermissionsImpl permissions;
 
     private final Format format;
+
     private final Unit unit;
 
     private Number minimumValue;
+
     private Number maximumValue;
+
     private Number stepValue;
 }

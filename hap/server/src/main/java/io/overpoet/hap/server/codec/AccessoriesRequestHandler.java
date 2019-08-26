@@ -62,10 +62,12 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
             bytes = byteStream.toByteArray();
         }
 
-        System.err.println( "** RESPONSE plaintext: " + ByteUtil.toString(bytes));
+        //System.err.println( "** RESPONSE plaintext: " + ByteUtil.toString(bytes));
+        System.err.println( "accessories: " + new String(bytes));
         content.writeBytes(bytes);
 
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
+        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/hap+json");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
         ctx.pipeline().writeAndFlush(response);
     }

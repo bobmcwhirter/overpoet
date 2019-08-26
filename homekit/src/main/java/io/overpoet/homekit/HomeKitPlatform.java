@@ -30,15 +30,11 @@ public class HomeKitPlatform implements Platform {
         try {
             this.hapServer = new HAPServer(this.serverStorage, this.bridgeAccessory);
             int port = this.hapServer.start(bind);
+            System.err.println( "on port: " + port);
             startBonjour();
-            register(port);
-            this.serverStorage.setPairingCallback( ()->{
-                this.bonjour.unregisterAllServices();
-                try {
-                    register(port);
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
+            ServiceInfo serviceInfo = register(port);
+            this.serverStorage.setPairingCallback(() -> {
+                serviceInfo.setText(txtRecord());
             });
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -49,7 +45,7 @@ public class HomeKitPlatform implements Platform {
         this.bonjour = JmDNS.create();
     }
 
-    private void register(int port) throws IOException {
+    private ServiceInfo register(int port) throws IOException {
         ServiceInfo serviceInfo = ServiceInfo.create("_hap._tcp.",
                                                      "OverPoet HomeKit Platform",
                                                      port,
@@ -57,7 +53,11 @@ public class HomeKitPlatform implements Platform {
                                                      0,
                                                      false,
                                                      txtRecord());
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            this.bonjour.unregisterService(serviceInfo);
+        }));
         this.bonjour.registerService(serviceInfo);
+        return serviceInfo;
     }
 
     private Map<String, ?> txtRecord() {
@@ -74,7 +74,9 @@ public class HomeKitPlatform implements Platform {
     }
 
     private ServerStorage serverStorage;
+
     private HAPServer hapServer;
+
     private JmDNS bonjour;
 
     private ServerAccessory bridgeAccessory;
