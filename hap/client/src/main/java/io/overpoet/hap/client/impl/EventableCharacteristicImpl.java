@@ -3,9 +3,8 @@ package io.overpoet.hap.client.impl;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import io.overpoet.hap.client.PairedConnection;
 import io.overpoet.hap.client.model.ClientAccessory;
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.CharacteristicType;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 

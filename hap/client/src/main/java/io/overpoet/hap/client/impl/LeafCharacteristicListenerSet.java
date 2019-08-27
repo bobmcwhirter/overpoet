@@ -3,7 +3,7 @@ package io.overpoet.hap.client.impl;
 import java.util.concurrent.ExecutionException;
 import java.util.function.Consumer;
 
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 
 public class LeafCharacteristicListenerSet extends AbstractListenerSet {
 

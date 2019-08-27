@@ -6,7 +6,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 import java.util.stream.Stream;
 
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 
 public class AbstractListenerSet implements ListenerSet {
 

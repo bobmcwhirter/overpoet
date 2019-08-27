@@ -2,7 +2,7 @@ package io.overpoet.hap.client;
 
 import java.io.IOException;
 
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.client.auth.ClientAuthStorage;
 import io.overpoet.hap.client.model.AccessoryDB;
 import org.junit.Before;

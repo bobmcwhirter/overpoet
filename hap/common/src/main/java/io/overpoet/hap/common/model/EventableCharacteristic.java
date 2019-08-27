@@ -1,8 +1,6 @@
-package io.overpoet.hap.client.model;
+package io.overpoet.hap.common.model;
 
 import java.util.function.Consumer;
-
-import io.overpoet.hap.common.model.Characteristic;
 
 public interface EventableCharacteristic extends Characteristic {
 

@@ -55,7 +55,7 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
             bytes = byteStream.toByteArray();
         }
 
-        System.err.println( "accessories: " + new String(bytes));
+        //System.err.println( "accessories: " + new String(bytes));
         content.writeBytes(bytes);
 
         FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);

@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.apparatus.ApparatusType;
 import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.core.measurement.Temperature;
 import io.overpoet.core.sensor.Sensor;
 import io.overpoet.core.sensor.TemperatureSensor;
 import io.overpoet.hap.common.model.Characteristic;
@@ -65,8 +66,11 @@ public class HomeKitManipulator implements Manipulator {
                         if ( sensor instanceof TemperatureSensor ) {
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.CURRENT_TEMPERATURE, c->{
                                 //c.setStoredValue();
-                                c.setStoredValue(42.0);
+                                c.setStoredValue(0.0);
                                 c.setPermissions(Permission.PAIRED_READ, Permission.NOTIFY);
+                                ((TemperatureSensor)sensor).onChange( (t)->{
+                                    c.updateValue(t.celsius());
+                                });
                             });
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, c-> {
                                 c.setStoredValue("current temp");

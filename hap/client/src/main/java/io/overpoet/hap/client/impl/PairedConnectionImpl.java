@@ -9,7 +9,7 @@ import io.overpoet.hap.client.codec.UpdateCharacteristicRequest;
 import io.overpoet.hap.client.PairedConnection;
 import io.overpoet.hap.client.model.AccessoryDB;
 import io.netty.channel.Channel;
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.Characteristic;
 
 /**

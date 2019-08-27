@@ -2,6 +2,8 @@ package io.overpoet.hap.server.model.impl;
 
 import java.math.BigDecimal;
 import java.text.DecimalFormat;
+import java.util.HashSet;
+import java.util.Set;
 import java.util.function.Consumer;
 
 import javax.json.JsonArrayBuilder;
@@ -10,12 +12,13 @@ import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
 
 import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 
-public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
+public class ServerCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
 
     public ServerCharacteristicImpl(Service service, int iid, CharacteristicType type, Consumer<ServerCharacteristicImpl> config) {
         super(service, iid, type);
@@ -25,16 +28,29 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
 
     @Override
     public void updateValue(Object value) {
-
+        System.err.println( " UPDATE VALUE " + this + " ==============> " + value);
+        setStoredValue(value);
+        for (Consumer<EventableCharacteristic> listener : this.listeners) {
+            listener.accept(this);
+        }
     }
 
     public JsonObjectBuilder toJSON() {
+        return toJSON(false);
+    }
+
+    public JsonObjectBuilder toJSON(boolean simplified) {
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
 
+        if (simplified ) {
+            builder.add( "aid", getService().getAccessory().getAID());
+        }
         builder.add("iid", getIID());
-        builder.add("type", getType().getEncodedType());
-        builder.add("format", getType().getFormat().toString().toLowerCase());
-        builder.add("perms", permissionsToJSON());
+        if ( ! simplified ) {
+            builder.add("type", getType().getEncodedType());
+            builder.add("format", getType().getFormat().toString().toLowerCase());
+            builder.add("perms", permissionsToJSON());
+        }
         if ( getPermissions().contains(Permission.PAIRED_READ)) {
             if (getType().getFormat() == Format.STRING) {
                 builder.add("value", getValue().toString());
@@ -58,4 +74,22 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
 
         return builder;
     }
+
+    @Override
+    public void addListener(Consumer<EventableCharacteristic> listener) {
+        this.listeners.add(listener);
+        listener.accept(this);
+    }
+
+    @Override
+    public void removeListener(Consumer<EventableCharacteristic> listener) {
+        this.listeners.remove(listener);
+    }
+
+    @Override
+    public void removeAllListeners() {
+        this.listeners.clear();
+    }
+
+    private final Set<Consumer<EventableCharacteristic>> listeners = new HashSet<>();
 }

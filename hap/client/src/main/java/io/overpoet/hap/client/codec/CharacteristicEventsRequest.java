@@ -2,8 +2,7 @@ package io.overpoet.hap.client.codec;
 
 import java.util.concurrent.CompletableFuture;
 
-import io.overpoet.hap.client.model.EventableCharacteristic;
-import io.overpoet.hap.common.model.Characteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 
 public class CharacteristicEventsRequest implements SyncRequest {
 

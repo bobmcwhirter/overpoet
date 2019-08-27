@@ -4,6 +4,8 @@ import io.overpoet.hap.common.codec.EncryptableMessageHandler;
 import io.overpoet.hap.common.codec.HttpDebugHandler;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.codec.AccessoriesRequestHandler;
+import io.overpoet.hap.server.codec.CharacteristicsHandler;
+import io.overpoet.hap.server.codec.EventEncoder;
 import io.overpoet.hap.server.codec.PairingsHandler;
 import io.overpoet.hap.server.codec.PairingsManager;
 import io.overpoet.hap.server.codec.ServerPairSetupHandler;
@@ -34,7 +36,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
 
         //ch.pipeline().addLast(new DebugHandler("server-head"));
-        ch.pipeline().addLast(new HttpDebugHandler() );
+        ch.pipeline().addLast(new HttpDebugHandler());
         ch.pipeline().addLast(new SessionCryptoHandler());
         ch.pipeline().addLast(new HttpRequestDecoder());
         ch.pipeline().addLast(new HttpResponseEncoder());
@@ -44,14 +46,16 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         //ch.pipeline().addLast(new DebugHandler("server-crypto-down"));
         //ch.pipeline().addLast(new DebugHandler("server-crypto-up"));
 
+
+        ch.pipeline().addLast(new EventEncoder());
         ch.pipeline().addLast(new TLVResponseEncoder());
         ch.pipeline().addLast(new TLVDecoder());
         //ch.pipeline().addLast(new TLVDebugHandler("server-tlv"));
         ch.pipeline().addLast("Pair-Setup", new ServerPairSetupHandler(new ServerPairSetupManager(this.authStorage)));
         ch.pipeline().addLast("Pair-Verify", new ServerPairVerifyHandler(new ServerPairVerifyManager(this.authStorage)));
-        ch.pipeline().addLast("Pairings", new PairingsHandler( new PairingsManager(this.authStorage)));
-
-        ch.pipeline().addLast(new AccessoriesRequestHandler(this.db));
+        ch.pipeline().addLast("Pairings", new PairingsHandler(new PairingsManager(this.authStorage)));
+        ch.pipeline().addLast("Accessories", new AccessoriesRequestHandler(this.db));
+        ch.pipeline().addLast("Characteristics", new CharacteristicsHandler(this.db));
 
 
         //ch.pipeline().addLast(new DebugHandler("server-tail"));
@@ -59,5 +63,6 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     }
 
     private final ServerAuthStorage authStorage;
+
     private final ServerAccessoryDatabase db;
 }

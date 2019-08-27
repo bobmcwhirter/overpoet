@@ -25,12 +25,14 @@ class SensorHolder<T> {
     }
 
     public void sink(T value) {
+        System.err.println( "sensor holder sinking: " + value );
         try {
             boolean changed = this.state.add(new Sense<>(this.sensor, value));
             if ( changed ) {
                 for (ManipulatorSensorLogic each : this.logics) {
                     each.delegate(value);
                 }
+                this.lastValue = value;
             }
         } catch (StateException e) {
             e.printStackTrace();
@@ -47,6 +49,7 @@ class SensorHolder<T> {
         Sensor manipulatorSensor = ctor.newInstance(this.sensor.key(), this.sensor.metadata(), logic);
         this.manipulatorSensors.add(manipulatorSensor);
         this.logics.add( logic );
+        logic.delegate(this.lastValue);
         return manipulatorSensor;
     }
 
@@ -56,6 +59,7 @@ class SensorHolder<T> {
 
     private final Set<Sensor<?>> manipulatorSensors = new HashSet<>();
     private final Set<ManipulatorSensorLogic<?>> logics  = new HashSet<>();
+    private T lastValue;
 
     private static class ManipulatorSensorLogic<T> implements SensorLogic<T> {
         void delegate(T value) {

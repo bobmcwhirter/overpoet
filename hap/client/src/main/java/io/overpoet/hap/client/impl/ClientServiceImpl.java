@@ -3,7 +3,7 @@ package io.overpoet.hap.client.impl;
 import java.util.function.Consumer;
 
 import io.overpoet.hap.client.model.ClientService;
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.ServiceType;
 import io.overpoet.hap.common.model.impl.AbstractServiceImpl;

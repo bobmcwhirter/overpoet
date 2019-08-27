@@ -5,6 +5,7 @@ import java.util.Optional;
 import java.util.function.Consumer;
 
 import io.overpoet.hap.client.PairedConnection;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 
 /**
  * Created by bob on 9/10/18.

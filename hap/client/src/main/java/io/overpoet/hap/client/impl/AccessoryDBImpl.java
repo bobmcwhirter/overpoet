@@ -7,7 +7,7 @@ import java.util.function.Consumer;
 
 import io.overpoet.hap.client.model.AccessoryDB;
 import io.overpoet.hap.client.model.ClientAccessory;
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 
 public class AccessoryDBImpl implements AccessoryDB {
 

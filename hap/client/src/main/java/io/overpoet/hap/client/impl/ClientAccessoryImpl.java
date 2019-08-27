@@ -5,7 +5,7 @@ import java.util.function.Consumer;
 import io.overpoet.hap.client.model.AccessoryDB;
 import io.overpoet.hap.client.model.ClientAccessory;
 import io.overpoet.hap.client.model.ClientService;
-import io.overpoet.hap.client.model.EventableCharacteristic;
+import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.impl.AbstractAccessoryImpl;
 
 public class ClientAccessoryImpl extends AbstractAccessoryImpl<ClientService> implements ClientAccessory {
