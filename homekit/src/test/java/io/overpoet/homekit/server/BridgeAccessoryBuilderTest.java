@@ -8,6 +8,6 @@ public class BridgeAccessoryBuilderTest {
 
     @Test
     public void testJSON() {
-        JsonObjectBuilder json = BridgeAccessoryBuilder.build().toJSON();
+        //JsonObjectBuilder json = BridgeAccessoryBuilder.build().toJSON();
     }
 }

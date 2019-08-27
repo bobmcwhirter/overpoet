@@ -11,12 +11,14 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import io.overpoet.Key;
 import io.overpoet.core.apparatus.Apparatus;
+import io.overpoet.core.apparatus.ApparatusType;
 import io.overpoet.core.apparatus.SimpleApparatus;
 import io.overpoet.core.measurement.Speed;
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformContext;
 import io.overpoet.json.AbstractJSONSensorLogic;
 import io.overpoet.core.sensor.Sensor;
+import io.overpoet.netatmo.weather.temperature.OutsideTemperatureSensorLogic;
 import io.overpoet.netatmo.weather.wind.GustAngleSensorLogic;
 import io.overpoet.netatmo.weather.wind.GustStrengthSensorLogic;
 import io.overpoet.netatmo.weather.wind.WindAngleSensorLogic;
@@ -28,6 +30,8 @@ import okhttp3.OkHttpClient;
 import okhttp3.Request;
 import okhttp3.Response;
 
+import static io.overpoet.core.apparatus.ApparatusType.ANEMOMETER;
+import static io.overpoet.core.apparatus.ApparatusType.THERMOMETER;
 import static java.net.URI.create;
 
 public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
@@ -44,7 +48,7 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
     }
 
     @Override
-    public void configure(PlatformContext context) {
+    public void initialize(PlatformContext context) {
         this.context = context;
         try {
             String data = getData();
@@ -63,7 +67,8 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
             return false;
         }
         ReadContext ctx = JsonPath.parse(data);
-        initializeWind(ctx);
+        initializeOutside(ctx);
+        //initializeWind(ctx);
         return true;
     }
 
@@ -78,6 +83,21 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
         } catch (IOException e) {
             e.printStackTrace();
         }
+    }
+
+    private void initializeOutside(ReadContext ctx) {
+        Key key = KEY.append("outside");
+
+        Set<Sensor<?>> sensors = new HashSet<>();
+        if (OutsideTemperatureSensorLogic.isApplicable(ctx)) {
+            sensors.add(OutsideTemperatureSensorLogic.of(key, this));
+        }
+        if (sensors.isEmpty()) {
+            return;
+        }
+        Apparatus apparatus = new SimpleApparatus(THERMOMETER, key, sensors, Collections.emptySet());
+
+        this.context.connect(apparatus);
     }
 
     private void initializeWind(ReadContext ctx) {
@@ -113,7 +133,7 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
             return;
         }
 
-        Apparatus apparatus = new SimpleApparatus(KEY.append("wind"), sensors, Collections.emptySet());
+        Apparatus apparatus = new SimpleApparatus(ANEMOMETER, key, sensors, Collections.emptySet());
 
         this.context.connect(apparatus);
     }

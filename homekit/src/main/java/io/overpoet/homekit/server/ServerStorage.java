@@ -137,6 +137,12 @@ public class ServerStorage implements ServerAuthStorage {
         return Integer.parseInt(this.config.get(CONFIGURATION_NUMBER));
     }
 
+    public int incrementConfigurationNumber() {
+        int num = getConfigurationNumber() + 1;
+        this.config.set(CONFIGURATION_NUMBER, "" + num);
+        return num;
+    }
+
     private final PlatformConfiguration config;
 
     private Runnable callback;

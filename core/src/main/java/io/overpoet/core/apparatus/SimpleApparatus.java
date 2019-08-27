@@ -8,7 +8,8 @@ import io.overpoet.core.actuator.Actuator;
 import io.overpoet.core.sensor.Sensor;
 
 public class SimpleApparatus implements Apparatus {
-    public SimpleApparatus(Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
+    public SimpleApparatus(ApparatusType type, Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
+        this.type = type;
         this.key = key;
         if ( sensors != null ) {
             this.sensors.addAll(sensors);
@@ -16,6 +17,11 @@ public class SimpleApparatus implements Apparatus {
         if ( actuators != null ) {
             this.actuators.addAll(actuators);
         }
+    }
+
+    @Override
+    public ApparatusType type() {
+        return this.type;
     }
 
     public Key key() {
@@ -32,7 +38,7 @@ public class SimpleApparatus implements Apparatus {
         return this.actuators;
     }
 
-
+    private final ApparatusType type;
     private final Key key;
     final private Set<Sensor<?>> sensors = new HashSet<>();
     final private Set<Actuator<?>> actuators = new HashSet<>();

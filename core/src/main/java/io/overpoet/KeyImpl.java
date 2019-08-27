@@ -14,6 +14,16 @@ class KeyImpl implements Key {
         return new KeyImpl(newParts);
     }
 
+    public Key append(String...parts) {
+        Key current = this;
+
+        for (String part : parts) {
+            current = current.append(part);
+        }
+
+        return current;
+    }
+
     @Override
     public boolean equals(Object obj) {
         if ( obj instanceof KeyImpl ) {

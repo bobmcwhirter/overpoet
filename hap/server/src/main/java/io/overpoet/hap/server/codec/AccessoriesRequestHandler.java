@@ -1,19 +1,13 @@
 package io.overpoet.hap.server.codec;
 
 import java.io.ByteArrayOutputStream;
-import java.nio.charset.StandardCharsets;
 import java.util.HashMap;
 import java.util.Map;
 
-import javax.json.JsonArrayBuilder;
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonWriter;
 import javax.json.spi.JsonProvider;
 import javax.json.stream.JsonGenerator;
 
-import io.overpoet.hap.common.model.Accessory;
-import io.overpoet.hap.common.util.ByteUtil;
 import io.netty.buffer.ByteBuf;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -23,15 +17,15 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import io.overpoet.hap.server.model.ServerAccessory;
+import io.overpoet.hap.server.model.ServerAccessoryDatabase;
 
 /**
  * Created by bob on 9/11/18.
  */
 public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
 
-    public AccessoriesRequestHandler(ServerAccessory accessory) {
-        this.accessory = accessory;
+    public AccessoriesRequestHandler(ServerAccessoryDatabase db) {
+        this.db = db;
     }
 
     @Override
@@ -51,24 +45,16 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
         System.err.println( "accessories: requested");
 
         ByteBuf content = ctx.alloc().buffer();
-        //byte[] bytes = "{\"accessories\": []}".getBytes(StandardCharsets.UTF_8);
-        JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
-        JsonArrayBuilder array = JsonProvider.provider().createArrayBuilder();
-        array.add( this.accessory.toJSON() );
-        builder.add("accessories",array);
-
 
         byte[] bytes = null;
         try ( ByteArrayOutputStream byteStream = new ByteArrayOutputStream() ) {
             Map<String, Object> config = new HashMap<>();
             config.put(JsonGenerator.PRETTY_PRINTING, true);
             JsonWriter writer = JsonProvider.provider().createWriterFactory(config).createWriter(byteStream);
-            //JsonWriter writer = JsonProvider.provider().createWriter(byteStream);
-            writer.writeObject( builder.build() );
+            writer.writeObject( this.db.toJSON().build() );
             bytes = byteStream.toByteArray();
         }
 
-        //System.err.println( "** RESPONSE plaintext: " + ByteUtil.toString(bytes));
         System.err.println( "accessories: " + new String(bytes));
         content.writeBytes(bytes);
 
@@ -78,5 +64,5 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
         ctx.pipeline().writeAndFlush(response);
     }
 
-    private final ServerAccessory accessory;
+    private final ServerAccessoryDatabase db;
 }

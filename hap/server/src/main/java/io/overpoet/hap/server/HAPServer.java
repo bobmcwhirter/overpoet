@@ -8,16 +8,16 @@ import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
-import io.overpoet.hap.server.model.ServerAccessory;
+import io.overpoet.hap.server.model.ServerAccessoryDatabase;
 
 /**
  * Created by bob on 8/29/18.
  */
 public class HAPServer {
 
-    public HAPServer(ServerAuthStorage authStorage, ServerAccessory bridgeAccessory) {
+    public HAPServer(ServerAuthStorage authStorage, ServerAccessoryDatabase db) {
         this.authStorage = authStorage;
-        this.bridgeAccessory = bridgeAccessory;
+        this.db = db;
     }
 
     public int start(InetSocketAddress bind) throws InterruptedException {
@@ -26,7 +26,7 @@ public class HAPServer {
         b.group(workerGroup); // (2)
         b.channel(NioServerSocketChannel.class); // (3)
         //b.option(ChannelOption.TCP_NODELAY, true); // (4)
-        b.childHandler(new ServerInitializer(this.authStorage, this.bridgeAccessory));
+        b.childHandler(new ServerInitializer(this.authStorage, this.db));
 
         this.channel = b.bind(bind.getAddress(), bind.getPort()).sync().channel();
         return ((InetSocketAddress)this.channel.localAddress()).getPort();
@@ -38,7 +38,7 @@ public class HAPServer {
 
     private final ServerAuthStorage authStorage;
 
-    private final ServerAccessory bridgeAccessory;
+    private final ServerAccessoryDatabase db;
 
     private Channel channel;
 }

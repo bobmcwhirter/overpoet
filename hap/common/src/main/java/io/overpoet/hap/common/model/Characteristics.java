@@ -16,7 +16,7 @@ public class Characteristics {
         return INDEX.get(uuid);
     }
 
-    static CharacteristicType register(String name, Consumer<CharacteristicTypeBuilder> config) {
+    public static CharacteristicType register(String name, Consumer<CharacteristicTypeBuilder> config) {
         CharacteristicType type = CharacteristicTypeBuilder.configure(name, config );
         INDEX.put(type.getUUID(), type);
         return type;

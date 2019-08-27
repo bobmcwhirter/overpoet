@@ -7,6 +7,7 @@ import io.overpoet.core.actuator.Actuator;
 import io.overpoet.core.sensor.Sensor;
 
 public interface Apparatus extends Keyed {
+    ApparatusType type();
     Set<Sensor<?>> sensors();
     Set<Actuator<?>> actuators();
 }

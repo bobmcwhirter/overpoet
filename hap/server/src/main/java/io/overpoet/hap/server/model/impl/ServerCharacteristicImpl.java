@@ -1,5 +1,7 @@
 package io.overpoet.hap.server.model.impl;
 
+import java.math.BigDecimal;
+import java.text.DecimalFormat;
 import java.util.function.Consumer;
 
 import javax.json.JsonArrayBuilder;
@@ -36,6 +38,9 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl {
         if ( getPermissions().contains(Permission.PAIRED_READ)) {
             if (getType().getFormat() == Format.STRING) {
                 builder.add("value", getValue().toString());
+            } else if ( getType().getFormat() == Format.FLOAT ) {
+                Double v = getValue(Double.class);
+                builder.add("value", Math.floor(v * 10) / 10);
             } else {
                 builder.add("value", JsonObject.NULL);
             }

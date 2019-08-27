@@ -1,9 +1,10 @@
 package io.overpoet.core.engine;
 
+import java.nio.file.Path;
+import java.util.HashMap;
+import java.util.Map;
 import java.util.ServiceLoader;
-import java.util.concurrent.ForkJoinTask;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.stream.Collectors;
 
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.concurrent.Async;
@@ -21,11 +22,24 @@ class PlatformManager {
     void initialize() {
         ServiceLoader<Platform> platforms = ServiceLoader.load(Platform.class);
 
-        Async.forEach(platforms.stream().map(ServiceLoader.Provider::get),
-                      e -> {
-                          PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
-                          e.configure(new Context(config));
-                      });
+        Map<Platform, Context> init = new HashMap<>();
+
+        platforms.stream().map(ServiceLoader.Provider::get).forEach(e->{
+            PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
+            init.put( e, new Context(config));
+        });
+
+        System.err.println( "initialize platforms");
+        Async.forEach(init.keySet().stream(), (p)->{
+            Context c = init.get(p);
+            p.initialize(c);
+        });
+
+        System.err.println( "start platforms");
+        Async.forEach(init.keySet().stream(), (p)->{
+            p.start();
+        });
+        System.err.println( "started");
     }
 
     private final Engine engine;

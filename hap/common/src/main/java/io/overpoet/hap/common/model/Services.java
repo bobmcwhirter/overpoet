@@ -56,4 +56,10 @@ public class Services {
             .optional(Characteristics.HUE)
             .optional(Characteristics.SATURATION)
     );
+
+    public static final ServiceType TEMPERATURE_SENSOR = register("Temperature Sensor", s -> s
+            .uuid("8A")
+            .type("sensor.temperature")
+            .required(Characteristics.CURRENT_TEMPERATURE)
+    );
 }

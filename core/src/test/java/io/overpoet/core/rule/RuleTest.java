@@ -14,7 +14,7 @@ import io.overpoet.core.metadata.IntegerMetadata;
 import io.overpoet.core.sensor.BaseSensorLogic;
 import io.overpoet.core.sensor.IntegerSensor;
 import io.overpoet.core.sensor.MockClock;
-import io.overpoet.core.sensor.TimeMetadata;
+import io.overpoet.core.metadata.TimeMetadata;
 import io.overpoet.core.sensor.TimeSensor;
 import io.overpoet.core.geo.Point;
 import org.junit.Test;

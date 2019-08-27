@@ -1,7 +1,6 @@
-package io.overpoet.core.sensor;
+package io.overpoet.core.metadata;
 
 import io.overpoet.core.chrono.TimeSlice;
-import io.overpoet.core.metadata.Metadata;
 
 public class TimeMetadata implements Metadata<TimeSlice> {
 

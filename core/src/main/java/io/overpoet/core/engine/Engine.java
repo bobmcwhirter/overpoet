@@ -40,10 +40,12 @@ public class Engine {
     }
 
     public synchronized void connect(Apparatus apparatus) {
+        System.err.println( "connect(a) " + apparatus );
         ApparatusHolder wrapped = wrap(apparatus);
         this.apparatuses.add(wrapped);
 
         for (ManipulatorHolder manipulator : this.manipulators) {
+            System.err.println( "c(a) send app " + apparatus + " to " + manipulator );
             manipulator.connect(wrapped);
         }
     }
@@ -53,7 +55,9 @@ public class Engine {
     }
 
     public synchronized void connect(Manipulator manipulator) {
+        System.err.println( "connect(m) " + manipulator );
         for (ApparatusHolder apparatus : this.apparatuses) {
+            System.err.println( "c(m) send app " + apparatus + " to " + manipulator );
             manipulator.connect(apparatus.forManipulator(manipulator));
         }
 

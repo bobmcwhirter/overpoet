@@ -20,6 +20,11 @@ public interface Temperature {
             public double fahrenheit() {
                 return f;
             }
+
+            @Override
+            public String toString() {
+                return "[temperature: " + f + "f]";
+            }
         };
     }
 
@@ -29,6 +34,11 @@ public interface Temperature {
             public double celsius() {
                 return c;
             }
+
+            @Override
+            public String toString() {
+                return "[temperature: " + c + "c]";
+            }
         };
     }
 
@@ -37,6 +47,11 @@ public interface Temperature {
             @Override
             public double kelvin() {
                 return k;
+            }
+
+            @Override
+            public String toString() {
+                return "[temperature: " + k + "k]";
             }
         };
     }

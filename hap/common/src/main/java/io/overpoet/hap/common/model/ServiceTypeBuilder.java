@@ -51,7 +51,7 @@ public class ServiceTypeBuilder {
         }
     }
 
-    protected ServiceType build() {
+    public ServiceType build() {
         return new ServiceTypeImpl(this.name,
                                    this.uuid,
                                    this.type,

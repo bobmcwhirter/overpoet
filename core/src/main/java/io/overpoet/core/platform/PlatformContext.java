@@ -1,6 +1,6 @@
 package io.overpoet.core.platform;
 
-import java.util.Properties;
+import java.nio.file.Path;
 import java.util.concurrent.ScheduledExecutorService;
 
 import io.overpoet.core.apparatus.Apparatus;

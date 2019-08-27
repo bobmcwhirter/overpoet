@@ -1,5 +1,15 @@
 package io.overpoet.core.platform;
 
 public interface Platform {
-    void configure(PlatformContext context);
+    default void initialize(PlatformContext context) {
+
+    }
+
+    default void start() {
+
+    }
+
+    default void stop() {
+
+    }
 }

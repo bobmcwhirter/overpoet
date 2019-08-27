@@ -13,8 +13,7 @@ import static io.overpoet.hap.common.model.Permission.PAIRED_WRITE;
 
 public class BridgeAccessoryBuilder {
 
-    public static ServerAccessory build() {
-        AtomicInteger iid = new AtomicInteger(0);
+    public static ServerAccessory build(AtomicInteger iid) {
         ServerAccessoryImpl accessory = new ServerAccessoryImpl(1, (a) -> {
             a.addService(iid.incrementAndGet(), Services.ACCESSORY_INFORMATION, (s) -> {
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.MANUFACTURER, (c)->{
@@ -40,7 +39,6 @@ public class BridgeAccessoryBuilder {
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.IDENTIFY, (c)->{
                     c.setStoredValue(null);
                     c.setPermissions(PAIRED_WRITE);
-
                 });
             });
             a.addService(iid.incrementAndGet(), Services.PROTOCOL_INFORMATION, (s) -> {
