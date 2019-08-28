@@ -63,6 +63,7 @@ public class SessionKeys {
             ByteBuf chunk = this.encryptAccumulator.alloc().buffer(len);
             this.encryptAccumulator.readBytes(chunk, len);
             chunks.add( encryptChunk( chunk ) );
+            chunk.release();
         }
         return chunks;
     }
@@ -85,6 +86,7 @@ public class SessionKeys {
             byte[] nonce = Pack.longToLittleEndian(outboundCounter++);
 
             result.writeBytes(new Chacha(getEncryptionKey()).newEncoder(nonce).encodeCiphertext(response.readBytes(len), lenBytes));
+            lenBytes.release();
         }
 
         return result;

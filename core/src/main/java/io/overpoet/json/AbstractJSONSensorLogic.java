@@ -28,6 +28,7 @@ public abstract class AbstractJSONSensorLogic<T, JSONTYPE> extends BaseSensorLog
         }
         JSONTYPE in = (JSONTYPE) array.get(0);
         T out = convert(in);
+        System.err.println( "sinking temp: " + out);
         sink( out );
     }
 

@@ -17,6 +17,7 @@ import io.netty.handler.codec.http.FullHttpResponse;
 import io.netty.handler.codec.http.HttpHeaderNames;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
+import io.overpoet.hap.common.codec.json.JSONResponse;
 import io.overpoet.hap.server.model.ServerAccessoryDatabase;
 
 /**
@@ -42,26 +43,7 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        System.err.println( "accessories: requested");
-
-        ByteBuf content = ctx.alloc().buffer();
-
-        byte[] bytes = null;
-        try ( ByteArrayOutputStream byteStream = new ByteArrayOutputStream() ) {
-            Map<String, Object> config = new HashMap<>();
-            config.put(JsonGenerator.PRETTY_PRINTING, true);
-            JsonWriter writer = JsonProvider.provider().createWriterFactory(config).createWriter(byteStream);
-            writer.writeObject( this.db.toJSON().build() );
-            bytes = byteStream.toByteArray();
-        }
-
-        //System.err.println( "accessories: " + new String(bytes));
-        content.writeBytes(bytes);
-
-        FullHttpResponse response = new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, content);
-        response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/hap+json");
-        response.headers().set(HttpHeaderNames.CONTENT_LENGTH, content.readableBytes());
-        ctx.pipeline().writeAndFlush(response);
+        ctx.pipeline().writeAndFlush(new JSONResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, this.db.toJSON().build()));
     }
 
     private final ServerAccessoryDatabase db;

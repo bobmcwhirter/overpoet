@@ -11,13 +11,12 @@ import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
 import io.overpoet.Key;
 import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.apparatus.ApparatusType;
 import io.overpoet.core.apparatus.SimpleApparatus;
 import io.overpoet.core.measurement.Speed;
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformContext;
-import io.overpoet.json.AbstractJSONSensorLogic;
 import io.overpoet.core.sensor.Sensor;
+import io.overpoet.json.AbstractJSONSensorLogic;
 import io.overpoet.netatmo.weather.temperature.OutsideTemperatureSensorLogic;
 import io.overpoet.netatmo.weather.wind.GustAngleSensorLogic;
 import io.overpoet.netatmo.weather.wind.GustStrengthSensorLogic;
@@ -73,11 +72,13 @@ public class NetatmoWeatherPlatform implements Platform, LogicRegistry {
     }
 
     private void poll() {
+        System.err.println( "POLLING");
         try {
             String data = getData();
             ReadContext ctx = JsonPath.parse(data);
 
             for (AbstractJSONSensorLogic<?, ?> logic : this.logics) {
+                System.err.println( "asking to process: " + logic );
                 logic.process(ctx);
             }
         } catch (IOException e) {

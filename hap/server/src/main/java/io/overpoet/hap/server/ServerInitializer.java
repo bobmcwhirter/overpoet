@@ -2,12 +2,15 @@ package io.overpoet.hap.server;
 
 import io.overpoet.hap.common.codec.EncryptableMessageHandler;
 import io.overpoet.hap.common.codec.HttpDebugHandler;
+import io.overpoet.hap.common.codec.json.JSONRequestDecoder;
+import io.overpoet.hap.common.codec.json.JSONResponseEncoder;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.codec.AccessoriesRequestHandler;
-import io.overpoet.hap.server.codec.CharacteristicsHandler;
+import io.overpoet.hap.server.codec.GetCharacteristicsHandler;
 import io.overpoet.hap.server.codec.EventEncoder;
 import io.overpoet.hap.server.codec.PairingsHandler;
 import io.overpoet.hap.server.codec.PairingsManager;
+import io.overpoet.hap.server.codec.PutCharacteristicsHandler;
 import io.overpoet.hap.server.codec.ServerPairSetupHandler;
 import io.overpoet.hap.server.codec.ServerPairSetupManager;
 import io.overpoet.hap.server.codec.ServerPairVerifyHandler;
@@ -50,12 +53,15 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast(new EventEncoder());
         ch.pipeline().addLast(new TLVResponseEncoder());
         ch.pipeline().addLast(new TLVDecoder());
+        ch.pipeline().addLast(new JSONRequestDecoder() );
+        ch.pipeline().addLast(new JSONResponseEncoder() );
         //ch.pipeline().addLast(new TLVDebugHandler("server-tlv"));
         ch.pipeline().addLast("Pair-Setup", new ServerPairSetupHandler(new ServerPairSetupManager(this.authStorage)));
         ch.pipeline().addLast("Pair-Verify", new ServerPairVerifyHandler(new ServerPairVerifyManager(this.authStorage)));
         ch.pipeline().addLast("Pairings", new PairingsHandler(new PairingsManager(this.authStorage)));
         ch.pipeline().addLast("Accessories", new AccessoriesRequestHandler(this.db));
-        ch.pipeline().addLast("Characteristics", new CharacteristicsHandler(this.db));
+        ch.pipeline().addLast("GetCharacteristics", new GetCharacteristicsHandler(this.db));
+        ch.pipeline().addLast("PutCharacteristics", new PutCharacteristicsHandler(this.db));
 
 
         //ch.pipeline().addLast(new DebugHandler("server-tail"));
