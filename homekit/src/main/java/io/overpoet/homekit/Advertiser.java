@@ -59,7 +59,13 @@ public class Advertiser {
 
     public void updateAdvertisement() {
         if ( this.serviceInfo != null ) {
+            this.bonjour.unregisterService(this.serviceInfo);
             this.serviceInfo.setText(txtRecord());
+            try {
+                this.bonjour.registerService(this.serviceInfo);
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
         }
     }
 

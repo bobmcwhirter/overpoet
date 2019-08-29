@@ -1,13 +1,10 @@
 package io.overpoet.hap.server.codec;
 
-import java.util.Arrays;
 import java.util.List;
-import java.util.stream.Collectors;
 
 import javax.json.JsonArray;
 import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
 
 import io.netty.channel.ChannelHandlerContext;
@@ -17,13 +14,16 @@ import io.netty.handler.codec.http.FullHttpRequest;
 import io.netty.handler.codec.http.HttpMethod;
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
-import io.netty.handler.codec.http.QueryStringDecoder;
 import io.overpoet.hap.common.codec.json.JSONRequest;
-import io.overpoet.hap.common.codec.json.JSONResponse;
 import io.overpoet.hap.server.model.ServerAccessoryDatabase;
 import io.overpoet.hap.server.model.impl.ServerCharacteristicImpl;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
+
+    private static Logger LOG = LoggerFactory.getLogger(PutCharacteristicsHandler.class);
+
     public PutCharacteristicsHandler(ServerAccessoryDatabase db) {
         this.db = db;
     }
@@ -50,10 +50,8 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        System.err.println("CHARACTERISTICS QUERY");
-        System.err.println("type: " + httpMsg.method());
+        LOG.debug("PUT /characteristics");
 
-        System.err.println("BAR: FOO /characteristics");
         JsonObject obj = request.objectContent();
         JsonArray characteristics = obj.getJsonArray("characteristics");
         for (int i = 0; i < characteristics.size(); ++i) {
@@ -64,11 +62,10 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
                 boolean ev = each.getBoolean("ev");
                 if (ev) {
                     ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));
-                    System.err.println("enable events on : " + aid + "/" + iid);
+                    LOG.debug("enable events on {}:{}", aid, iid );
                     ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
-                    System.err.println("enabling on: " + chr);
                     chr.addListener((c) -> {
-                        System.err.println("SEND EVENT ON " + c);
+                        LOG.debug("sending event on {}:{}", aid, iid);
                         ctx.pipeline().writeAndFlush(new Event((ServerCharacteristicImpl) c));
                     });
                 }

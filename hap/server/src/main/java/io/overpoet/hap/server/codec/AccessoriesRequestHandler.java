@@ -19,11 +19,14 @@ import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
 import io.overpoet.hap.common.codec.json.JSONResponse;
 import io.overpoet.hap.server.model.ServerAccessoryDatabase;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by bob on 9/11/18.
  */
 public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
+    private static Logger LOG = LoggerFactory.getLogger(AccessoriesRequestHandler.class);
 
     public AccessoriesRequestHandler(ServerAccessoryDatabase db) {
         this.db = db;
@@ -42,6 +45,8 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
             super.channelRead(ctx, msg);
             return;
         }
+
+        LOG.debug("GET /accessories");
 
         ctx.pipeline().writeAndFlush(new JSONResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, this.db.toJSON().build()));
     }

@@ -25,7 +25,6 @@ class SensorHolder<T> {
     }
 
     public void sink(T value) {
-        System.err.println( "sensor holder sinking: " + value );
         try {
             boolean changed = this.state.add(new Sense<>(this.sensor, value));
             if ( changed ) {

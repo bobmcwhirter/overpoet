@@ -7,6 +7,8 @@ import java.security.SecureRandom;
 import java.security.SignatureException;
 import java.util.Optional;
 
+import javax.jmdns.impl.JmDNSImpl;
+
 import djb.Curve25519;
 import io.overpoet.hap.common.codec.crypto.Chacha;
 import io.overpoet.hap.common.codec.crypto.EdsaSigner;
@@ -16,11 +18,14 @@ import io.overpoet.hap.common.codec.tlv.TLVError;
 import io.overpoet.hap.common.codec.tlv.Type;
 import io.overpoet.hap.common.codec.pair.PairVerifyManager;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 /**
  * Created by bob on 9/10/18.
  */
 public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage> {
+    private static Logger LOG = LoggerFactory.getLogger(ServerPairVerifyManager.class);
 
     public ServerPairVerifyManager(ServerAuthStorage authStorage) {
         super(authStorage);
@@ -34,9 +39,9 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
 
         int state = state$.get();
 
-        if ( this.currentState == 0 && state == 1 ) {
+        if (this.currentState == 0 && state == 1) {
             return doVerifyStartResponse(in);
-        } else if ( this.currentState == 2 && state == 3) {
+        } else if (this.currentState == 2 && state == 3) {
             return doVerifyFinishResponse(in);
         }
 
@@ -44,7 +49,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
     }
 
     private TLV doVerifyStartResponse(TLV in) {
-        System.err.println( "pair-verify: attempting 1->2");
+        LOG.debug("attempting transition 1>2");
         this.currentState = 2;
 
         this.curvePublicKey = new byte[32];
@@ -56,7 +61,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         Optional<byte[]> publicKey$ = Type.PUBLIC_KEY.get(in);
 
         if (!publicKey$.isPresent()) {
-            System.err.println( "pair-verify: error: public-key not present");
+            LOG.error("pair-verify: error: public-key not present");
             return error(this.currentState, TLVError.AUTHENTICATION);
         }
 
@@ -71,7 +76,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             signature = signer.sign(accessoryInfo);
         } catch (NoSuchAlgorithmException | InvalidKeyException | SignatureException e) {
-            System.err.println( "pair-verify: error: crypto error: " + e.getMessage());
+            LOG.error("pair-verify: error: crypto error: " + e.getMessage());
             return error(TLVError.UNKNOWN);
         }
 
@@ -87,7 +92,7 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             encryptedData = encoder.encodeCiphertext(subTlv.encode());
         } catch (IOException e) {
-            System.err.println( "pair-verify: error: I/O error: " + e.getMessage());
+            LOG.error("pair-verify: error: I/O error: " + e.getMessage());
             return error(TLVError.UNKNOWN);
         }
 
@@ -99,11 +104,11 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
     }
 
     private TLV doVerifyFinishResponse(TLV in) {
-        System.err.println( "pair-verify: attempting 3->4");
+        LOG.debug("attempting transition 3>4");
         this.currentState = 4;
         Optional<byte[]> encryptedData$ = Type.ENCRYPTED_DATA.get(in);
-        if ( ! encryptedData$.isPresent() ) {
-            System.err.println( "pair-verify: error: encrypted data not present");
+        if (!encryptedData$.isPresent()) {
+            LOG.error("pair-verify: error: encrypted data not present");
             return error(TLVError.AUTHENTICATION);
         }
         Chacha chacha = new Chacha(this.sessionKey);
@@ -112,18 +117,18 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
         try {
             subTlv = TLV.decodeFrom(decoder.decodeEncryptedData(encryptedData$.get()));
         } catch (IOException e) {
-            System.err.println( "pair-verify: error: I/O error: " + e.getMessage());
+            LOG.error("pair-verify: error: I/O error: " + e.getMessage());
             return error(TLVError.AUTHENTICATION);
         }
 
         Optional<String> identifier$ = Type.IDENTIFIER.get(subTlv);
-        if ( ! identifier$.isPresent() ) {
-            System.err.println( "pair-verify: error: identifier not present");
+        if (!identifier$.isPresent()) {
+            LOG.error("pair-verify: error: identifier not present");
             return error(TLVError.AUTHENTICATION);
         }
         Optional<byte[]> signature$ = Type.SIGNATURE.get(subTlv);
-        if ( ! signature$.isPresent() ) {
-            System.err.println( "pair-verify: error: signature not present");
+        if (!signature$.isPresent()) {
+            LOG.error("pair-verify: error: signature not present");
             return error(TLVError.AUTHENTICATION);
         }
 
@@ -133,18 +138,19 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
 
         EdsaVerifier verifier = new EdsaVerifier(ltpk);
         try {
-            if ( ! verifier.verify(iosDeviceInfo, signature$.get()) ) {
-                System.err.println( "pair-verify: error: verification failed");
+            if (!verifier.verify(iosDeviceInfo, signature$.get())) {
+                LOG.error("pair-verify: error: verification failed");
                 return error(TLVError.AUTHENTICATION);
             }
         } catch (Exception e) {
-            System.err.println( "pair-verify: error: verification failed: " + e.getMessage());
+            LOG.error("pair-verify: error: verification failed: " + e.getMessage());
             return error(TLVError.AUTHENTICATION);
         }
 
         TLV out = new TLV();
         Type.STATE.set(out, this.currentState);
 
+        LOG.debug("pair-verify success");
         setKeysForSharedSecret(this.curveSecretKey, this.otherCurvePublicKey);
 
         return out;
@@ -158,7 +164,9 @@ public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage
     }
 
     private byte[] curvePublicKey;
+
     private byte[] curveSecretKey;
+
     private byte[] sessionKey;
 
     private byte[] otherCurvePublicKey;

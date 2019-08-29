@@ -28,7 +28,6 @@ public class FilesystemConfigurationProvider implements ConfigurationProvider {
     @Override
     public PlatformConfiguration forPlatform(Platform platform) {
         Path propsPath = propsPath(platform);
-        System.err.println( "load: " + propsPath);
         if ( Files.exists(propsPath)) {
             if ( Files.isDirectory(propsPath)) {
                 throw new IllegalArgumentException("Path " + propsPath + " is not a properties file");

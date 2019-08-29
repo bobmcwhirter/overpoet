@@ -5,17 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.apparatus.ApparatusType;
 import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.measurement.Temperature;
 import io.overpoet.core.sensor.Sensor;
 import io.overpoet.core.sensor.TemperatureSensor;
-import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.Characteristics;
 import io.overpoet.hap.common.model.Permission;
-import io.overpoet.hap.common.model.ServiceType;
-import io.overpoet.hap.common.model.ServiceTypeBuilder;
 import io.overpoet.hap.common.model.Services;
 import io.overpoet.hap.server.model.impl.ServerAccessoryImpl;
-import io.overpoet.homekit.ext.EveCharacteristics;
 import io.overpoet.homekit.server.Bridge;
 
 import static io.overpoet.core.apparatus.ApparatusType.THERMOMETER;
@@ -30,11 +25,9 @@ public class HomeKitManipulator implements Manipulator {
 
     @Override
     public void connect(Apparatus apparatus) {
-
         ApparatusType type = apparatus.type();
         if ( type == THERMOMETER ) {
-            ServerAccessoryImpl accessory = new ServerAccessoryImpl(2, a->{
-                AtomicInteger iid = new AtomicInteger(11);
+            ServerAccessoryImpl accessory = new ServerAccessoryImpl(aid.incrementAndGet(), a->{
                 a.addService(iid.incrementAndGet(), Services.ACCESSORY_INFORMATION, (s) -> {
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.MANUFACTURER, (c)->{
                         c.setStoredValue("temp");
@@ -64,6 +57,7 @@ public class HomeKitManipulator implements Manipulator {
                 a.addService(iid.incrementAndGet(), Services.TEMPERATURE_SENSOR, s->{
                     for (Sensor<?> sensor : apparatus.sensors()) {
                         if ( sensor instanceof TemperatureSensor ) {
+                            System.err.println( "adding sensor: " + sensor.key());
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.CURRENT_TEMPERATURE, c->{
                                 //c.setStoredValue();
                                 c.setStoredValue(0.0);
@@ -73,7 +67,7 @@ public class HomeKitManipulator implements Manipulator {
                                 });
                             });
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, c-> {
-                                c.setStoredValue("current temp");
+                                c.setStoredValue(sensor.key());
                                 c.setPermissions(Permission.PAIRED_READ);
                             });
                         }
@@ -85,4 +79,6 @@ public class HomeKitManipulator implements Manipulator {
     }
 
     private final Bridge bridge;
+    private final AtomicInteger aid = new AtomicInteger(1);
+    private final AtomicInteger iid = new AtomicInteger(11);
 }

@@ -28,7 +28,6 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
 
     @Override
     public void updateValue(Object value) {
-        System.err.println( " UPDATE VALUE " + this + " ==============> " + value);
         setStoredValue(value);
         for (Consumer<EventableCharacteristic> listener : this.listeners) {
             listener.accept(this);

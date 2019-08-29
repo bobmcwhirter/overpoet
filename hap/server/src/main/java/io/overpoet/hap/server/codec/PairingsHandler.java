@@ -30,14 +30,11 @@ public class PairingsHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        System.err.println( "attempt add pairing");
-
         TLV result = this.manager.handle(tlv);
         if (result != null) {
             Optional<Integer> err = Type.ERROR.get(result);
             boolean shouldClose = false;
             if ( err.isPresent() ) {
-                System.err.println( "AN ERROR OCCURRED during /pairings: " + Type.ERROR.get(result).get());
                 this.manager.reset();
                 shouldClose = true;
             }
@@ -45,8 +42,6 @@ public class PairingsHandler extends ChannelInboundHandlerAdapter {
             if (shouldClose) {
                 ctx.pipeline().close();
             }
-        } else {
-            System.err.println( "RESULT IS NULL");
         }
     }
 

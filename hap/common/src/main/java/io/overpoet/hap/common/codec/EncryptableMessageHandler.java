@@ -10,19 +10,15 @@ public class EncryptableMessageHandler extends ChannelOutboundHandlerAdapter {
 
     @Override
     public void write(ChannelHandlerContext ctx, Object msg, ChannelPromise promise) throws Exception {
-        //System.err.println("forward message " + msg + " // " + (msg instanceof LastHttpContent ) );
 
         super.write(ctx, msg, promise);
 
         if (msg instanceof SessionKeys) {
-            //System.err.println( "enabling encryption handling");
             this.enabled = true;
         }
 
         if (msg instanceof LastHttpContent) {
-            //System.err.println( "sending encryption complete");
             super.write(ctx, new EncryptableMessageComplete(), ctx.voidPromise());
-
         }
     }
 

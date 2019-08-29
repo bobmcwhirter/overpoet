@@ -80,9 +80,6 @@ public class ServerStorage implements ServerAuthStorage {
         if (this.config.get(CONFIGURATION_NUMBER) == null) {
             this.config.set(CONFIGURATION_NUMBER, "1");
         }
-        if ( ! isPaired() ) {
-            System.err.println( "pairing PIN: " + this.config.get(PIN));
-        }
     }
 
     @Override
@@ -105,16 +102,13 @@ public class ServerStorage implements ServerAuthStorage {
         boolean previouslyPaired = isPaired();
         this.config.set(LTPK(identifier), Base64.getEncoder().encodeToString(ltpk));
         this.config.set(CONFIGURATION_NUMBER, "" + (Integer.parseInt(this.config.get(CONFIGURATION_NUMBER))+1));
-        System.err.println( "** ADD PAIRING: " + identifier);
         if ( ! previouslyPaired ) {
-            System.err.println( "** RUN PAIRING CALLBACK");
             this.callback.run();
         }
     }
 
     @Override
     public void removePairing(String identifier) {
-        System.err.println( "** REMOVE PAIRING: " +identifier);
         this.config.remove(LTPK(identifier));
     }
 
@@ -128,9 +122,7 @@ public class ServerStorage implements ServerAuthStorage {
     }
 
     public boolean isPaired() {
-        boolean isPaired =  this.config.keys().stream().filter(e -> e.startsWith(LTPK_PREFIX)).findFirst().isPresent();
-        System.err.println( "is paired? " + isPaired);
-        return isPaired;
+        return this.config.keys().stream().filter(e -> e.startsWith(LTPK_PREFIX)).findFirst().isPresent();
     }
 
     public int getConfigurationNumber() {

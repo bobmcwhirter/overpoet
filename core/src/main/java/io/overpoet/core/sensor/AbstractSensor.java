@@ -17,7 +17,6 @@ abstract class AbstractSensor<T,MT extends Metadata<T>> implements Sensor<T> {
         if ( this.sink != null ) {
             this.sink.sink(value);
         }
-        System.err.println( this + " store value: " + value);
         this.lastValue = value;
     }
 
@@ -33,15 +32,13 @@ abstract class AbstractSensor<T,MT extends Metadata<T>> implements Sensor<T> {
 
     @Override
     public void onChange(Sink<T> sink) {
-        System.err.println( "adding onChange to " + this);
-        System.err.println( " percolate: " + this.lastValue);
         /*
-        this.sink = sink;
-        */
         this.sink = (v)->{
             lastValue = v;
             sink.sink(v);
         };
+        */
+        this.sink = sink;
         if ( this.lastValue != null ) {
             sink.sink(this.lastValue);
         }

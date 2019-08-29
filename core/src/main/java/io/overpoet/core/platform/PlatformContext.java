@@ -1,10 +1,10 @@
 package io.overpoet.core.platform;
 
-import java.nio.file.Path;
 import java.util.concurrent.ScheduledExecutorService;
 
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.core.ui.UI;
 
 public interface PlatformContext {
     void connect(Apparatus apparatus);
@@ -12,5 +12,6 @@ public interface PlatformContext {
 
     PlatformConfiguration configuration();
     ScheduledExecutorService executor();
+    UI ui();
 }
 

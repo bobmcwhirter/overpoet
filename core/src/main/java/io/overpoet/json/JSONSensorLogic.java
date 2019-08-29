@@ -5,9 +5,9 @@ import com.jayway.jsonpath.ReadContext;
 import io.overpoet.core.sensor.BaseSensorLogic;
 import net.minidev.json.JSONArray;
 
-public abstract class AbstractJSONSensorLogic<T, JSONTYPE> extends BaseSensorLogic<T> {
+public class JSONSensorLogic<T, JSONTYPE> extends BaseSensorLogic<T> {
 
-    protected AbstractJSONSensorLogic(Class<JSONTYPE> inputType, Converter<T, JSONTYPE> converter, JsonPath path) {
+    protected JSONSensorLogic(Class<JSONTYPE> inputType, Converter<T, JSONTYPE> converter, JsonPath path) {
         this.inputType = inputType;
         this.converter = converter;
         this.path = path;
@@ -22,13 +22,16 @@ public abstract class AbstractJSONSensorLogic<T, JSONTYPE> extends BaseSensorLog
     }
 
     public void process(ReadContext ctx) {
+        System.err.println( "processing: " + ctx );
         JSONArray array = ctx.read(this.path);
+        System.err.println( "result: " + array );
         if ( array.isEmpty() ) {
             return;
         }
         JSONTYPE in = (JSONTYPE) array.get(0);
+        System.err.println( "in: " + in );
         T out = convert(in);
-        System.err.println( "sinking temp: " + out);
+        System.err.println( "out: " + out );
         sink( out );
     }
 

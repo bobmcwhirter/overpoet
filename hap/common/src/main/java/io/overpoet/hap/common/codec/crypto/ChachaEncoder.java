@@ -43,7 +43,6 @@ public class ChachaEncoder {
     {
         byte[] firstBlock = new byte[64];
         cipher.processBytes(firstBlock, 0, firstBlock.length, firstBlock, 0);
-        System.err.println( "firstBlock: " + ByteUtil.toString(firstBlock));
 
         // NOTE: The BC implementation puts 'r' after 'k'
         System.arraycopy(firstBlock, 0, firstBlock, 32, 16);

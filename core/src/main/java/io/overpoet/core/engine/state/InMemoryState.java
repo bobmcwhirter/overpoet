@@ -5,8 +5,12 @@ import java.util.Map;
 
 import io.overpoet.core.actuator.Actuator;
 import io.overpoet.core.sensor.Sensor;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class InMemoryState implements State {
+
+    private static final Logger LOG = LoggerFactory.getLogger(InMemoryState.class);
 
     static InMemoryState NIL = new InMemoryState();
 
@@ -37,7 +41,7 @@ public class InMemoryState implements State {
         }
         Object prevValue = this.senses.get(sense.sensor());
         if (prevValue == null || !prevValue.equals(sense.value())) {
-            System.err.println("change: " + sense);
+            LOG.debug("state change {}", sense);
             try {
                 return new InMemoryState(this, sense);
             } finally {

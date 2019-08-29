@@ -16,7 +16,6 @@ public class JSONRequestDecoder extends MessageToMessageDecoder<FullHttpRequest>
 
     @Override
     protected void decode(ChannelHandlerContext ctx, FullHttpRequest msg, List<Object> out) throws Exception {
-        System.err.println( "DECODE REQUEST? " + msg);
         String contentType = msg.headers().get(HttpHeaderNames.CONTENT_TYPE);
         if ( contentType == null || ! contentType.equals("application/hap+json")) {
             out.add( msg.retain() );

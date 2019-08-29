@@ -1,6 +1,5 @@
 package io.overpoet.core.engine;
 
-import java.nio.file.Path;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
@@ -12,8 +11,13 @@ import io.overpoet.core.manipulator.Manipulator;
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformConfiguration;
 import io.overpoet.core.platform.PlatformContext;
+import io.overpoet.core.ui.UI;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 class PlatformManager {
+
+    private static final Logger LOG = LoggerFactory.getLogger(PlatformManager.class);
 
     PlatformManager(Engine engine) {
         this.engine = engine;
@@ -26,28 +30,28 @@ class PlatformManager {
 
         platforms.stream().map(ServiceLoader.Provider::get).forEach(e->{
             PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
-            init.put( e, new Context(config));
+            init.put( e, new Context(config, engine.uiManager().forPlatform(e)));
         });
 
-        System.err.println( "initialize platforms");
         Async.forEach(init.keySet().stream(), (p)->{
             Context c = init.get(p);
+            LOG.info("Initializing {} [{}]", p.name(), p.id());
             p.initialize(c);
         });
 
-        System.err.println( "start platforms");
         Async.forEach(init.keySet().stream(), (p)->{
+            LOG.info("Starting {} [{}]", p.name(), p.id());
             p.start();
         });
-        System.err.println( "started");
     }
 
     private final Engine engine;
 
     private class Context implements PlatformContext {
 
-        Context(PlatformConfiguration configuration) {
+        Context(PlatformConfiguration configuration, UI ui) {
             this.configuration = configuration;
+            this.ui = ui;
         }
 
         @Override
@@ -70,6 +74,12 @@ class PlatformManager {
             return PlatformManager.this.engine.executor();
         }
 
+        @Override
+        public UI ui() {
+            return this.ui;
+        }
+
         private final PlatformConfiguration configuration;
+        private final UI ui;
     }
 }

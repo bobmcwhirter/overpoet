@@ -29,8 +29,6 @@ public class JSONResponseEncoder extends MessageToMessageEncoder<JSONResponse> {
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.httpVersion(), msg.status(), buf);
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/hap+json");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());
-        System.err.println( "encoded JSON to: " + response);
-        System.err.println( "[" + buf.toString(Charset.forName("UTF-8")) + "]");
         out.add(response);
     }
 }

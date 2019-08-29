@@ -9,26 +9,37 @@ import java.util.concurrent.ScheduledExecutorService;
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.engine.state.InMemoryStateStream;
 import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.core.ui.impl.UIManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class Engine {
+    private static final Logger LOG = LoggerFactory.getLogger(Engine.class);
 
     public Engine(EngineConfiguration config) {
         this.config = config;
         this.executor = Executors.newScheduledThreadPool(10);
+        this.uiManager = new UIManager();
+        this.plaformManager = new PlatformManager(this);
     }
 
     EngineConfiguration configuration() {
         return this.config;
     }
 
-    public ScheduledExecutorService executor() {
+    ScheduledExecutorService executor() {
         return this.executor;
     }
 
+    UIManager uiManager() {
+        return this.uiManager;
+    }
+
     public void start() {
-        System.err.println( "start");
-        new PlatformManager(this).initialize();
+        LOG.info("Starting");
         try {
+            this.uiManager.start(8080);
+            //this.plaformManager.initialize();;
             this.latch.await();
         } catch (InterruptedException e) {
             e.printStackTrace();
@@ -39,13 +50,11 @@ public class Engine {
 
     }
 
-    public synchronized void connect(Apparatus apparatus) {
-        System.err.println( "connect(a) " + apparatus );
+    synchronized void connect(Apparatus apparatus) {
         ApparatusHolder wrapped = wrap(apparatus);
         this.apparatuses.add(wrapped);
 
         for (ManipulatorHolder manipulator : this.manipulators) {
-            System.err.println( "c(a) send app " + apparatus + " to " + manipulator );
             manipulator.connect(wrapped);
         }
     }
@@ -54,10 +63,8 @@ public class Engine {
         return new ApparatusHolder(this.state, apparatus);
     }
 
-    public synchronized void connect(Manipulator manipulator) {
-        System.err.println( "connect(m) " + manipulator );
+    synchronized void connect(Manipulator manipulator) {
         for (ApparatusHolder apparatus : this.apparatuses) {
-            System.err.println( "c(m) send app " + apparatus + " to " + manipulator );
             manipulator.connect(apparatus.forManipulator(manipulator));
         }
 
@@ -78,4 +85,8 @@ public class Engine {
     private Set<ManipulatorHolder> manipulators = new HashSet<>();
 
     private CountDownLatch latch = new CountDownLatch(1);
+
+    private PlatformManager plaformManager;
+    private final UIManager uiManager;
+
 }
