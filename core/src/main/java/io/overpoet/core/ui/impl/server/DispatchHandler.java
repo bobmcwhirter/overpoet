@@ -18,8 +18,12 @@ import io.overpoet.core.ui.impl.Dispatch;
 import io.overpoet.core.ui.impl.RequestImpl;
 import io.overpoet.core.ui.impl.ResponseImpl;
 import io.overpoet.core.ui.impl.UIManager;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 public class DispatchHandler extends ChannelInboundHandlerAdapter {
+
+    private static final Logger LOG = LoggerFactory.getLogger("overpoet.ui");
 
     public DispatchHandler(UIManager uiManager) {
         this.uiManager = uiManager;
@@ -32,11 +36,17 @@ public class DispatchHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
+
         FullHttpRequest httpReq = (FullHttpRequest) msg;
 
-        Dispatch<BaseHandler<?>> dispatch = this.uiManager.findDispatch(method(httpReq), path(httpReq));
+        UI.Method method = method(httpReq);
+        String path = path(httpReq);
+
+        LOG.info("request {} {}", method, path);
+
+        Dispatch<BaseHandler<?>> dispatch = this.uiManager.findDispatch(method, path);
         if ( dispatch != null ) {
-            System.err.println( "dispatch: " + dispatch);
+            LOG.info("dispatch {} {}", method, path);
             Request request = request(dispatch, httpReq);
             if (dispatch.handler() instanceof RequestHandler) {
                 Response response = response(ctx);
@@ -46,6 +56,7 @@ public class DispatchHandler extends ChannelInboundHandlerAdapter {
                 ((EventsHandler) dispatch.handler()).accept(request, sink);
             }
         } else {
+            LOG.info("not found {} {}", method, path);
             Response response = response(ctx);
             response.content().writeCharSequence("not found", Charset.forName("UTF-8"));
             response.status(404);

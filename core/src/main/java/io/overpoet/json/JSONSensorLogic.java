@@ -22,16 +22,12 @@ public class JSONSensorLogic<T, JSONTYPE> extends BaseSensorLogic<T> {
     }
 
     public void process(ReadContext ctx) {
-        System.err.println( "processing: " + ctx );
         JSONArray array = ctx.read(this.path);
-        System.err.println( "result: " + array );
         if ( array.isEmpty() ) {
             return;
         }
         JSONTYPE in = (JSONTYPE) array.get(0);
-        System.err.println( "in: " + in );
         T out = convert(in);
-        System.err.println( "out: " + out );
         sink( out );
     }
 

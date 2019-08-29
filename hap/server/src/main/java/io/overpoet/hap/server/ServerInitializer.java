@@ -39,7 +39,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     protected void initChannel(SocketChannel ch) throws Exception {
 
         //ch.pipeline().addLast(new DebugHandler("server-head"));
-        ch.pipeline().addLast(new HttpDebugHandler());
+        //ch.pipeline().addLast(new HttpDebugHandler());
         ch.pipeline().addLast(new SessionCryptoHandler());
         ch.pipeline().addLast(new HttpRequestDecoder());
         ch.pipeline().addLast(new HttpResponseEncoder());

@@ -3,7 +3,12 @@ package io.overpoet.core.engine;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
+import java.util.concurrent.Callable;
+import java.util.concurrent.ForkJoinPool;
+import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.atomic.AtomicInteger;
+import java.util.stream.Collectors;
 
 import io.overpoet.core.apparatus.Apparatus;
 import io.overpoet.core.concurrent.Async;
@@ -17,32 +22,43 @@ import org.slf4j.LoggerFactory;
 
 class PlatformManager {
 
-    private static final Logger LOG = LoggerFactory.getLogger(PlatformManager.class);
+    private static final Logger LOG = LoggerFactory.getLogger("overpoet.core.platform");
 
     PlatformManager(Engine engine) {
         this.engine = engine;
     }
+
 
     void initialize() {
         ServiceLoader<Platform> platforms = ServiceLoader.load(Platform.class);
 
         Map<Platform, Context> init = new HashMap<>();
 
-        platforms.stream().map(ServiceLoader.Provider::get).forEach(e->{
+        platforms.stream().map(ServiceLoader.Provider::get).forEach(e -> {
             PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
-            init.put( e, new Context(config, engine.uiManager().forPlatform(e)));
+            init.put(e, new Context(config, engine.uiManager().forPlatform(e)));
         });
 
-        Async.forEach(init.keySet().stream(), (p)->{
-            Context c = init.get(p);
-            LOG.info("Initializing {} [{}]", p.name(), p.id());
-            p.initialize(c);
-        });
+        this.engine.forkJoinPool().invokeAll(init.keySet().stream()
+                               .map(p -> {
+                                   return (Callable<Void>) () -> {
+                                       Context c = init.get(p);
+                                       LOG.info("initializing {} [{}]", p.name(), p.id());
+                                       p.initialize(c);
+                                       return null;
+                                   };
+                               })
+                               .collect(Collectors.toList()));
 
-        Async.forEach(init.keySet().stream(), (p)->{
-            LOG.info("Starting {} [{}]", p.name(), p.id());
-            p.start();
-        });
+        this.engine.forkJoinPool().invokeAll(init.keySet().stream()
+                               .map(p -> {
+                                   return (Callable<Void>) () -> {
+                                       LOG.info("starting up {} [{}]", p.name(), p.id());
+                                       p.start();
+                                       return null;
+                                   };
+                               })
+                               .collect(Collectors.toList()));
     }
 
     private final Engine engine;
@@ -80,6 +96,7 @@ class PlatformManager {
         }
 
         private final PlatformConfiguration configuration;
+
         private final UI ui;
     }
 }

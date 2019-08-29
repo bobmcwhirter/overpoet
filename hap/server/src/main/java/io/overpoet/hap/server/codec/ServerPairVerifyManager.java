@@ -25,7 +25,7 @@ import org.slf4j.LoggerFactory;
  * Created by bob on 9/10/18.
  */
 public class ServerPairVerifyManager extends PairVerifyManager<ServerAuthStorage> {
-    private static Logger LOG = LoggerFactory.getLogger(ServerPairVerifyManager.class);
+    private static Logger LOG = LoggerFactory.getLogger("overpoet.hap.server");
 
     public ServerPairVerifyManager(ServerAuthStorage authStorage) {
         super(authStorage);

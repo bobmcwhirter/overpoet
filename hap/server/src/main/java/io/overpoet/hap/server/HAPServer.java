@@ -1,6 +1,8 @@
 package io.overpoet.hap.server;
 
 import java.net.InetSocketAddress;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import io.netty.bootstrap.ServerBootstrap;
 import io.netty.channel.Channel;
@@ -21,7 +23,15 @@ public class HAPServer {
     }
 
     public int start(InetSocketAddress bind) throws InterruptedException {
-        EventLoopGroup workerGroup = new NioEventLoopGroup();
+        ThreadGroup group = new ThreadGroup("hap.server");
+        ThreadFactory threadFactory = new ThreadFactory() {
+            private AtomicInteger counter = new AtomicInteger();
+            @Override
+            public Thread newThread(Runnable r) {
+                return new Thread(group, r, "hap.server.event-loop-" + counter.incrementAndGet());
+            }
+        };
+        EventLoopGroup workerGroup = new NioEventLoopGroup(0, threadFactory);
         ServerBootstrap b = new ServerBootstrap(); // (1)
         b.group(workerGroup); // (2)
         b.channel(NioServerSocketChannel.class); // (3)

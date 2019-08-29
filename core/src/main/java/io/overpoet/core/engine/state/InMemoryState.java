@@ -10,7 +10,7 @@ import org.slf4j.LoggerFactory;
 
 public class InMemoryState implements State {
 
-    private static final Logger LOG = LoggerFactory.getLogger(InMemoryState.class);
+    private static final Logger LOG = LoggerFactory.getLogger("overpoet.core.state");
 
     static InMemoryState NIL = new InMemoryState();
 

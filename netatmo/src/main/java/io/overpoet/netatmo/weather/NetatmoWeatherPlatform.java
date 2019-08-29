@@ -32,7 +32,7 @@ import static io.overpoet.core.apparatus.ApparatusType.THERMOMETER;
 import static java.net.URI.create;
 
 public class NetatmoWeatherPlatform implements Platform {
-    private static final Logger LOG = LoggerFactory.getLogger(NetatmoWeatherPlatform.class);
+    private static final Logger LOG = LoggerFactory.getLogger("overpoet.netatmo");
 
     private static final Key KEY = Key.of("netatmo", "weather");
 
@@ -83,7 +83,6 @@ public class NetatmoWeatherPlatform implements Platform {
         LOG.debug("polling");
         try {
             String data = getData();
-            System.err.println(data);
             ReadContext ctx = JsonPath.parse(data);
 
             for (JSONSensorLogic<?, ?> logic : this.logics) {

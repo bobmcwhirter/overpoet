@@ -57,7 +57,6 @@ public class HomeKitManipulator implements Manipulator {
                 a.addService(iid.incrementAndGet(), Services.TEMPERATURE_SENSOR, s->{
                     for (Sensor<?> sensor : apparatus.sensors()) {
                         if ( sensor instanceof TemperatureSensor ) {
-                            System.err.println( "adding sensor: " + sensor.key());
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.CURRENT_TEMPERATURE, c->{
                                 //c.setStoredValue();
                                 c.setStoredValue(0.0);

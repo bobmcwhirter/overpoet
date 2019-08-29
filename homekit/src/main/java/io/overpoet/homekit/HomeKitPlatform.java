@@ -2,6 +2,7 @@ package io.overpoet.homekit;
 
 import java.io.IOException;
 import java.net.InetSocketAddress;
+import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -10,6 +11,7 @@ import javax.jmdns.ServiceInfo;
 
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformContext;
+import io.overpoet.core.ui.UI;
 import io.overpoet.hap.server.HAPServer;
 import io.overpoet.homekit.manipulator.HomeKitManipulator;
 import io.overpoet.homekit.server.Bridge;
@@ -19,7 +21,7 @@ import org.slf4j.LoggerFactory;
 
 public class HomeKitPlatform implements Platform {
 
-    private static final Logger LOG = LoggerFactory.getLogger(HomeKitPlatform.class);
+    private static final Logger LOG = LoggerFactory.getLogger("overpoet.homekit");
 
     public HomeKitPlatform() {
 
@@ -37,6 +39,7 @@ public class HomeKitPlatform implements Platform {
 
     @Override
     public void initialize(PlatformContext context) {
+        initializeUI(context);
         this.serverStorage = new ServerStorage(context.configuration());
         //this.bridgeAccessory = BridgeAccessoryBuilder.build();
         if (!this.serverStorage.isPaired()) {
@@ -63,6 +66,14 @@ public class HomeKitPlatform implements Platform {
         }
 
         context.connect(this.manipulator);
+    }
+
+    private void initializeUI(PlatformContext context) {
+        UI ui = context.ui();
+        ui.get( (req, resp)->{
+            resp.content().writeCharSequence("homekit", Charset.forName("UTF-8"));
+            resp.close();
+        });
     }
 
     private ServerStorage serverStorage;
