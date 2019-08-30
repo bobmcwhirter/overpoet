@@ -1,0 +1,22 @@
+#!/bin/sh
+
+DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
+
+ROOT=$DIR/..
+
+conf_dir=$ROOT/conf
+lib_jars=$ROOT/lib/*.jar
+platform_jars=$ROOT/platforms/*/lib/*.jar
+
+cp_array=(
+  $conf_dir
+  $lib_jars
+  $platform_jars
+)
+
+
+classpath=$(echo ${cp_array[@]} | tr ' ' ':')
+
+java -cp $classpath io.overpoet.Main
+
+

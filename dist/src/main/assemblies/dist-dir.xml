@@ -1,0 +1,45 @@
+<assembly xmlns="http://maven.apache.org/ASSEMBLY/2.0.0"
+    xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+    xsi:schemaLocation="http://maven.apache.org/ASSEMBLY/2.0.0 http://maven.apache.org/xsd/assembly-2.0.0.xsd">
+  <id>dist</id>
+  <formats>
+    <format>dir</format>
+  </formats>
+  <includeBaseDirectory>false</includeBaseDirectory>
+  <baseDirectory>dist</baseDirectory>
+  <fileSets>
+    <fileSet>
+      <outputDirectory>conf/</outputDirectory>
+      <directory>src/main/conf</directory>
+    </fileSet>
+    <fileSet>
+      <outputDirectory>bin/</outputDirectory>
+      <directory>src/main/bin</directory>
+      <fileMode>0755</fileMode>
+    </fileSet>
+  </fileSets>
+  <dependencySets>
+    <dependencySet>
+      <outputDirectory>lib/</outputDirectory>
+      <scope>compile</scope>
+      <excludes>
+        <exclude>io.overpoet:overpoet-dist</exclude>
+      </excludes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>lib/</outputDirectory>
+      <scope>provided</scope>
+      <excludes>
+        <exclude>io.overpoet:overpoet-dist</exclude>
+      </excludes>
+    </dependencySet>
+    <dependencySet>
+      <outputDirectory>platforms/</outputDirectory>
+      <unpack>true</unpack>
+      <includes>
+        <include>*:zip:platform:*</include>
+      </includes>
+    </dependencySet>
+  </dependencySets>
+
+</assembly>
