@@ -36,11 +36,25 @@
         <groupId>io.overpoet</groupId>
         <artifactId>overpoet-core</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-platform-assembly</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-platform-parent</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
         <artifactId>overpoet-netatmo</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
       </dependency>
 
 
@@ -49,6 +63,7 @@
         <groupId>io.overpoet</groupId>
         <artifactId>overpoet-homekit</artifactId>
         <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
@@ -75,11 +90,13 @@
         <groupId>io.netty</groupId>
         <artifactId>netty-all</artifactId>
         <version>${version.netty}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.glassfish</groupId>
         <artifactId>javax.json</artifactId>
         <version>${version.glassfish-json}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>org.jmdns</groupId>
@@ -107,6 +124,7 @@
         <groupId>com.jayway.jsonpath</groupId>
         <artifactId>json-path</artifactId>
         <version>${version.jsonpath}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>junit</groupId>
@@ -149,10 +167,10 @@
 
   <modules>
     <module>core</module>
-    <module>netatmo</module>
+
+    <module>platform</module>
 
     <module>hap</module>
-    <module>homekit</module>
 
     <module>dist</module>
   </modules>

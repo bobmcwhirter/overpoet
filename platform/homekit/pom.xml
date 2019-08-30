@@ -1,14 +1,17 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
   <modelVersion>4.0.0</modelVersion>
+
+  <groupId>io.overpoet</groupId>
+  <artifactId>overpoet-homekit</artifactId>
+  <description>Overpoet HomeKit</description>
+  <packaging>jar</packaging>
+
   <parent>
     <groupId>io.overpoet</groupId>
-    <artifactId>overpoet-hap-parent</artifactId>
+    <artifactId>overpoet-platform-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
-
-  <artifactId>overpoet-hap-server</artifactId>
-  <packaging>jar</packaging>
 
   <dependencies>
     <dependency>
@@ -17,7 +20,11 @@
     </dependency>
     <dependency>
       <groupId>io.overpoet</groupId>
-      <artifactId>overpoet-hap-common</artifactId>
+      <artifactId>overpoet-hap-client</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.overpoet</groupId>
+      <artifactId>overpoet-hap-server</artifactId>
     </dependency>
     <dependency>
       <groupId>org.glassfish</groupId>
@@ -28,10 +35,5 @@
       <artifactId>netty-all</artifactId>
     </dependency>
   </dependencies>
-
-  <build>
-    <plugins>
-    </plugins>
-  </build>
 
 </project>
