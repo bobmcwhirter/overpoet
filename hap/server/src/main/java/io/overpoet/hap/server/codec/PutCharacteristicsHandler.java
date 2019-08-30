@@ -22,7 +22,7 @@ import org.slf4j.LoggerFactory;
 
 public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
 
-    private static Logger LOG = LoggerFactory.getLogger(PutCharacteristicsHandler.class);
+    private static Logger LOG = LoggerFactory.getLogger("overpoet.hap.server");
 
     public PutCharacteristicsHandler(ServerAccessoryDatabase db) {
         this.db = db;

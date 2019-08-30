@@ -23,10 +23,11 @@ public class Advertiser {
                                               false,
                                               txtRecord());
 
-        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
-            this.bonjour.unregisterService(serviceInfo);
-        }));
-        this.bonjour.registerService(serviceInfo);
+        //Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            //System.err.println( "unadvertising");
+            //this.bonjour.unregisterService(serviceInfo);
+        //}));
+        this.bonjour.registerService(this.serviceInfo);
     }
 
     private Map<String, ?> txtRecord() {

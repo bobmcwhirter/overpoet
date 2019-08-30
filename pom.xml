@@ -20,7 +20,7 @@
     <version.ecc>1.0.1</version.ecc>
     <version.paho>1.2.0</version.paho>
     <version.junit>4.12</version.junit>
-    <version.netty>4.1.29.Final</version.netty>
+    <version.netty>4.1.39.Final</version.netty>
     <version.nimbusds>2.0.2</version.nimbusds>
     <version.glassfish-json>1.0.4</version.glassfish-json>
     <version.jmdns>3.5.4</version.jmdns>

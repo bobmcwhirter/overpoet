@@ -41,5 +41,6 @@ public class Main {
         Engine engine = new Engine(config);
 
         engine.start();
+        System.err.println( "start returned");
     }
 }

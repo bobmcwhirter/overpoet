@@ -2,21 +2,19 @@ package io.overpoet.core.engine;
 
 import java.util.ArrayList;
 import java.util.HashSet;
+import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinTask;
-import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.atomic.AtomicInteger;
 
 import io.overpoet.core.apparatus.Apparatus;
+import io.overpoet.core.concurrent.NamedForkJoinWorkerThreadFactory;
+import io.overpoet.core.concurrent.NamedThreadFactory;
 import io.overpoet.core.engine.state.InMemoryStateStream;
 import io.overpoet.core.manipulator.Manipulator;
 import io.overpoet.core.ui.impl.UIManager;
-import org.jetbrains.annotations.NotNull;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -25,30 +23,18 @@ public class Engine {
 
     public Engine(EngineConfiguration config) {
         this.config = config;
-        this.executor = Executors.newScheduledThreadPool(10, new ThreadFactory() {
-            private AtomicInteger counter = new AtomicInteger();
-
-            @Override
-            public Thread newThread(@NotNull Runnable r) {
-                return new Thread(r, "core-executor-" + counter.getAndIncrement());
-            }
-        });
-
-        ForkJoinPool.ForkJoinWorkerThreadFactory threadFactory = new ForkJoinPool.ForkJoinWorkerThreadFactory() {
-            private AtomicInteger counter = new AtomicInteger();
-
-            @Override
-            public ForkJoinWorkerThread newThread(ForkJoinPool pool) {
-                ForkJoinWorkerThread thread = new ForkJoinWorkerThread(pool) {
-                };
-                thread.setName("core-pool-" + counter.getAndIncrement());
-                return thread;
-            }
-        };
-        this.pool = new ForkJoinPool(4, threadFactory, this::handle, true);
-
-        this.uiManager = new UIManager();
+        this.executor = Executors.newScheduledThreadPool(10, new NamedThreadFactory("core-executor"));
+        this.pool = new ForkJoinPool(4,
+                                     new NamedForkJoinWorkerThreadFactory("core-pool"),
+                                     this::handle,
+                                     true);
+        this.uiManager = new UIManager(this.pool);
         this.plaformManager = new PlatformManager(this);
+
+        Runtime.getRuntime().addShutdownHook(new Thread(() -> {
+            LOG.info("shutting down");
+            stop();
+        }));
     }
 
     void handle(Thread thread, Throwable t) {
@@ -72,25 +58,43 @@ public class Engine {
         try {
             this.uiManager.start(8080);
             this.plaformManager.initialize();
-            ;
             LOG.info("start up complete");
-            this.latch.await();
+            this.latch = new CountDownLatch(1);
+            new Thread(() -> {
+                try {
+                    this.latch.await();
+                    this.plaformManager.stop();
+                    this.uiManager.stop();
+                    this.pool.shutdown();
+                    this.executor.shutdown();
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }).run();
         } catch (InterruptedException e) {
             e.printStackTrace();
         }
     }
 
     public void stop() {
-
+        if (this.latch != null) {
+            LOG.info("stopping");
+            this.latch.countDown();
+        }
     }
 
     synchronized void connect(Apparatus apparatus) {
         ApparatusHolder wrapped = wrap(apparatus);
         this.apparatuses.add(wrapped);
-
-        for (ManipulatorHolder manipulator : this.manipulators) {
-            manipulator.connect(wrapped);
-        }
+        List<ManipulatorHolder> currentManipulators = new ArrayList<>();
+        currentManipulators.addAll(this.manipulators);
+        this.pool.submit(
+                () -> {
+                    for (ManipulatorHolder manipulator : this.manipulators) {
+                        manipulator.connect(wrapped);
+                    }
+                }
+        );
     }
 
     private ApparatusHolder wrap(Apparatus apparatus) {
@@ -131,7 +135,7 @@ public class Engine {
 
     private Set<ManipulatorHolder> manipulators = new HashSet<>();
 
-    private CountDownLatch latch = new CountDownLatch(1);
+    private CountDownLatch latch;
 
     private PlatformManager plaformManager;
 

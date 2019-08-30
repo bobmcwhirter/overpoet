@@ -13,7 +13,7 @@ public interface Platform {
 
     }
 
-    default void stop() {
+    default void stop() throws InterruptedException {
 
     }
 }

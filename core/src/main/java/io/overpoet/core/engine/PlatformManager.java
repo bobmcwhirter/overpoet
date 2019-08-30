@@ -4,14 +4,10 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
-import java.util.concurrent.ForkJoinPool;
-import java.util.concurrent.ForkJoinWorkerThread;
 import java.util.concurrent.ScheduledExecutorService;
-import java.util.concurrent.atomic.AtomicInteger;
 import java.util.stream.Collectors;
 
 import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.concurrent.Async;
 import io.overpoet.core.manipulator.Manipulator;
 import io.overpoet.core.platform.Platform;
 import io.overpoet.core.platform.PlatformConfiguration;
@@ -30,38 +26,45 @@ class PlatformManager {
 
 
     void initialize() {
-        ServiceLoader<Platform> platforms = ServiceLoader.load(Platform.class);
+        ServiceLoader<Platform> platformsLoader = ServiceLoader.load(Platform.class);
 
-        Map<Platform, Context> init = new HashMap<>();
-
-        platforms.stream().map(ServiceLoader.Provider::get).forEach(e -> {
+        platformsLoader.stream().map(ServiceLoader.Provider::get).forEach(e -> {
             PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
-            init.put(e, new Context(config, engine.uiManager().forPlatform(e)));
+            this.platforms.put(e, new Context(config, engine.uiManager().forPlatform(e)));
         });
 
-        this.engine.forkJoinPool().invokeAll(init.keySet().stream()
-                               .map(p -> {
-                                   return (Callable<Void>) () -> {
-                                       Context c = init.get(p);
-                                       LOG.info("initializing {} [{}]", p.name(), p.id());
-                                       p.initialize(c);
-                                       return null;
-                                   };
+        this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
+                               .map(p -> (Callable<Void>) () -> {
+                                   Context c = this.platforms.get(p);
+                                   LOG.info("initializing {} [{}]", p.name(), p.id());
+                                   p.initialize(c);
+                                   return null;
                                })
                                .collect(Collectors.toList()));
 
-        this.engine.forkJoinPool().invokeAll(init.keySet().stream()
-                               .map(p -> {
-                                   return (Callable<Void>) () -> {
-                                       LOG.info("starting up {} [{}]", p.name(), p.id());
-                                       p.start();
-                                       return null;
-                                   };
+        this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
+                               .map(p -> (Callable<Void>) () -> {
+                                   LOG.info("starting up {} [{}]", p.name(), p.id());
+                                   p.start();
+                                   return null;
                                })
                                .collect(Collectors.toList()));
     }
 
+    void stop() {
+        this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
+                                                     .map(p -> (Callable<Void>) () -> {
+                                                         LOG.info("stopping {} [{}]", p.name(), p.id());
+                                                         p.stop();
+                                                         return null;
+                                                     })
+                                                     .collect(Collectors.toList()));
+    }
+
     private final Engine engine;
+    private final Map<Platform, Context> platforms = new HashMap<>();
+
+
 
     private class Context implements PlatformContext {
 

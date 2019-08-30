@@ -42,21 +42,23 @@ public class DispatchHandler extends ChannelInboundHandlerAdapter {
         UI.Method method = method(httpReq);
         String path = path(httpReq);
 
-        LOG.info("request {} {}", method, path);
+        LOG.debug("request {} {}", method, path);
 
         Dispatch<BaseHandler<?>> dispatch = this.uiManager.findDispatch(method, path);
         if ( dispatch != null ) {
-            LOG.info("dispatch {} {}", method, path);
+            LOG.debug("dispatch {} {}", method, path);
             Request request = request(dispatch, httpReq);
             if (dispatch.handler() instanceof RequestHandler) {
                 Response response = response(ctx);
-                ((RequestHandler) dispatch.handler()).accept(request, response);
+                this.uiManager.dispatch( ()->{
+                    ((RequestHandler) dispatch.handler()).accept(request, response);
+                });
             } else if (dispatch.handler() instanceof EventsHandler) {
                 EventSink sink = null;
                 ((EventsHandler) dispatch.handler()).accept(request, sink);
             }
         } else {
-            LOG.info("not found {} {}", method, path);
+            LOG.warn("not found {} {}", method, path);
             Response response = response(ctx);
             response.content().writeCharSequence("not found", Charset.forName("UTF-8"));
             response.status(404);
@@ -70,8 +72,8 @@ public class DispatchHandler extends ChannelInboundHandlerAdapter {
 
     private Response response(ChannelHandlerContext ctx) {
         return new ResponseImpl(ctx.alloc().compositeBuffer(), (response)->{
-            System.err.println( "sending it down the pipeline");
             ctx.pipeline().writeAndFlush(response);
+            LOG.debug( "response complete");
         });
     }
 

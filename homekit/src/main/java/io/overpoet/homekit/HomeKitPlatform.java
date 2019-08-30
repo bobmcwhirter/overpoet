@@ -76,6 +76,12 @@ public class HomeKitPlatform implements Platform {
         });
     }
 
+    @Override
+    public void stop() throws InterruptedException {
+        this.advertiser.stop();
+        this.hapServer.stop();
+    }
+
     private ServerStorage serverStorage;
 
     private HAPServer hapServer;

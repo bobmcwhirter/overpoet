@@ -9,6 +9,7 @@ import io.netty.channel.Channel;
 import io.netty.channel.EventLoopGroup;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioServerSocketChannel;
+import io.overpoet.core.concurrent.NamedThreadFactory;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import io.overpoet.hap.server.model.ServerAccessoryDatabase;
 
@@ -23,15 +24,9 @@ public class HAPServer {
     }
 
     public int start(InetSocketAddress bind) throws InterruptedException {
-        ThreadGroup group = new ThreadGroup("hap.server");
-        ThreadFactory threadFactory = new ThreadFactory() {
-            private AtomicInteger counter = new AtomicInteger();
-            @Override
-            public Thread newThread(Runnable r) {
-                return new Thread(group, r, "hap.server.event-loop-" + counter.incrementAndGet());
-            }
-        };
-        EventLoopGroup workerGroup = new NioEventLoopGroup(0, threadFactory);
+        EventLoopGroup workerGroup = new NioEventLoopGroup(0,
+                                                           new NamedThreadFactory("hap.server.loop")
+        );
         ServerBootstrap b = new ServerBootstrap(); // (1)
         b.group(workerGroup); // (2)
         b.channel(NioServerSocketChannel.class); // (3)
@@ -40,6 +35,10 @@ public class HAPServer {
 
         this.channel = b.bind(bind.getAddress(), bind.getPort()).sync().channel();
         return ((InetSocketAddress)this.channel.localAddress()).getPort();
+    }
+
+    public void stop() throws InterruptedException {
+        this.channel.close().sync();
     }
 
     public Channel channel() {
