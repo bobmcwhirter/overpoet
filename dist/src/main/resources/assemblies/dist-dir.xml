@@ -21,20 +21,30 @@
   <dependencySets>
     <dependencySet>
       <outputDirectory>lib/</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
       <scope>compile</scope>
-      <excludes>
-        <exclude>io.overpoet:overpoet-dist</exclude>
-      </excludes>
+      <includes>
+        <include>io.overpoet:overpoet-boot</include>
+        <include>io.overpoet:overpoet-engine</include>
+      </includes>
     </dependencySet>
     <dependencySet>
-      <outputDirectory>lib/</outputDirectory>
-      <scope>provided</scope>
-      <excludes>
-        <exclude>io.overpoet:overpoet-dist</exclude>
-      </excludes>
+      <outputDirectory>lib/common/</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
+      <useTransitiveFiltering>true</useTransitiveFiltering>
+      <useTransitiveDependencies>true</useTransitiveDependencies>
+      <scope>compile</scope>
+      <includes>
+        <include>io.overpoet:overpoet-spi</include>
+        <include>io.netty:netty-all</include>
+        <include>com.jayway.jsonpath:json-path</include>
+        <include>org.glassfish:javax.json</include>
+      </includes>
     </dependencySet>
     <dependencySet>
       <outputDirectory>platforms/</outputDirectory>
+      <useProjectArtifact>false</useProjectArtifact>
       <unpack>true</unpack>
       <includes>
         <include>*:zip:bundle:*</include>

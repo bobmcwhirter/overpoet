@@ -18,10 +18,12 @@
       <groupId>io.overpoet</groupId>
       <artifactId>overpoet-spi</artifactId>
     </dependency>
+<!--
     <dependency>
       <groupId>io.overpoet</groupId>
       <artifactId>overpoet-engine</artifactId>
     </dependency>
+-->
     <dependency>
       <groupId>io.overpoet</groupId>
       <artifactId>overpoet-hap-client</artifactId>
@@ -30,6 +32,7 @@
       <groupId>io.overpoet</groupId>
       <artifactId>overpoet-hap-server</artifactId>
     </dependency>
+<!--
     <dependency>
       <groupId>org.glassfish</groupId>
       <artifactId>javax.json</artifactId>
@@ -38,6 +41,7 @@
       <groupId>io.netty</groupId>
       <artifactId>netty-all</artifactId>
     </dependency>
+-->
   </dependencies>
 
 </project>
