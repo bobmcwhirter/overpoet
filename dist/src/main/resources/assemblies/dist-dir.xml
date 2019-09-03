@@ -41,6 +41,7 @@
         <include>com.jayway.jsonpath:json-path</include>
         <include>org.glassfish:javax.json</include>
         <include>org.slf4j:slf4j-log4j12</include>
+        <include>com.squareup.okhttp3:okhttp</include>
       </includes>
     </dependencySet>
     <dependencySet>

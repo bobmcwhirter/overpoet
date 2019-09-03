@@ -1,9 +1,22 @@
 package io.overpoet.engine.engine;
 
+import java.io.IOException;
+import java.net.URL;
+import java.net.URLClassLoader;
+import java.nio.file.DirectoryStream;
+import java.nio.file.FileVisitResult;
+import java.nio.file.Files;
+import java.nio.file.Path;
+import java.nio.file.SimpleFileVisitor;
+import java.nio.file.attribute.BasicFileAttributes;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
+import java.util.concurrent.ExecutionException;
+import java.util.concurrent.Future;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
@@ -24,34 +37,49 @@ class PlatformManager {
         this.engine = engine;
     }
 
-
-    void initialize() {
-        ServiceLoader<Platform> platformsLoader = ServiceLoader.load(Platform.class);
-
-        platformsLoader.stream().map(ServiceLoader.Provider::get).forEach(e -> {
-            PlatformConfiguration config = this.engine.configuration().configurationProvider().forPlatform(e);
-            this.platforms.put(e, new Context(config, engine.uiManager().forPlatform(e)));
+    void initialize(Path root) throws IOException, ExecutionException, InterruptedException {
+        System.err.println("init platforms from " + root);
+        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+            @Override
+            public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
+                if (dir.getParent().getParent().equals(root)) {
+                    if (Files.exists(dir.resolve("platform.properties"))) {
+                        PlatformManager.this.platforms.add(new PlatformHolder(dir, PlatformManager.this));
+                        return FileVisitResult.SKIP_SUBTREE;
+                    }
+                }
+                return FileVisitResult.CONTINUE;
+            }
         });
 
-        this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
-                               .map(p -> (Callable<Void>) () -> {
-                                   Context c = this.platforms.get(p);
-                                   LOG.info("initializing {} [{}]", p.name(), p.id());
-                                   p.initialize(c);
-                                   return null;
-                               })
-                               .collect(Collectors.toList()));
-
-        this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
-                               .map(p -> (Callable<Void>) () -> {
-                                   LOG.info("starting up {} [{}]", p.name(), p.id());
-                                   p.start();
-                                   return null;
-                               })
-                               .collect(Collectors.toList()));
+        initialize();
     }
 
+    private void initialize() throws ExecutionException, InterruptedException {
+        await( this.engine.forkJoinPool().invokeAll(
+                this.platforms.stream().map(PlatformHolder::initialize)
+                        .collect(Collectors.toList())
+        ) );
+
+        await( this.engine.forkJoinPool().invokeAll(
+                this.platforms.stream().map(PlatformHolder::start)
+                        .collect(Collectors.toList())
+        )) ;
+    }
+
+    private void await(List<Future<Void>> all) throws ExecutionException, InterruptedException {
+        for (Future<Void> each : all) {
+            each.get();
+        }
+    }
+
+
     void stop() {
+            this.engine.forkJoinPool().invokeAll(
+                this.platforms.stream().map(PlatformHolder::stop)
+                        .collect(Collectors.toList())
+        );
+            /*
         this.engine.forkJoinPool().invokeAll(this.platforms.keySet().stream()
                                                      .map(p -> (Callable<Void>) () -> {
                                                          LOG.info("stopping {} [{}]", p.name(), p.id());
@@ -59,14 +87,28 @@ class PlatformManager {
                                                          return null;
                                                      })
                                                      .collect(Collectors.toList()));
+             */
+    }
+
+    PlatformContext contextForPlatform(Platform p) {
+        return new Context(configurationForPlatform(p), uiForPlatform(p));
+    }
+
+    PlatformConfiguration configurationForPlatform(Platform p) {
+        return this.engine.configuration().configurationProvider().forPlatform(p);
+
+    }
+
+    UI uiForPlatform(Platform p) {
+        return this.engine.uiManager().forPlatform(p);
     }
 
     private final Engine engine;
-    private final Map<Platform, Context> platforms = new HashMap<>();
 
+    //private final Map<Platform, Context> platforms = new HashMap<>();
+    private final List<PlatformHolder> platforms = new ArrayList<>();
 
-
-    private class Context implements PlatformContext {
+    class Context implements PlatformContext {
 
         Context(PlatformConfiguration configuration, UI ui) {
             this.configuration = configuration;

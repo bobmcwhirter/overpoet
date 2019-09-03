@@ -1,10 +1,13 @@
 package io.overpoet.engine.engine;
 
+import java.io.IOException;
+import java.nio.file.Paths;
 import java.util.ArrayList;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Set;
 import java.util.concurrent.CountDownLatch;
+import java.util.concurrent.ExecutionException;
 import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
@@ -57,7 +60,8 @@ public class Engine {
         LOG.info("start up");
         try {
             this.uiManager.start(8080);
-            this.plaformManager.initialize();
+            //this.plaformManager.initialize();
+            this.plaformManager.initialize(Paths.get(System.getProperty("overpoet.home")).resolve("platforms"));
             LOG.info("start up complete");
             this.latch = new CountDownLatch(1);
             new Thread(() -> {
@@ -71,8 +75,8 @@ public class Engine {
                     e.printStackTrace();
                 }
             }).run();
-        } catch (InterruptedException e) {
-            e.printStackTrace();
+        } catch (InterruptedException | IOException | ExecutionException e) {
+            LOG.error("error during startup", e);
         }
     }
 
