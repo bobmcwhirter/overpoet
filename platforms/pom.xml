@@ -21,51 +21,37 @@
     </dependency>
   </dependencies>
 
-  <build>
-    <plugins>
-      <plugin>
-        <artifactId>maven-assembly-plugin</artifactId>
-        <dependencies>
-          <dependency>
-            <groupId>io.overpoet</groupId>
-            <artifactId>overpoet-platform-assembly</artifactId>
-            <version>${project.version}</version>
-          </dependency>
-        </dependencies>
-        <executions>
-          <execution>
-            <id>generate-zip</id>
-            <phase>package</phase>
-            <goals>
-              <goal>single</goal>
-            </goals>
-            <configuration>
-              <descriptorRefs>
-                <descriptorRef>platform</descriptorRef>
-              </descriptorRefs>
-            </configuration>
-          </execution>
-        </executions>
-      </plugin>
-    </plugins>
-  </build>
-
   <profiles>
     <profile>
-      <id>do-not-generate-in-parent</id>
+      <id>bundle</id>
       <activation>
         <file>
-          <exists>no-platform.txt</exists>
+          <exists>platform.properties</exists>
         </file>
       </activation>
       <build>
         <plugins>
           <plugin>
             <artifactId>maven-assembly-plugin</artifactId>
+            <dependencies>
+              <dependency>
+                <groupId>io.overpoet</groupId>
+                <artifactId>overpoet-platform-assembly</artifactId>
+                <version>${project.version}</version>
+              </dependency>
+            </dependencies>
             <executions>
               <execution>
                 <id>generate-zip</id>
-                <phase>NONE</phase>
+                <phase>package</phase>
+                <goals>
+                  <goal>single</goal>
+                </goals>
+                <configuration>
+                  <descriptorRefs>
+                    <descriptorRef>bundle</descriptorRef>
+                  </descriptorRefs>
+                </configuration>
               </execution>
             </executions>
           </plugin>

@@ -37,7 +37,7 @@
       <outputDirectory>platforms/</outputDirectory>
       <unpack>true</unpack>
       <includes>
-        <include>*:zip:platform:*</include>
+        <include>*:zip:bundle:*</include>
       </includes>
     </dependencySet>
   </dependencySets>

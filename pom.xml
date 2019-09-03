@@ -52,15 +52,15 @@
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
-        <artifactId>overpoet-netatmo</artifactId>
+        <artifactId>overpoet-netatmo-platform</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
-        <artifactId>overpoet-netatmo</artifactId>
+        <artifactId>overpoet-netatmo-platform</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <classifier>platform</classifier>
+        <classifier>bundle</classifier>
         <type>zip</type>
       </dependency>
 
@@ -68,15 +68,15 @@
       <!-- HomeKit -->
       <dependency>
         <groupId>io.overpoet</groupId>
-        <artifactId>overpoet-homekit</artifactId>
+        <artifactId>overpoet-homekit-platform</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
-        <artifactId>overpoet-homekit</artifactId>
+        <artifactId>overpoet-homekit-platform</artifactId>
         <version>1.0.0-SNAPSHOT</version>
-        <classifier>platform</classifier>
+        <classifier>bundle</classifier>
         <type>zip</type>
       </dependency>
       <dependency>
@@ -182,7 +182,7 @@
   <modules>
     <module>core</module>
 
-    <module>platform</module>
+    <module>platforms</module>
 
     <module>hap</module>
 

@@ -3,13 +3,13 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.overpoet</groupId>
-  <artifactId>overpoet-netatmo</artifactId>
-  <description>Overpoet Netatmo</description>
+  <artifactId>overpoet-homekit-platform</artifactId>
+  <description>Overpoet HomeKit Platform</description>
   <packaging>jar</packaging>
 
   <parent>
     <groupId>io.overpoet</groupId>
-    <artifactId>overpoet-platform-parent</artifactId>
+    <artifactId>overpoet-homekit-parent</artifactId>
     <version>1.0.0-SNAPSHOT</version>
   </parent>
 
@@ -19,22 +19,20 @@
       <artifactId>overpoet-core</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.squareup.okhttp3</groupId>
-      <artifactId>okhttp</artifactId>
+      <groupId>io.overpoet</groupId>
+      <artifactId>overpoet-hap-client</artifactId>
     </dependency>
     <dependency>
-      <groupId>com.jayway.jsonpath</groupId>
-      <artifactId>json-path</artifactId>
+      <groupId>io.overpoet</groupId>
+      <artifactId>overpoet-hap-server</artifactId>
     </dependency>
     <dependency>
-      <groupId>junit</groupId>
-      <artifactId>junit</artifactId>
-      <scope>test</scope>
+      <groupId>org.glassfish</groupId>
+      <artifactId>javax.json</artifactId>
     </dependency>
     <dependency>
-      <groupId>org.easytesting</groupId>
-      <artifactId>fest-assert-core</artifactId>
-      <scope>test</scope>
+      <groupId>io.netty</groupId>
+      <artifactId>netty-all</artifactId>
     </dependency>
   </dependencies>
 
