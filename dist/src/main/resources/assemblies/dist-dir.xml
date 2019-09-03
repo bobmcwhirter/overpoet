@@ -40,6 +40,7 @@
         <include>io.netty:netty-all</include>
         <include>com.jayway.jsonpath:json-path</include>
         <include>org.glassfish:javax.json</include>
+        <include>org.slf4j:slf4j-log4j12</include>
       </includes>
     </dependencySet>
     <dependencySet>

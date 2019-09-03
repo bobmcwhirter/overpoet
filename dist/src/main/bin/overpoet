@@ -2,21 +2,12 @@
 
 DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" >/dev/null 2>&1 && pwd )"
 
-ROOT=$DIR/..
+OVERPOET_HOME="$( cd $DIR/.. > /dev/null 2>&1 && pwd )"
 
-conf_dir=$ROOT/conf
-lib_jars=$ROOT/lib/*.jar
-platform_jars=$ROOT/platforms/*/*/lib/*.jar
-
-cp_array=(
-  $conf_dir
-  $lib_jars
-  $platform_jars
+boot_jar_path=$OVERPOET_HOME/lib/overpoet-boot*.jar
+boot_array=(
+  $boot_jar_path
 )
+classpath=$(echo ${boot_array[@]} | tr ' ' ':')
 
-
-classpath=$(echo ${cp_array[@]} | tr ' ' ':')
-
-java -cp $classpath io.overpoet.Main
-
-
+java -Doverpoet.home=$OVERPOET_HOME -cp $classpath io.overpoet.boot.Main $*
