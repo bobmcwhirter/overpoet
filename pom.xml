@@ -34,7 +34,7 @@
     <dependencies>
       <dependency>
         <groupId>io.overpoet</groupId>
-        <artifactId>overpoet-core</artifactId>
+        <artifactId>overpoet-engine</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
@@ -180,11 +180,11 @@
   </build>
 
   <modules>
-    <module>core</module>
+    <module>boot</module>
+    <module>engine</module>
+    <module>spi</module>
 
     <module>platforms</module>
-
-    <module>hap</module>
 
     <module>dist</module>
   </modules>

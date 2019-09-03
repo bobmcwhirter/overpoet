@@ -16,7 +16,7 @@
   <dependencies>
     <dependency>
       <groupId>io.overpoet</groupId>
-      <artifactId>overpoet-core</artifactId>
+      <artifactId>overpoet-engine</artifactId>
     </dependency>
     <dependency>
       <groupId>com.squareup.okhttp3</groupId>

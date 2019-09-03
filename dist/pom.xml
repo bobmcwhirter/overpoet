@@ -17,7 +17,7 @@
   <dependencies>
     <dependency>
       <groupId>io.overpoet</groupId>
-      <artifactId>overpoet-core</artifactId>
+      <artifactId>overpoet-engine</artifactId>
       <scope>compile</scope>
     </dependency>
 <!--

@@ -3,8 +3,8 @@
   <modelVersion>4.0.0</modelVersion>
 
   <groupId>io.overpoet</groupId>
-  <artifactId>overpoet-core</artifactId>
-  <description>Overpoet Core</description>
+  <artifactId>overpoet-engine</artifactId>
+  <description>Overpoet Engine</description>
   <packaging>jar</packaging>
 
   <parent>
