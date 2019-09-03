@@ -1,7 +1,7 @@
 package io.overpoet.core.engine;
 
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.manipulator.Manipulator;
 
 class ManipulatorHolder {
 

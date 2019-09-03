@@ -4,10 +4,10 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalUnit;
 import java.util.function.Function;
 
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.geo.Location;
+import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.geo.Location;
 import io.overpoet.core.solar.Sun;
-import io.overpoet.core.chrono.TimeSlice;
+import io.overpoet.spi.chrono.TimeSlice;
 
 public class TimeCondition extends SensorCondition<TimeSlice> {
     public TimeCondition(Sensor<TimeSlice> sensor, Function<TimeSlice, Boolean> condition) {

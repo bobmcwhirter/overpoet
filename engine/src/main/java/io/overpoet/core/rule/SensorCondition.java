@@ -2,7 +2,7 @@ package io.overpoet.core.rule;
 
 import java.util.function.Function;
 
-import io.overpoet.core.sensor.Sensor;
+import io.overpoet.spi.sensor.Sensor;
 
 public class SensorCondition<T> extends Condition {
 

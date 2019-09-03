@@ -1,9 +1,9 @@
 package io.overpoet.core.rule;
 
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.geo.Location;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.geo.Location;
 
 public class RuleEngine implements Manipulator {
 

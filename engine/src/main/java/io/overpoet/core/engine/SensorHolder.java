@@ -6,15 +6,15 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.overpoet.Key;
 import io.overpoet.core.engine.state.InMemoryStateStream;
 import io.overpoet.core.engine.state.Sense;
 import io.overpoet.core.engine.state.StateException;
 import io.overpoet.core.engine.state.StateStream;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.sensor.SensorLogic;
-import io.overpoet.core.sensor.Sink;
+import io.overpoet.spi.Key;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.sensor.SensorLogic;
+import io.overpoet.spi.sensor.Sink;
 
 class SensorHolder<T> {
 

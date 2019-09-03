@@ -8,11 +8,11 @@ import io.overpoet.core.engine.Engine;
 import io.overpoet.core.engine.EngineConfiguration;
 import io.overpoet.core.engine.FilesystemConfigurationProvider;
 import io.overpoet.core.engine.SimpleEngineConfiguration;
-import io.overpoet.core.measurement.Distance;
-import io.overpoet.core.geo.Location;
-import io.overpoet.core.geo.Point;
-import io.overpoet.core.geo.Latitude;
-import io.overpoet.core.geo.Longitude;
+import io.overpoet.spi.measurement.Distance;
+import io.overpoet.spi.geo.Location;
+import io.overpoet.spi.geo.Point;
+import io.overpoet.spi.geo.Latitude;
+import io.overpoet.spi.geo.Longitude;
 
 import static java.time.ZoneId.of;
 

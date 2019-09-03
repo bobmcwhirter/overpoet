@@ -3,10 +3,10 @@ package io.overpoet.core.solar;
 import java.time.Duration;
 import java.time.ZonedDateTime;
 
-import io.overpoet.core.chrono.DeltaT;
-import io.overpoet.core.chrono.SystemClock;
-import io.overpoet.core.geo.Location;
-import io.overpoet.core.sensor.TimerDrivenSensorLogic;
+import io.overpoet.spi.chrono.DeltaT;
+import io.overpoet.spi.chrono.SystemClock;
+import io.overpoet.spi.geo.Location;
+import io.overpoet.spi.sensor.TimerDrivenSensorLogic;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 

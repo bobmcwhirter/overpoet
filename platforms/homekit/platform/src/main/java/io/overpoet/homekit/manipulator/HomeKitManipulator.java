@@ -2,18 +2,18 @@ package io.overpoet.homekit.manipulator;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.apparatus.ApparatusType;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.sensor.TemperatureSensor;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.apparatus.ApparatusType;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.sensor.TemperatureSensor;
 import io.overpoet.hap.common.model.Characteristics;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Services;
 import io.overpoet.hap.server.model.impl.ServerAccessoryImpl;
 import io.overpoet.homekit.server.Bridge;
 
-import static io.overpoet.core.apparatus.ApparatusType.THERMOMETER;
+import static io.overpoet.spi.apparatus.ApparatusType.THERMOMETER;
 import static io.overpoet.hap.common.model.Permission.PAIRED_READ;
 import static io.overpoet.hap.common.model.Permission.PAIRED_WRITE;
 

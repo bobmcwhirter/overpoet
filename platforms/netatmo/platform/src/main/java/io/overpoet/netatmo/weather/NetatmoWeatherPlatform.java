@@ -9,17 +9,16 @@ import java.util.concurrent.TimeUnit;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
-import io.overpoet.Key;
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.apparatus.SimpleApparatus;
-import io.overpoet.core.measurement.Temperature;
-import io.overpoet.core.metadata.TemperatureMetadata;
-import io.overpoet.core.platform.Platform;
-import io.overpoet.core.platform.PlatformContext;
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.sensor.TemperatureSensor;
-import io.overpoet.json.JSONSensorLogic;
-import io.overpoet.json.JSONSensorLogicFactory;
+import io.overpoet.spi.Key;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.apparatus.SimpleApparatus;
+import io.overpoet.spi.measurement.Temperature;
+import io.overpoet.spi.metadata.TemperatureMetadata;
+import io.overpoet.spi.platform.Platform;
+import io.overpoet.spi.platform.PlatformContext;
+import io.overpoet.spi.sensor.TemperatureSensor;
+import io.overpoet.spi.json.JSONSensorLogic;
+import io.overpoet.spi.json.JSONSensorLogicFactory;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -28,7 +27,7 @@ import okhttp3.Response;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import static io.overpoet.core.apparatus.ApparatusType.THERMOMETER;
+import static io.overpoet.spi.apparatus.ApparatusType.THERMOMETER;
 import static java.net.URI.create;
 
 public class NetatmoWeatherPlatform implements Platform {

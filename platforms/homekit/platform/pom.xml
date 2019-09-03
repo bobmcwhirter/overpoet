@@ -16,6 +16,10 @@
   <dependencies>
     <dependency>
       <groupId>io.overpoet</groupId>
+      <artifactId>overpoet-spi</artifactId>
+    </dependency>
+    <dependency>
+      <groupId>io.overpoet</groupId>
       <artifactId>overpoet-engine</artifactId>
     </dependency>
     <dependency>

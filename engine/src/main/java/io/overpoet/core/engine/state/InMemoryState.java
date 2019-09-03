@@ -3,8 +3,8 @@ package io.overpoet.core.engine.state;
 import java.util.HashMap;
 import java.util.Map;
 
-import io.overpoet.core.actuator.Actuator;
-import io.overpoet.core.sensor.Sensor;
+import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.spi.sensor.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

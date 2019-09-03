@@ -2,7 +2,7 @@ package io.overpoet.homekit.server;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import io.overpoet.core.apparatus.Apparatus;
+import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.hap.server.model.ServerAccessory;
 import io.overpoet.hap.server.model.impl.ServerAccessoryDatabaseImpl;
 

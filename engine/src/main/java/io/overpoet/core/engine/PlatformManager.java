@@ -7,12 +7,12 @@ import java.util.concurrent.Callable;
 import java.util.concurrent.ScheduledExecutorService;
 import java.util.stream.Collectors;
 
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.platform.Platform;
-import io.overpoet.core.platform.PlatformConfiguration;
-import io.overpoet.core.platform.PlatformContext;
-import io.overpoet.core.ui.UI;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.platform.Platform;
+import io.overpoet.spi.platform.PlatformConfiguration;
+import io.overpoet.spi.platform.PlatformContext;
+import io.overpoet.spi.ui.UI;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

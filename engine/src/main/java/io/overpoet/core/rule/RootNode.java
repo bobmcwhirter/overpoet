@@ -3,8 +3,8 @@ package io.overpoet.core.rule;
 import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
-import io.overpoet.Key;
-import io.overpoet.core.sensor.Sensor;
+import io.overpoet.spi.Key;
+import io.overpoet.spi.sensor.Sensor;
 
 class RootNode {
 

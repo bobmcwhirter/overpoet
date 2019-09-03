@@ -3,13 +3,13 @@ package io.overpoet.core.engine;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.overpoet.core.engine.state.InMemoryStateStream;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.sensor.BaseSensorLogic;
-import io.overpoet.core.metadata.StringMetadata;
-import io.overpoet.core.sensor.StringSensor;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.sensor.BaseSensorLogic;
+import io.overpoet.spi.metadata.StringMetadata;
+import io.overpoet.spi.sensor.StringSensor;
 import org.junit.Test;
 
-import static io.overpoet.Key.keyOf;
+import static io.overpoet.spi.Key.keyOf;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class SensorHolderTest {

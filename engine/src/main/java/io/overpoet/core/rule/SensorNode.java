@@ -4,7 +4,7 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.overpoet.Key;
+import io.overpoet.spi.Key;
 
 class SensorNode<T> {
 

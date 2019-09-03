@@ -1,6 +1,6 @@
 package io.overpoet.core.engine.state;
 
-import io.overpoet.core.actuator.Actuator;
+import io.overpoet.spi.actuator.Actuator;
 
 public class Actuation<T> {
 

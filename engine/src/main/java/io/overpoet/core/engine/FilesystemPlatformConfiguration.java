@@ -1,7 +1,6 @@
 package io.overpoet.core.engine;
 
 import java.io.FileInputStream;
-import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
@@ -12,7 +11,7 @@ import java.time.ZonedDateTime;
 import java.util.Properties;
 import java.util.Set;
 
-import io.overpoet.core.platform.PlatformConfiguration;
+import io.overpoet.spi.platform.PlatformConfiguration;
 
 public class FilesystemPlatformConfiguration implements PlatformConfiguration  {
 

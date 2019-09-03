@@ -1,6 +1,6 @@
 package io.overpoet.core.engine;
 
-import io.overpoet.core.geo.Location;
+import io.overpoet.spi.geo.Location;
 
 public class SimpleEngineConfiguration implements EngineConfiguration {
 

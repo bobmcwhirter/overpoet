@@ -1,13 +1,11 @@
 package io.overpoet.core.engine;
 
-import java.io.FileInputStream;
 import java.io.IOException;
 import java.nio.file.Files;
 import java.nio.file.Path;
-import java.util.Properties;
 
-import io.overpoet.core.platform.Platform;
-import io.overpoet.core.platform.PlatformConfiguration;
+import io.overpoet.spi.platform.Platform;
+import io.overpoet.spi.platform.PlatformConfiguration;
 
 public class FilesystemConfigurationProvider implements ConfigurationProvider {
 

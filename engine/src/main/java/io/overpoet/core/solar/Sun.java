@@ -4,9 +4,9 @@ import java.time.ZonedDateTime;
 import java.time.temporal.TemporalAmount;
 import java.util.function.Function;
 
-import io.overpoet.core.chrono.DeltaT;
-import io.overpoet.core.geo.AzimuthZenithAngle;
-import io.overpoet.core.geo.Location;
+import io.overpoet.spi.chrono.DeltaT;
+import io.overpoet.spi.geo.AzimuthZenithAngle;
+import io.overpoet.spi.geo.Location;
 
 import static java.time.Duration.of;
 import static java.time.temporal.ChronoUnit.DAYS;

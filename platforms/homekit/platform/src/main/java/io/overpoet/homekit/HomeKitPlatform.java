@@ -3,15 +3,10 @@ package io.overpoet.homekit;
 import java.io.IOException;
 import java.net.InetSocketAddress;
 import java.nio.charset.Charset;
-import java.util.HashMap;
-import java.util.Map;
 
-import javax.jmdns.JmDNS;
-import javax.jmdns.ServiceInfo;
-
-import io.overpoet.core.platform.Platform;
-import io.overpoet.core.platform.PlatformContext;
-import io.overpoet.core.ui.UI;
+import io.overpoet.spi.platform.Platform;
+import io.overpoet.spi.platform.PlatformContext;
+import io.overpoet.spi.ui.UI;
 import io.overpoet.hap.server.HAPServer;
 import io.overpoet.homekit.manipulator.HomeKitManipulator;
 import io.overpoet.homekit.server.Bridge;

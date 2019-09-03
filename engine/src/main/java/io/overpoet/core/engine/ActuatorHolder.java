@@ -1,12 +1,12 @@
 package io.overpoet.core.engine;
 
-import io.overpoet.Key;
-import io.overpoet.core.actuator.ActuationException;
-import io.overpoet.core.actuator.Actuator;
+import io.overpoet.spi.Key;
+import io.overpoet.spi.actuator.ActuationException;
+import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.core.engine.state.Actuation;
 import io.overpoet.core.engine.state.StateException;
 import io.overpoet.core.engine.state.InMemoryStateStream;
-import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.spi.manipulator.Manipulator;
 
 class ActuatorHolder<T> {
 

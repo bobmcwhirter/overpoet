@@ -3,8 +3,8 @@ package io.overpoet.core.solar;
 import java.time.LocalTime;
 import java.time.ZonedDateTime;
 
-import io.overpoet.core.chrono.JulianDate;
-import io.overpoet.core.geo.AzimuthZenithAngle;
+import io.overpoet.spi.chrono.JulianDate;
+import io.overpoet.spi.geo.AzimuthZenithAngle;
 
 import static java.lang.Math.*;
 

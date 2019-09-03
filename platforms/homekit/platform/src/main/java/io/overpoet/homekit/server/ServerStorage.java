@@ -3,9 +3,8 @@ package io.overpoet.homekit.server;
 import java.security.SecureRandom;
 import java.util.Base64;
 import java.util.Random;
-import java.util.function.Function;
 
-import io.overpoet.core.platform.PlatformConfiguration;
+import io.overpoet.spi.platform.PlatformConfiguration;
 import io.overpoet.hap.server.auth.ServerAuthStorage;
 import net.i2p.crypto.eddsa.spec.EdDSANamedCurveTable;
 import net.i2p.crypto.eddsa.spec.EdDSAParameterSpec;

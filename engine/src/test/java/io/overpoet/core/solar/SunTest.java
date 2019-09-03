@@ -7,17 +7,17 @@ import java.time.Month;
 import java.time.ZoneId;
 import java.time.ZonedDateTime;
 
-import io.overpoet.core.chrono.DeltaT;
-import io.overpoet.core.geo.AzimuthZenithAngle;
-import io.overpoet.core.measurement.Distance;
-import io.overpoet.core.geo.Location;
-import io.overpoet.core.geo.Point;
+import io.overpoet.spi.chrono.DeltaT;
+import io.overpoet.spi.geo.AzimuthZenithAngle;
+import io.overpoet.spi.measurement.Distance;
+import io.overpoet.spi.geo.Location;
+import io.overpoet.spi.geo.Point;
 import org.fest.assertions.data.Offset;
 import org.junit.Test;
 
-import static io.overpoet.core.geo.Latitude.north;
-import static io.overpoet.core.measurement.Distance.feet;
-import static io.overpoet.core.geo.Longitude.west;
+import static io.overpoet.spi.geo.Latitude.north;
+import static io.overpoet.spi.measurement.Distance.feet;
+import static io.overpoet.spi.geo.Longitude.west;
 import static java.time.ZoneId.of;
 import static java.time.temporal.ChronoUnit.DAYS;
 import static java.time.temporal.ChronoUnit.MINUTES;

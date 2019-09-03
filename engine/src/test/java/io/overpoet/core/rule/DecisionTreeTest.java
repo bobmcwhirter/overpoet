@@ -2,12 +2,12 @@ package io.overpoet.core.rule;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.overpoet.core.metadata.IntegerMetadata;
-import io.overpoet.core.sensor.BaseSensorLogic;
-import io.overpoet.core.sensor.IntegerSensor;
+import io.overpoet.spi.metadata.IntegerMetadata;
+import io.overpoet.spi.sensor.BaseSensorLogic;
+import io.overpoet.spi.sensor.IntegerSensor;
 import org.junit.Test;
 
-import static io.overpoet.Key.keyOf;
+import static io.overpoet.spi.Key.keyOf;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 

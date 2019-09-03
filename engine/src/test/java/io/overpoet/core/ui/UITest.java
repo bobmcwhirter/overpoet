@@ -1,11 +1,11 @@
 package io.overpoet.core.ui;
 
-import io.overpoet.core.ui.impl.Dispatch;
-import io.overpoet.core.ui.impl.UIImpl;
+import io.overpoet.spi.ui.RequestHandler;
+import io.overpoet.spi.ui.UI;
 import org.junit.Test;
 
-import static io.overpoet.core.ui.UI.Method.GET;
-import static io.overpoet.core.ui.UI.Method.POST;
+import static io.overpoet.spi.ui.UI.Method.GET;
+import static io.overpoet.spi.ui.UI.Method.POST;
 import static org.fest.assertions.api.Assertions.assertThat;
 
 public class UITest {

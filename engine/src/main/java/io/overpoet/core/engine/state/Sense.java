@@ -1,6 +1,6 @@
 package io.overpoet.core.engine.state;
 
-import io.overpoet.core.sensor.Sensor;
+import io.overpoet.spi.sensor.Sensor;
 
 public class Sense<T> {
     public Sense(Sensor<T> sensor, T value) {

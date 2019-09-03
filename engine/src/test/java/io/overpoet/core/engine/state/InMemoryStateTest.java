@@ -1,10 +1,10 @@
 package io.overpoet.core.engine.state;
 
-import io.overpoet.core.metadata.StringMetadata;
-import io.overpoet.core.sensor.StringSensor;
+import io.overpoet.spi.metadata.StringMetadata;
+import io.overpoet.spi.sensor.StringSensor;
 import org.junit.Test;
 
-import static io.overpoet.Key.keyOf;
+import static io.overpoet.spi.Key.keyOf;
 import static org.fest.assertions.api.Assertions.assertThat;
 import static org.fest.assertions.api.Assertions.fail;
 

@@ -4,12 +4,12 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.overpoet.core.actuator.Actuator;
-import io.overpoet.core.apparatus.Apparatus;
-import io.overpoet.core.apparatus.SimpleApparatus;
+import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.spi.apparatus.Apparatus;
+import io.overpoet.spi.apparatus.SimpleApparatus;
 import io.overpoet.core.engine.state.InMemoryStateStream;
-import io.overpoet.core.sensor.Sensor;
-import io.overpoet.core.manipulator.Manipulator;
+import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.manipulator.Manipulator;
 
 class ApparatusHolder {
 

@@ -9,12 +9,12 @@ import java.util.concurrent.Executors;
 import java.util.concurrent.ForkJoinPool;
 import java.util.concurrent.ScheduledExecutorService;
 
-import io.overpoet.core.apparatus.Apparatus;
+import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.core.concurrent.NamedForkJoinWorkerThreadFactory;
 import io.overpoet.core.concurrent.NamedThreadFactory;
 import io.overpoet.core.engine.state.InMemoryStateStream;
-import io.overpoet.core.manipulator.Manipulator;
-import io.overpoet.core.ui.impl.UIManager;
+import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.core.ui.UIManager;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

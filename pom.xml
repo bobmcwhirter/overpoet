@@ -24,7 +24,7 @@
     <version.nimbusds>2.0.2</version.nimbusds>
     <version.glassfish-json>1.0.4</version.glassfish-json>
     <version.jmdns>3.5.4</version.jmdns>
-
+    <version.slf4j>2.0.0-alpha0</version.slf4j>
 
     <version.junit>4.12</version.junit>
     <version.fest>2.0M10</version.fest>
@@ -40,6 +40,12 @@
       </dependency>
       <dependency>
         <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-spi</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
         <artifactId>overpoet-platform-assembly</artifactId>
         <version>1.0.0-SNAPSHOT</version>
         <scope>provided</scope>
@@ -50,6 +56,10 @@
         <version>1.0.0-SNAPSHOT</version>
         <scope>provided</scope>
       </dependency>
+
+
+
+
       <dependency>
         <groupId>io.overpoet</groupId>
         <artifactId>overpoet-netatmo-platform</artifactId>
@@ -130,9 +140,16 @@
 
 
       <dependency>
+        <groupId>org.slf4j</groupId>
+        <artifactId>slf4j-api</artifactId>
+        <version>${version.slf4j}</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
         <groupId>com.squareup.okhttp3</groupId>
         <artifactId>okhttp</artifactId>
         <version>${version.okhttp}</version>
+        <scope>provided</scope>
       </dependency>
       <dependency>
         <groupId>com.jayway.jsonpath</groupId>
