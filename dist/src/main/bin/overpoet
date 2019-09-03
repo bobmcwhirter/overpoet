@@ -6,7 +6,7 @@ ROOT=$DIR/..
 
 conf_dir=$ROOT/conf
 lib_jars=$ROOT/lib/*.jar
-platform_jars=$ROOT/platforms/*/lib/*.jar
+platform_jars=$ROOT/platforms/*/*/lib/*.jar
 
 cp_array=(
   $conf_dir

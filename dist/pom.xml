@@ -39,12 +39,14 @@
       <artifactId>overpoet-netatmo</artifactId>
       <classifier>platform</classifier>
       <type>zip</type>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>io.overpoet</groupId>
       <artifactId>overpoet-homekit</artifactId>
       <classifier>platform</classifier>
       <type>zip</type>
+      <scope>runtime</scope>
     </dependency>
     <dependency>
       <groupId>org.slf4j</groupId>
@@ -65,7 +67,7 @@
             </goals>
             <configuration>
               <descriptors>
-                <descriptor>src/main/assemblies/dist-dir.xml</descriptor>
+                <descriptor>src/main/resources/assemblies/dist-dir.xml</descriptor>
               </descriptors>
             </configuration>
           </execution>
