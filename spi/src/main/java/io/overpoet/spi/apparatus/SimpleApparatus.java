@@ -5,11 +5,12 @@ import java.util.Set;
 
 import io.overpoet.spi.Key;
 import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.sensor.Sensor;
 
 public class SimpleApparatus implements Apparatus {
-    public SimpleApparatus(ApparatusType type, Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
-        this.type = type;
+    public SimpleApparatus(ApparatusMetadata metadata, Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
+        this.metadata = metadata;
         this.key = key;
         if ( sensors != null ) {
             this.sensors.addAll(sensors);
@@ -19,9 +20,17 @@ public class SimpleApparatus implements Apparatus {
         }
     }
 
+    /*
     @Override
     public ApparatusType type() {
         return this.type;
+    }
+
+     */
+
+    @Override
+    public ApparatusMetadata metadata() {
+        return this.metadata;
     }
 
     public Key key() {
@@ -38,7 +47,7 @@ public class SimpleApparatus implements Apparatus {
         return this.actuators;
     }
 
-    private final ApparatusType type;
+    private final ApparatusMetadata metadata;
     private final Key key;
     final private Set<Sensor<?>> sensors = new HashSet<>();
     final private Set<Actuator<?>> actuators = new HashSet<>();

@@ -4,10 +4,12 @@ import java.util.Set;
 
 import io.overpoet.spi.Keyed;
 import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.sensor.Sensor;
 
 public interface Apparatus extends Keyed {
-    ApparatusType type();
+    ApparatusMetadata metadata();
+    //ApparatusType type();
     Set<Sensor<?>> sensors();
     Set<Actuator<?>> actuators();
 }

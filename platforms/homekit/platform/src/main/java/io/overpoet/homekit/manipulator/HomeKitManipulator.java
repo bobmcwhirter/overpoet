@@ -5,6 +5,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.ApparatusType;
 import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.sensor.Sensor;
 import io.overpoet.spi.sensor.TemperatureSensor;
 import io.overpoet.hap.common.model.Characteristics;
@@ -25,28 +26,30 @@ public class HomeKitManipulator implements Manipulator {
 
     @Override
     public void connect(Apparatus apparatus) {
-        ApparatusType type = apparatus.type();
+        ApparatusMetadata metadata = apparatus.metadata();
+        ApparatusType type = metadata.type();
         if ( type == THERMOMETER ) {
             ServerAccessoryImpl accessory = new ServerAccessoryImpl(aid.incrementAndGet(), a->{
                 a.addService(iid.incrementAndGet(), Services.ACCESSORY_INFORMATION, (s) -> {
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.MANUFACTURER, (c)->{
-                        c.setStoredValue("temp");
+                        c.setStoredValue(metadata.manufacturer());
                         c.setPermissions(PAIRED_READ);
                     });
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.MODEL, (c)->{
-                        c.setStoredValue("opb");
+                        c.setStoredValue(metadata.model());
                         c.setPermissions(PAIRED_READ);
                     });
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, (c)->{
-                        c.setStoredValue("current temp");
+                        System.err.println( "set stored: " + metadata.name());
+                        c.setStoredValue(metadata.name());
                         c.setPermissions(PAIRED_READ);
                     });
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.SERIAL_NUMBER, (c)->{
-                        c.setStoredValue("8675309");
+                        c.setStoredValue(metadata.serialNumber());
                         c.setPermissions(PAIRED_READ);
                     });
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.FIRMWARE_REVISION, (c)->{
-                        c.setStoredValue("1.0.0");
+                        c.setStoredValue(metadata.version());
                         c.setPermissions(PAIRED_READ);
                     });
                     s.addCharacteristic(iid.incrementAndGet(), Characteristics.IDENTIFY, (c)->{
@@ -65,10 +68,10 @@ public class HomeKitManipulator implements Manipulator {
                                     c.updateValue(t.celsius());
                                 });
                             });
-                            s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, c-> {
-                                c.setStoredValue(sensor.key());
-                                c.setPermissions(Permission.PAIRED_READ);
-                            });
+                            //s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, c-> {
+                                //c.setStoredValue(sensor.key());
+                                //c.setPermissions(Permission.PAIRED_READ);
+                            //});
                         }
                     }
                 });
@@ -79,5 +82,5 @@ public class HomeKitManipulator implements Manipulator {
 
     private final Bridge bridge;
     private final AtomicInteger aid = new AtomicInteger(1);
-    private final AtomicInteger iid = new AtomicInteger(11);
+    private final AtomicInteger iid = new AtomicInteger(31);
 }

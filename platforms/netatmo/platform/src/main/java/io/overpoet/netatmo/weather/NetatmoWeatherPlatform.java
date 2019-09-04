@@ -13,6 +13,8 @@ import io.overpoet.spi.Key;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.SimpleApparatus;
 import io.overpoet.spi.measurement.Temperature;
+import io.overpoet.spi.metadata.ApparatusMetadata;
+import io.overpoet.spi.metadata.SimpleApparatusMetadata;
 import io.overpoet.spi.metadata.TemperatureMetadata;
 import io.overpoet.spi.platform.Platform;
 import io.overpoet.spi.platform.PlatformContext;
@@ -113,13 +115,24 @@ public class NetatmoWeatherPlatform implements Platform {
                                            JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.max_temp")
     );
 
+    private ApparatusMetadata thermometerMetadata(String name) {
+        return new SimpleApparatusMetadata(
+                THERMOMETER,
+                name,
+                "Netatmo",
+                "Weather Station",
+                "1.0",
+                "10001"
+        );
+    }
+
     private void initializeOutside(ReadContext ctx) {
         Key key = KEY.append("outside");
 
         //Set<Sensor<?>> sensors = new HashSet<>();
         if (OUTSIDE_TEMP_CURRENT.isApplicable(ctx)) {
             LOG.info("Adding outside current temperature");
-            Apparatus apparatus = new SimpleApparatus(THERMOMETER,
+            Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Current Temperature"),
                                                       key,
                                                       Collections.singleton(
                                                               new TemperatureSensor(
@@ -131,7 +144,7 @@ public class NetatmoWeatherPlatform implements Platform {
         }
         if (OUTSIDE_TEMP_MIN.isApplicable(ctx)) {
             LOG.info("Adding outside min temperature");
-            Apparatus apparatus = new SimpleApparatus(THERMOMETER,
+            Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Minimum Temperature"),
                                                       key,
                                                       Collections.singleton(
                                                               new TemperatureSensor(
@@ -143,7 +156,7 @@ public class NetatmoWeatherPlatform implements Platform {
         }
         if (OUTSIDE_TEMP_MAX.isApplicable(ctx)) {
             LOG.info("Adding outside max temperature");
-            Apparatus apparatus = new SimpleApparatus(THERMOMETER,
+            Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Maximum Temperature"),
                                                       key,
                                                       Collections.singleton(
                                                               new TemperatureSensor(

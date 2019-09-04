@@ -39,7 +39,7 @@ class ApparatusHolder {
         for (ActuatorHolder<?> actuator : this.actuators) {
             wrappedActuators.add( actuator.forManipulator(manipulator));
         }
-        return new SimpleApparatus(apparatus.type(), apparatus.key(), wrappedSensors, wrappedActuators);
+        return new SimpleApparatus(apparatus.metadata(), apparatus.key(), wrappedSensors, wrappedActuators);
     }
 
     private <T> SensorHolder<T> wrap(Sensor<T> sensor) {
