@@ -38,8 +38,7 @@ class PlatformManager {
     }
 
     void initialize(Path root) throws IOException, ExecutionException, InterruptedException {
-        System.err.println("init platforms from " + root);
-        Files.walkFileTree(root, new SimpleFileVisitor<Path>() {
+        Files.walkFileTree(root, new SimpleFileVisitor<>() {
             @Override
             public FileVisitResult preVisitDirectory(Path dir, BasicFileAttributes attrs) throws IOException {
                 if (dir.getParent().getParent().equals(root)) {
@@ -90,17 +89,17 @@ class PlatformManager {
              */
     }
 
-    PlatformContext contextForPlatform(Platform p) {
-        return new Context(configurationForPlatform(p), uiForPlatform(p));
+    PlatformContext contextForPlatform(String platformId) {
+        return new Context(configurationForPlatform(platformId), uiForPlatform(platformId));
     }
 
-    PlatformConfiguration configurationForPlatform(Platform p) {
-        return this.engine.configuration().configurationProvider().forPlatform(p);
+    PlatformConfiguration configurationForPlatform(String platformId) {
+        return this.engine.configuration().configurationProvider().forPlatform(platformId);
 
     }
 
-    UI uiForPlatform(Platform p) {
-        return this.engine.uiManager().forPlatform(p);
+    UI uiForPlatform(String platformId) {
+        return this.engine.uiManager().forPlatform(platformId);
     }
 
     private final Engine engine;

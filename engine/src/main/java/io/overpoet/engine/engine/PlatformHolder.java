@@ -1,6 +1,8 @@
 package io.overpoet.engine.engine;
 
+import java.io.FileInputStream;
 import java.io.IOException;
+import java.io.InputStream;
 import java.net.URL;
 import java.net.URLClassLoader;
 import java.nio.file.DirectoryStream;
@@ -9,6 +11,7 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.Properties;
 import java.util.ServiceLoader;
 import java.util.concurrent.Callable;
 
@@ -30,35 +33,58 @@ class PlatformHolder {
             LOG.warn("no platform discovered in {}", dir.toString());
             this.platform = null;
             this.context = null;
+            this.properties = null;
             return;
         }
         this.platform = optional.get();
-        this.context = platformManager.contextForPlatform(this.platform);
+        this.properties = new Properties();
+        try (InputStream in = new FileInputStream(this.dir.resolve("platform.properties").toFile() )) {
+            this.properties.load(in);
+        }
+        validateProperties();
+        this.context = platformManager.contextForPlatform(id());
+    }
+
+    private void validateProperties() {
+        if ( id() == null ) {
+            throw new IllegalArgumentException("platform.properties does not contain 'id': " + this.dir.toString());
+        }
+        if ( name() == null ) {
+            throw new IllegalArgumentException("platform.properties does not contain 'name': " + this.dir.toString());
+        }
+    }
+
+    String name() {
+        return this.properties.getProperty("name");
+    }
+
+    String id() {
+        return this.properties.getProperty("id");
     }
 
     Callable<Void> initialize() {
         return withClassLoader(() -> {
-            LOG.info("initializing {} [{}]", this.platform.name(), this.platform.id());
+            LOG.info("initializing {} [{}]", name(), id());
             this.platform.initialize(this.context);
         });
     }
 
     Callable<Void> start() {
         return withClassLoader(() -> {
-            LOG.info("starting {} [{}]", this.platform.name(), this.platform.id());
+            LOG.info("starting {} [{}]", name(), id());
             this.platform.start();
-            LOG.info("started {} [{}]", this.platform.name(), this.platform.id());
+            LOG.info("started {} [{}]", name(), id());
         });
     }
 
     Callable<Void> stop() {
         return withClassLoader(() -> {
-            LOG.info("stopping {} [{}]", this.platform.name(), this.platform.id());
+            LOG.info("stopping {} [{}]", name(), id());
             try {
                 this.platform.stop();
-                LOG.info("stopped {} [{}]", this.platform.name(), this.platform.id());
+                LOG.info("stopped {} [{}]", name(), id());
             } catch (InterruptedException e) {
-                LOG.warn("stop interrupted {} [{}]: {}", this.platform.name(), this.platform.id(), e.getMessage());
+                LOG.warn("stop interrupted {} [{}]: {}", name(), id(), e.getMessage());
             }
         });
     }
@@ -100,4 +126,6 @@ class PlatformHolder {
     private final PlatformContext context;
 
     private final ClassLoader classLoader;
+
+    private final Properties properties;
 }

@@ -22,15 +22,15 @@ public class HomeKitPlatform implements Platform {
 
     }
 
-    @Override
-    public String id() {
-        return "homekit";
-    }
+    //@Override
+    //public String id() {
+        //return "homekit";
+    //}
 
-    @Override
-    public String name() {
-        return "HomeKit";
-    }
+    //@Override
+    //public String name() {
+        //return "HomeKit";
+    //}
 
     @Override
     public void initialize(PlatformContext context) {

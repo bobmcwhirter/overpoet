@@ -24,8 +24,8 @@ public class FilesystemConfigurationProvider implements ConfigurationProvider {
     }
 
     @Override
-    public PlatformConfiguration forPlatform(Platform platform) {
-        Path propsPath = propsPath(platform);
+    public PlatformConfiguration forPlatform(String platformId) {
+        Path propsPath = propsPath(platformId);
         if ( Files.exists(propsPath)) {
             if ( Files.isDirectory(propsPath)) {
                 throw new IllegalArgumentException("Path " + propsPath + " is not a properties file");
@@ -44,8 +44,8 @@ public class FilesystemConfigurationProvider implements ConfigurationProvider {
         return new FilesystemPlatformConfiguration(propsPath);
     }
 
-    private Path propsPath(Platform platform) {
-        return this.dir.resolve( platform.getClass().getPackage().getName() + ".properties");
+    private Path propsPath(String platformId) {
+        return this.dir.resolve( platformId + ".properties");
     }
 
     private final Path dir;

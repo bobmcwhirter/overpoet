@@ -21,8 +21,8 @@ public class UIManager {
         });
     }
 
-    public UI forPlatform(Platform platform) {
-        return this.root.path(platform.id());
+    public UI forPlatform(String platformId) {
+        return this.root.path(platformId);
     }
 
     public <T extends BaseHandler<?>> Dispatch<T> findDispatch(UI.Method method, String path) {

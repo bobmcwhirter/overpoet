@@ -2,8 +2,8 @@ package io.overpoet.spi.platform;
 
 public interface Platform {
 
-    String id();
-    String name();
+    //String id();
+    //String name();
 
     default void initialize(PlatformContext context) {
 

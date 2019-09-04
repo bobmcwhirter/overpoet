@@ -16,7 +16,6 @@ public class Main {
     public static void main(String[] args) throws Throwable {
         String homeProp = System.getProperty("overpoet.home");
         Path home = Paths.get(homeProp);
-        System.err.println( "boot from " + home);
 
         Path lib = home.resolve("lib");
         Path libCommon = lib.resolve("common");

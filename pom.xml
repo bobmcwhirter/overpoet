@@ -64,6 +64,20 @@
       </dependency>
 
 
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-automation-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-automation-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <classifier>bundle</classifier>
+        <type>zip</type>
+      </dependency>
+
 
 
       <dependency>

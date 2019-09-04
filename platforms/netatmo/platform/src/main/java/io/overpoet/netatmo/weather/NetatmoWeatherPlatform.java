@@ -44,15 +44,15 @@ public class NetatmoWeatherPlatform implements Platform {
     public NetatmoWeatherPlatform() {
     }
 
-    @Override
-    public String id() {
-        return "netatmo-weather";
-    }
+    //@Override
+    //public String id() {
+        //return "netatmo-weather";
+    //}
 
-    @Override
-    public String name() {
-        return "Netatmo Weather Station";
-    }
+    //@Override
+    //public String name() {
+        //return "Netatmo Weather Station";
+    //}
 
     @Override
     public void initialize(PlatformContext context) {
