@@ -78,6 +78,25 @@
         <type>zip</type>
       </dependency>
 
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-lutron-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <scope>provided</scope>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-lutron-platform</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+        <classifier>bundle</classifier>
+        <type>zip</type>
+      </dependency>
+      <dependency>
+        <groupId>io.overpoet</groupId>
+        <artifactId>overpoet-lutron-leap-client</artifactId>
+        <version>1.0.0-SNAPSHOT</version>
+      </dependency>
+
 
 
       <dependency>

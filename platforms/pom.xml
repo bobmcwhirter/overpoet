@@ -81,7 +81,7 @@
     <module>automation</module>
 
     <module>homekit</module>
-    <module>lutron-caseta</module>
+    <module>lutron</module>
     <module>netatmo</module>
   </modules>
 

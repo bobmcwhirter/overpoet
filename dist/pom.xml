@@ -79,6 +79,13 @@
     </dependency>
     <dependency>
       <groupId>io.overpoet</groupId>
+      <artifactId>overpoet-lutron-platform</artifactId>
+      <classifier>bundle</classifier>
+      <type>zip</type>
+      <scope>runtime</scope>
+    </dependency>
+    <dependency>
+      <groupId>io.overpoet</groupId>
       <artifactId>overpoet-automation-platform</artifactId>
       <classifier>bundle</classifier>
       <type>zip</type>
