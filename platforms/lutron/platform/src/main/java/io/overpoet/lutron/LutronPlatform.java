@@ -16,6 +16,7 @@ import javax.jmdns.ServiceListener;
 
 import io.overpoet.lutron.leap.client.Client;
 import io.overpoet.lutron.leap.client.model.Device;
+import io.overpoet.lutron.leap.client.model.SwitchedLevel;
 import io.overpoet.lutron.leap.client.model.Universe;
 import io.overpoet.lutron.leap.client.model.Zone;
 import io.overpoet.lutron.leap.client.model.ZoneStatus;
@@ -25,10 +26,13 @@ import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.ApparatusType;
 import io.overpoet.spi.apparatus.SimpleApparatus;
 import io.overpoet.spi.metadata.ApparatusMetadata;
+import io.overpoet.spi.metadata.IntegerMetadata;
 import io.overpoet.spi.metadata.SimpleApparatusMetadata;
 import io.overpoet.spi.platform.Platform;
 import io.overpoet.spi.platform.PlatformContext;
+import io.overpoet.spi.sensor.PercentageSensor;
 import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.sensor.SensorLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -78,8 +82,13 @@ public class LutronPlatform implements Platform, ServiceListener {
     }
 
     Set<Sensor<?>> createSensors(Zone zone) {
-        return Collections.emptySet();
+        DelegateSensorLogic<Integer> logic = new DelegateSensorLogic<Integer>();
+        PercentageSensor sensor = new PercentageSensor(this.key.append(zone.href()), IntegerMetadata.DEFAULT, logic);
+        this.logics.put(zone, logic);
+        return Collections.singleton(sensor);
     }
+
+    private Map<Zone, DelegateSensorLogic<Integer>> logics = new HashMap<>();
 
     Set<Actuator<?>> createActuators(Zone zone) {
         return Collections.emptySet();
@@ -88,6 +97,18 @@ public class LutronPlatform implements Platform, ServiceListener {
 
     protected void onZoneStatusUpdated(ZoneStatus status) {
         LOG.info("Zone status updated: {}", status.zone().name());
+        DelegateSensorLogic<Integer> logic = this.logics.get(status.zone());
+        if ( logic == null ) {
+            LOG.warn("No logic for {}", status.zone().name());
+            return;
+        }
+        if ( status.switchedLevel() == SwitchedLevel.OFF ) {
+            LOG.debug("delegate {} to OFF", status.zone().name() );
+            logic.delegate( 0 );
+        } else {
+            LOG.debug("delegate {} to {}", status.zone().name(), status.level() );
+            logic.delegate(status.level());
+        }
     }
 
     private Map<Zone, Apparatus> apparatuses = new HashMap<>();
