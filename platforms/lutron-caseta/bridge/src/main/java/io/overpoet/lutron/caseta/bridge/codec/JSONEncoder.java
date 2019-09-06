@@ -12,13 +12,13 @@ import io.netty.buffer.ByteBufOutputStream;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.handler.codec.MessageToMessageEncoder;
 
-public class JSONEncoder extends MessageToMessageEncoder<JsonObject>  {
+public class JSONEncoder extends MessageToMessageEncoder<JsonObjectBuilder>  {
 
     @Override
-    protected void encode(ChannelHandlerContext ctx, JsonObject msg, List<Object> out) throws Exception {
+    protected void encode(ChannelHandlerContext ctx, JsonObjectBuilder msg, List<Object> out) throws Exception {
         ByteBuf buf = ctx.alloc().buffer();
         try ( JsonWriter writer = JsonProvider.provider().createWriter(new ByteBufOutputStream(buf)) ) {
-            writer.writeObject(msg);
+            writer.writeObject(msg.build());
         }
         buf.writeByte('\r');
         buf.writeByte('\n');

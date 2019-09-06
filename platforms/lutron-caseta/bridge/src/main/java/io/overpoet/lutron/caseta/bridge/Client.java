@@ -35,7 +35,9 @@ import io.netty.channel.Channel;
 import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.overpoet.lutron.caseta.bridge.codec.ClientInitializer;
+import io.overpoet.lutron.caseta.bridge.protocol.GetAreas;
 import io.overpoet.lutron.caseta.bridge.protocol.GetDevices;
+import io.overpoet.lutron.caseta.bridge.protocol.GetZones;
 
 public class Client {
 
@@ -69,6 +71,8 @@ public class Client {
         //buf.writeByte('\r');
         //buf.writeByte('\n');
         //this.channel.pipeline().writeAndFlush(buf);
+        this.channel.pipeline().writeAndFlush(new GetZones());
+        this.channel.pipeline().writeAndFlush(new GetAreas());
         this.channel.pipeline().writeAndFlush(new GetDevices());
     }
 
