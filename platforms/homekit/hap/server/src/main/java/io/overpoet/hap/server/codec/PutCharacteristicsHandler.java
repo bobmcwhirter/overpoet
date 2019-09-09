@@ -50,7 +50,7 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        LOG.debug("PUT /characteristics");
+        LOG.debug(ctx.channel().id() + " PUT /characteristics");
 
         JsonObject obj = request.objectContent();
         JsonArray characteristics = obj.getJsonArray("characteristics");
@@ -62,25 +62,15 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
                 boolean ev = each.getBoolean("ev");
                 if (ev) {
                     ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));
-                    LOG.debug("enable events on {}:{}", aid, iid );
+                    LOG.debug(ctx.channel().id() + " enable events on {}:{}", aid, iid );
                     ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
                     chr.addListener((c) -> {
-                        LOG.debug("sending event on {}:{}", aid, iid);
+                        LOG.debug(ctx.channel().id() + " sending event on {}:{}", aid, iid);
                         ctx.pipeline().writeAndFlush(new Event((ServerCharacteristicImpl) c));
                     });
                 }
             }
         }
-    }
-
-    private JsonArrayBuilder characteristicsToJSON(List<ServerCharacteristicImpl> characteristics) {
-        JsonArrayBuilder builder = JsonProvider.provider().createArrayBuilder();
-
-        for (ServerCharacteristicImpl characteristic : characteristics) {
-            builder.add(characteristic.toJSON(true));
-        }
-
-        return builder;
     }
 
     private final ServerAccessoryDatabase db;

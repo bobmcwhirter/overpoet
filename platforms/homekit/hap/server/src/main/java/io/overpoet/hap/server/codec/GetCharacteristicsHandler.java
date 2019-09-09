@@ -47,14 +47,16 @@ public class GetCharacteristicsHandler extends ChannelInboundHandlerAdapter {
             return;
         }
 
-        LOG.debug("GET /characteristics");
+        LOG.debug(ctx.channel().id() + " GET " + uri);
         QueryStringDecoder decoder = new QueryStringDecoder(httpMsg.uri());
         List<String> idParam = decoder.parameters().get("id");
         List<ServerCharacteristicImpl> characteristics = idParam.stream().flatMap(e -> Arrays.stream(e.split(","))).map(e -> {
             String[] parts = e.split("\\.");
             int aid = Integer.parseInt(parts[0]);
             int iid = Integer.parseInt(parts[1]);
-            return db.findCharacteristic(aid, iid);
+            ServerCharacteristicImpl chr = db.findCharacteristic(aid, iid);
+            LOG.debug(ctx.channel().id() + " Sending characteristic: " + aid + "." + iid + " (" + chr.getService().getName() + "::" + chr.getType() + ")");
+            return chr;
         }).collect(Collectors.toList());
 
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();

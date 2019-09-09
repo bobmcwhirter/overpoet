@@ -15,11 +15,12 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
     @Override
     public void channelRead(ChannelHandlerContext ctx, Object msg) throws Exception {
         //super.channelRead(ctx, msg);
-        System.err.println("HANDLE: " + msg);
+        //System.err.println("HANDLE: " + msg);
         if (msg instanceof Zone) {
             universe.onZoneAdded((Zone)msg);
         } else if ( msg instanceof ZoneStatus ) {
-            universe.onZoneStatusUpdated((ZoneStatus)msg);
+            //universe.onZoneStatusUpdated((ZoneStatus)msg);
+            ((ZoneStatus) msg).zone().statusChanged((ZoneStatus)msg);
         }
     }
 

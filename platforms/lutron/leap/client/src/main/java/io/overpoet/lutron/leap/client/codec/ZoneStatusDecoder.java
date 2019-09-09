@@ -27,8 +27,8 @@ public class ZoneStatusDecoder extends MessageToMessageDecoder<JsonObject> {
             JsonObject body = msg.getJsonObject("Body");
             if (messageBodyType.equalsIgnoreCase("MultipleZoneStatus")) {
                 out.addAll(parseZoneStatuses(body));
-            } else if (messageBodyType.equalsIgnoreCase("SingleZoneStatus")) {
-                out.add(parseZoneStatus(body));
+            } else if (messageBodyType.equalsIgnoreCase("OneZoneStatus")) {
+                out.add(parseZoneStatus(body.getJsonObject("ZoneStatus")));
             } else {
                 out.add(msg);
             }

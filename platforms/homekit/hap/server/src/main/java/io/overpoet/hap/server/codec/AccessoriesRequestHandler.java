@@ -37,6 +37,7 @@ public class AccessoriesRequestHandler extends ChannelInboundHandlerAdapter {
         LOG.debug("GET /accessories");
 
         ctx.pipeline().writeAndFlush(new JSONResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.OK, this.db.toJSON().build()));
+        ((FullHttpRequest) msg).release();
     }
 
     private final ServerAccessoryDatabase db;

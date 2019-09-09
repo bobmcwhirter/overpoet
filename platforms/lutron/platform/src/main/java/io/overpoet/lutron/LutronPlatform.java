@@ -2,11 +2,10 @@ package io.overpoet.lutron;
 
 import java.io.IOException;
 import java.net.Inet4Address;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
+import java.util.HashSet;
 import java.util.Map;
 import java.util.Set;
 
@@ -19,22 +18,25 @@ import io.overpoet.lutron.leap.client.model.Device;
 import io.overpoet.lutron.leap.client.model.SwitchedLevel;
 import io.overpoet.lutron.leap.client.model.Universe;
 import io.overpoet.lutron.leap.client.model.Zone;
-import io.overpoet.lutron.leap.client.model.ZoneStatus;
 import io.overpoet.spi.Key;
 import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.ApparatusType;
 import io.overpoet.spi.apparatus.SimpleApparatus;
 import io.overpoet.spi.metadata.ApparatusMetadata;
+import io.overpoet.spi.metadata.BooleanMetadata;
 import io.overpoet.spi.metadata.IntegerMetadata;
 import io.overpoet.spi.metadata.SimpleApparatusMetadata;
 import io.overpoet.spi.platform.Platform;
 import io.overpoet.spi.platform.PlatformContext;
+import io.overpoet.spi.sensor.BooleanSensor;
 import io.overpoet.spi.sensor.PercentageSensor;
 import io.overpoet.spi.sensor.Sensor;
-import io.overpoet.spi.sensor.SensorLogic;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+
+import static io.overpoet.lutron.leap.client.model.ControlType.DIMMED;
+import static io.overpoet.lutron.leap.client.model.ControlType.SWITCHED;
 
 public class LutronPlatform implements Platform, ServiceListener {
     private static final Logger LOG = LoggerFactory.getLogger("io.overpoet.lutron");
@@ -45,7 +47,7 @@ public class LutronPlatform implements Platform, ServiceListener {
         this.universe = new Universe();
 
         this.universe.onZoneAdded(this::onZoneAdded);
-        this.universe.onZoneStatusUpdated(this::onZoneStatusUpdated);
+        //this.universe.onZoneStatusUpdated(this::onZoneStatusUpdated);
 
         this.context = context;
         try {
@@ -82,19 +84,42 @@ public class LutronPlatform implements Platform, ServiceListener {
     }
 
     Set<Sensor<?>> createSensors(Zone zone) {
-        DelegateSensorLogic<Integer> logic = new DelegateSensorLogic<Integer>();
-        PercentageSensor sensor = new PercentageSensor(this.key.append(zone.href()), IntegerMetadata.DEFAULT, logic);
-        this.logics.put(zone, logic);
-        return Collections.singleton(sensor);
+        //DelegateSensorLogic<Integer> logic = new DelegateSensorLogic<Integer>();
+        Set<Sensor<?>> sensors = new HashSet<>();
+        if ( zone.controlType() == DIMMED || zone.controlType() == SWITCHED ) {
+            BooleanSensor sensor = new BooleanSensor(this.key.append(zone.href(), "on"), BooleanMetadata.DEFAULT, (sink)->{
+                zone.addStatusChangeListener((status)->{
+                    if ( status.switchedLevel() == SwitchedLevel.ON || status.level() > 0 ) {
+                        sink.sink(true);
+                    } else {
+                        sink.sink(false);
+                    }
+                });
+            });
+            sensors.add(sensor);
+        }
+        if ( zone.controlType() == DIMMED ) {
+            PercentageSensor sensor = new PercentageSensor(this.key.append(zone.href(), "level"), IntegerMetadata.DEFAULT, (sink) -> {
+                zone.addStatusChangeListener((status) -> {
+                    sink.sink(status.level());
+                });
+            });
+            sensors.add(sensor);
+        }
+       return sensors;
     }
-
-    private Map<Zone, DelegateSensorLogic<Integer>> logics = new HashMap<>();
 
     Set<Actuator<?>> createActuators(Zone zone) {
-        return Collections.emptySet();
+        Set<Actuator<?>> actuators = new HashSet<>();
+        if ( zone.controlType() == DIMMED || zone.controlType() == SWITCHED ) {
+            //BooleanActuator actuator = new BooleanActuator(this.key.append(zone.href(), "on"), BooleanMetadata.DEFAULT);
+
+        }
+        return actuators;
     }
 
 
+    /*
     protected void onZoneStatusUpdated(ZoneStatus status) {
         LOG.info("Zone status updated: {}", status.zone().name());
         DelegateSensorLogic<Integer> logic = this.logics.get(status.zone());
@@ -110,6 +135,7 @@ public class LutronPlatform implements Platform, ServiceListener {
             logic.delegate(status.level());
         }
     }
+     */
 
     private Map<Zone, Apparatus> apparatuses = new HashMap<>();
 

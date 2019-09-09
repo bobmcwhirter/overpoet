@@ -55,6 +55,7 @@ class PlatformManager {
     }
 
     private void initialize() throws ExecutionException, InterruptedException {
+        LOG.info("Initialize platforms");
         await( this.engine.forkJoinPool().invokeAll(
                 this.platforms.stream().map(PlatformHolder::initialize)
                         .collect(Collectors.toList())
@@ -64,6 +65,7 @@ class PlatformManager {
                 this.platforms.stream().map(PlatformHolder::start)
                         .collect(Collectors.toList())
         )) ;
+        LOG.info("Initialize platforms complete");
     }
 
     private void await(List<Future<Void>> all) throws ExecutionException, InterruptedException {

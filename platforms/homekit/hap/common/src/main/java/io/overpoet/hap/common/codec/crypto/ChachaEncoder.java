@@ -2,7 +2,6 @@ package io.overpoet.hap.common.codec.crypto;
 
 import java.io.IOException;
 
-import io.overpoet.hap.common.util.ByteUtil;
 import org.bouncycastle.crypto.engines.ChaChaEngine;
 import org.bouncycastle.crypto.generators.Poly1305KeyGenerator;
 import org.bouncycastle.crypto.params.KeyParameter;

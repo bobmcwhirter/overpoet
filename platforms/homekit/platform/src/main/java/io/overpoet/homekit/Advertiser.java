@@ -27,7 +27,10 @@ public class Advertiser {
             //System.err.println( "unadvertising");
             //this.bonjour.unregisterService(serviceInfo);
         //}));
-        this.bonjour.registerService(this.serviceInfo);
+        //this.bonjour.registerService(this.serviceInfo);
+
+        this.advertisementThread = new Thread(this::advertisementLoop);
+        this.advertisementThread.start();
     }
 
     private Map<String, ?> txtRecord() {
@@ -58,8 +61,31 @@ public class Advertiser {
         updateAdvertisement();
     }
 
-    public void updateAdvertisement() {
+    public synchronized void updateAdvertisement() {
+        this.advertisementRequestedAt = System.currentTimeMillis();
+        this.advertisementRequested = true;
+    }
+
+    private void advertisementLoop() {
+
+        while ( true ) {
+            long now = System.currentTimeMillis();
+            long diff = now - this.advertisementRequestedAt;
+            if ( this.advertisementRequested && diff > 2000 ) {
+                doUpdateAdvertisement();
+            }
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                break;
+            }
+        }
+    }
+
+    private void doUpdateAdvertisement() {
+        this.advertisementRequested = false;
         if ( this.serviceInfo != null ) {
+            System.err.println( "re-advertising");
             this.bonjour.unregisterService(this.serviceInfo);
             this.serviceInfo.setText(txtRecord());
             try {
@@ -79,4 +105,9 @@ public class Advertiser {
     private boolean isPaired = true;
 
     private int configurationNumber = 1;
+
+    private long advertisementRequestedAt;
+    private boolean advertisementRequested = false;
+
+    private Thread advertisementThread;
 }

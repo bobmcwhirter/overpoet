@@ -17,6 +17,7 @@ import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
+import io.overpoet.spi.sensor.BooleanSensor;
 
 public class ServerCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
 
@@ -41,21 +42,27 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
     public JsonObjectBuilder toJSON(boolean simplified) {
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
 
-        if (simplified ) {
-            builder.add( "aid", getService().getAccessory().getAID());
+        if (simplified) {
+            builder.add("aid", getService().getAccessory().getAID());
         }
         builder.add("iid", getIID());
-        if ( ! simplified ) {
+        if (!simplified) {
             builder.add("type", getType().getEncodedType());
             builder.add("format", getType().getFormat().toString().toLowerCase());
             builder.add("perms", permissionsToJSON());
         }
-        if ( getPermissions().contains(Permission.PAIRED_READ)) {
+        if (getPermissions().contains(Permission.PAIRED_READ)) {
             if (getType().getFormat() == Format.STRING) {
                 builder.add("value", getValue().toString());
-            } else if ( getType().getFormat() == Format.FLOAT ) {
+            } else if (getType().getFormat() == Format.FLOAT) {
                 Double v = getValue(Double.class);
                 builder.add("value", Math.floor(v * 10) / 10);
+            } else if (Format.INTEGRAL.contains(getType().getFormat())) {
+                Integer v = getValue(Integer.class);
+                builder.add("value", v);
+            } else if (getType().getFormat() == Format.BOOL) {
+                Boolean v = getValue(Boolean.class);
+                builder.add("value", v);
             } else {
                 builder.add("value", JsonObject.NULL);
             }

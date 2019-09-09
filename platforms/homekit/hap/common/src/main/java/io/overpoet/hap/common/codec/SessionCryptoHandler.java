@@ -43,6 +43,7 @@ public class SessionCryptoHandler extends ChannelDuplexHandler {
         } else if (this.keys != null && msg instanceof ByteBuf) {
             ByteBuf original = (ByteBuf) msg;
             this.keys.encrypt(original);
+            original.release();
             return;
         } else if (this.keys != null && msg instanceof EncryptableMessageComplete) {
             List<ByteBuf> result = this.keys.doEncrypt();

@@ -1,5 +1,6 @@
 package io.overpoet.hap.server;
 
+import io.overpoet.hap.common.codec.DebugHandler;
 import io.overpoet.hap.common.codec.EncryptableMessageHandler;
 import io.overpoet.hap.common.codec.HttpDebugHandler;
 import io.overpoet.hap.common.codec.json.JSONRequestDecoder;
@@ -38,7 +39,7 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
     @Override
     protected void initChannel(SocketChannel ch) throws Exception {
 
-        //ch.pipeline().addLast(new DebugHandler("server-head"));
+        ///ch.pipeline().addLast(new DebugHandler("server-head"));
         //ch.pipeline().addLast(new HttpDebugHandler());
         ch.pipeline().addLast(new SessionCryptoHandler());
         ch.pipeline().addLast(new HttpRequestDecoder());
@@ -60,8 +61,8 @@ public class ServerInitializer extends ChannelInitializer<SocketChannel> {
         ch.pipeline().addLast("Pair-Verify", new ServerPairVerifyHandler(new ServerPairVerifyManager(this.authStorage)));
         ch.pipeline().addLast("Pairings", new PairingsHandler(new PairingsManager(this.authStorage)));
         ch.pipeline().addLast("Accessories", new AccessoriesRequestHandler(this.db));
-        ch.pipeline().addLast("GetCharacteristics", new GetCharacteristicsHandler(this.db));
         ch.pipeline().addLast("PutCharacteristics", new PutCharacteristicsHandler(this.db));
+        ch.pipeline().addLast("GetCharacteristics", new GetCharacteristicsHandler(this.db));
 
 
         //ch.pipeline().addLast(new DebugHandler("server-tail"));

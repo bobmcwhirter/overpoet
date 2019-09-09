@@ -35,32 +35,42 @@ public class HomeKitPlatform implements Platform {
     @Override
     public void initialize(PlatformContext context) {
         initializeUI(context);
+        LOG.info("Initialize 1");
         this.serverStorage = new ServerStorage(context.configuration());
         //this.bridgeAccessory = BridgeAccessoryBuilder.build();
         if (!this.serverStorage.isPaired()) {
             LOG.info("HomeKit pairing pin: {}", this.serverStorage.getPIN());
         }
+        LOG.info("Initialize 2");
         this.bridge = new Bridge();
         this.manipulator = new HomeKitManipulator(this.bridge);
         this.advertiser = new Advertiser(this.serverStorage.getPairingID());
         this.advertiser.setConfigurationNumber(this.serverStorage.getConfigurationNumber());
         this.advertiser.setIsPaired(this.serverStorage.isPaired());
+        LOG.info("Initialize 3");
         InetSocketAddress bind = new InetSocketAddress(0);
         try {
+            LOG.info("Initialize 4");
             this.hapServer = new HAPServer(this.serverStorage, this.bridge);
             int port = this.hapServer.start(bind);
+            LOG.info("Initialize 5");
             this.bridge.setUpdatedCallback(() -> {
+                LOG.info("Initialize 6");
                 this.advertiser.setConfigurationNumber(this.serverStorage.incrementConfigurationNumber());
             });
+            LOG.info("Initialize 7");
             this.serverStorage.setPairingCallback(() -> {
                 this.advertiser.setIsPaired(this.serverStorage.isPaired());
             });
+            LOG.info("Initialize 8");
             this.advertiser.start(port);
         } catch (InterruptedException | IOException e) {
             e.printStackTrace();
         }
 
+        LOG.info("Initialize 9");
         context.connect(this.manipulator);
+        LOG.info("Initialize 10");
     }
 
     private void initializeUI(PlatformContext context) {

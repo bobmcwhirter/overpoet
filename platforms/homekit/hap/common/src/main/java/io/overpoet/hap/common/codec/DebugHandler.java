@@ -38,6 +38,12 @@ public class DebugHandler extends ChannelDuplexHandler {
     }
 
     @Override
+    public void channelActive(ChannelHandlerContext ctx) throws Exception {
+        System.err.println( this.tag + " channel active");
+        super.channelActive(ctx);
+    }
+
+    @Override
     public void channelInactive(ChannelHandlerContext ctx) throws Exception {
         System.err.println( this.tag + " channel inactive");
         super.channelInactive(ctx);

@@ -86,7 +86,9 @@ public class SessionKeys {
             byte[] nonce = Pack.longToLittleEndian(outboundCounter++);
 
             ByteBuf bytes = response.readBytes(len);
-            result.writeBytes(new Chacha(getEncryptionKey()).newEncoder(nonce).encodeCiphertext(bytes, lenBytes));
+            ByteBuf encoded = new Chacha(getEncryptionKey()).newEncoder(nonce).encodeCiphertext(bytes, lenBytes);
+            result.writeBytes(encoded);
+            encoded.release();
             bytes.release();
             lenBytes.release();
         }

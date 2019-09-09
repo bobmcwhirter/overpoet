@@ -1,5 +1,9 @@
 package io.overpoet.lutron.leap.client.model;
 
+import java.util.HashSet;
+import java.util.Set;
+import java.util.function.Consumer;
+
 public class Zone {
 
     Zone(String href) {
@@ -34,6 +38,16 @@ public class Zone {
         return this.device;
     }
 
+    public void addStatusChangeListener(Consumer<ZoneStatus> listener) {
+        this.listeners.add(listener);
+    }
+
+    public void statusChanged(ZoneStatus status) {
+        for (Consumer<ZoneStatus> listener : this.listeners) {
+            listener.accept(status);
+        }
+    }
+
     public String toString() {
         return "[Zone: " + this.href + "; " + this.name + "; " + this.controlType + "; " + this.device + "]";
     }
@@ -45,4 +59,6 @@ public class Zone {
     private ControlType controlType;
 
     private Device device;
+
+    private Set<Consumer<ZoneStatus>> listeners = new HashSet<>();
 }

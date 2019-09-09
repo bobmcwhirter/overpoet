@@ -44,9 +44,9 @@ public class Universe {
         this.zoneAddedListener = listener;
     }
 
-    public void onZoneStatusUpdated(Consumer<ZoneStatus> listener) {
-        this.zoneStatusUpdatedListener = listener;
-    }
+    //public void onZoneStatusUpdated(Consumer<ZoneStatus> listener) {
+        //this.zoneStatusUpdatedListener = listener;
+    //}
 
     public void onZoneAdded(Zone zone) {
         if ( this.zoneAddedListener != null ) {
@@ -54,11 +54,11 @@ public class Universe {
         }
     }
 
-    public void onZoneStatusUpdated(ZoneStatus status) {
-        if ( this.zoneStatusUpdatedListener != null ) {
-            this.zoneStatusUpdatedListener.accept(status);
-        }
-    }
+    //public void onZoneStatusUpdated(ZoneStatus status) {
+        //if ( this.zoneStatusUpdatedListener != null ) {
+            //this.zoneStatusUpdatedListener.accept(status);
+        //}
+    //}
 
     private final Map<String, Zone> zones = new HashMap<>();
 
