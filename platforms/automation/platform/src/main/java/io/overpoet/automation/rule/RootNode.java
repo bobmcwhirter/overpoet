@@ -4,7 +4,6 @@ import java.util.concurrent.ConcurrentHashMap;
 import java.util.concurrent.ConcurrentMap;
 
 import io.overpoet.spi.Key;
-import io.overpoet.spi.sensor.Sensor;
 
 class RootNode {
 
@@ -12,14 +11,14 @@ class RootNode {
 
     }
 
-    <T> void assertSensor(Sensor<T> sensor, T value) {
+    <T> void assertSensor(Key key, T value) {
         Agenda agenda = new Agenda();
-        getSensorNode(sensor).assertValue(agenda, value);
+        getSensorNode(key).assertValue(agenda, value);
         agenda.process(Throwable::printStackTrace);
     }
 
-    <T> SensorNode<T> getSensorNode(Sensor<T> sensor) {
-        return (SensorNode<T>) sensorNodes.computeIfAbsent(sensor.key(), (mapKey) -> new SensorNode<T>(sensor.key()));
+    <T> SensorNode<T> getSensorNode(Key key) {
+        return (SensorNode<T>) sensorNodes.computeIfAbsent(key, (mapKey) -> new SensorNode<T>(key));
     }
 
     private ConcurrentMap<Key, SensorNode<?>> sensorNodes = new ConcurrentHashMap<>();

@@ -5,7 +5,7 @@ import java.time.ZonedDateTime;
 
 import io.overpoet.spi.chrono.TimeSlice;
 
-public class MockClock extends BaseSensorLogic<TimeSlice> {
+public class MockClock extends BaseSensor<TimeSlice> {
 
     public MockClock(ZonedDateTime currentTime) {
         this.current = new TimeSlice(currentTime, currentTime);

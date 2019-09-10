@@ -6,13 +6,13 @@ import java.time.ZonedDateTime;
 import io.overpoet.spi.chrono.DeltaT;
 import io.overpoet.spi.chrono.SystemClock;
 import io.overpoet.spi.geo.Location;
-import io.overpoet.spi.sensor.TimerDrivenSensorLogic;
+import io.overpoet.spi.sensor.TimerDrivenSensor;
 
 import static java.time.temporal.ChronoUnit.MINUTES;
 
-public class SunElevationSensorLogic extends TimerDrivenSensorLogic<Double> {
+public class SunElevationSensor extends TimerDrivenSensor<Double> {
 
-    public SunElevationSensorLogic(SystemClock clock, Location location) {
+    public SunElevationSensor(SystemClock clock, Location location) {
         super(clock, Duration.of(10, MINUTES));
         this.location = location;
     }

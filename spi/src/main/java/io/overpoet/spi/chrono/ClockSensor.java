@@ -2,14 +2,14 @@ package io.overpoet.spi.chrono;
 
 import java.time.ZonedDateTime;
 
-import io.overpoet.spi.sensor.TimerDrivenSensorLogic;
+import io.overpoet.spi.sensor.TimerDrivenSensor;
 
 import static java.time.Duration.of;
 import static java.time.temporal.ChronoUnit.SECONDS;
 
-public class ClockSensorLogic extends TimerDrivenSensorLogic<TimeSlice> {
+public class ClockSensor extends TimerDrivenSensor<TimeSlice> {
 
-    public ClockSensorLogic(SystemClock clock) {
+    public ClockSensor(SystemClock clock) {
         super(clock, of(5, SECONDS));
         this.current = new TimeSlice(clock.now(), clock.now());
     }

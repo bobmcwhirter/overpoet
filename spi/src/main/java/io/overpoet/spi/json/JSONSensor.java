@@ -2,12 +2,12 @@ package io.overpoet.spi.json;
 
 import com.jayway.jsonpath.JsonPath;
 import com.jayway.jsonpath.ReadContext;
-import io.overpoet.spi.sensor.BaseSensorLogic;
+import io.overpoet.spi.sensor.BaseSensor;
 import net.minidev.json.JSONArray;
 
-public class JSONSensorLogic<T, JSONTYPE> extends BaseSensorLogic<T> {
+public class JSONSensor<T, JSONTYPE> extends BaseSensor<T> {
 
-    protected JSONSensorLogic(Class<JSONTYPE> inputType, Converter<T, JSONTYPE> converter, JsonPath path) {
+    protected JSONSensor(Class<JSONTYPE> inputType, Converter<T, JSONTYPE> converter, JsonPath path) {
         this.inputType = inputType;
         this.converter = converter;
         this.path = path;

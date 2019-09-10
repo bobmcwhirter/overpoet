@@ -1,53 +1,50 @@
 package io.overpoet.engine.engine;
 
-import io.overpoet.spi.Key;
-import io.overpoet.spi.actuator.ActuationException;
-import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.engine.engine.state.Actuation;
 import io.overpoet.engine.engine.state.StateException;
-import io.overpoet.engine.engine.state.InMemoryStateStream;
+import io.overpoet.engine.engine.state.StateStream;
+import io.overpoet.spi.Key;
+import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.spi.manipulator.Manipulator;
 
 class ActuatorHolder<T> {
 
-    ActuatorHolder(InMemoryStateStream state, Actuator<T> actuator) {
+    ActuatorHolder(StateStream state, Key key, Actuator<T> actuator) {
         this.state = state;
+        this.key = key;
         this.actuator = actuator;
     }
 
     Actuator<T> forManipulator(Manipulator manipulator) {
-        return new ManipulatorActuator(manipulator);
+        if ( this.actuator == null ) {
+            return null;
+        }
+        ActuatorDelegate delegate = new ActuatorDelegate(manipulator);
+        return delegate;
     }
 
-    void actuate(Manipulator manipulator, T value) throws ActuationException {
+    void actuate(Manipulator manipulator, T value) {
         try {
-            this.state.add( new Actuation<>(this.actuator, value));
+            this.state.add(new Actuation<>(this.key, value));
         } catch (StateException e) {
-            throw new ActuationException(e);
+            e.printStackTrace();
         }
     }
 
-    private final InMemoryStateStream state;
+    private final StateStream state;
+
     private final Actuator<T> actuator;
 
-    private class ManipulatorActuator implements Actuator<T> {
+    private final Key key;
 
-        ManipulatorActuator(Manipulator manipulator) {
+    private class ActuatorDelegate implements Actuator<T> {
+
+        ActuatorDelegate(Manipulator manipulator) {
             this.manipulator = manipulator;
         }
 
         @Override
-        public Key key() {
-            return ActuatorHolder.this.actuator.key();
-        }
-
-        @Override
-        public Class<T> datatype() {
-            return ActuatorHolder.this.actuator.datatype();
-        }
-
-        @Override
-        public void actuate(T value) throws ActuationException {
+        public void actuate(T value) {
             ActuatorHolder.this.actuate(this.manipulator, value);
         }
 

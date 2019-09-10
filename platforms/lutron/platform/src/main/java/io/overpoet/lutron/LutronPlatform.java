@@ -3,7 +3,6 @@ package io.overpoet.lutron;
 import java.io.IOException;
 import java.net.Inet4Address;
 import java.net.InetSocketAddress;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -23,14 +22,14 @@ import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.ApparatusType;
 import io.overpoet.spi.apparatus.SimpleApparatus;
+import io.overpoet.spi.aspect.Aspect;
+import io.overpoet.spi.aspect.AspectBuilder;
 import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.metadata.BooleanMetadata;
 import io.overpoet.spi.metadata.IntegerMetadata;
 import io.overpoet.spi.metadata.SimpleApparatusMetadata;
 import io.overpoet.spi.platform.Platform;
 import io.overpoet.spi.platform.PlatformContext;
-import io.overpoet.spi.sensor.BooleanSensor;
-import io.overpoet.spi.sensor.PercentageSensor;
 import io.overpoet.spi.sensor.Sensor;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -65,9 +64,10 @@ public class LutronPlatform implements Platform, ServiceListener {
 
     private Apparatus createApparatus(Zone zone) {
         ApparatusMetadata metadata = createMetadata(zone);
-        Set<Sensor<?>> sensors = createSensors(zone);
-        Set<Actuator<?>> actuators = createActuators(zone);
-        SimpleApparatus apparatus = new SimpleApparatus(metadata, key.append(zone.href()), sensors, actuators);
+        SimpleApparatus apparatus = new SimpleApparatus(metadata,
+                                                        key.append(zone.href()),
+                                                        createAspects(zone));
+
         return apparatus;
     }
 
@@ -83,59 +83,31 @@ public class LutronPlatform implements Platform, ServiceListener {
         return metadata;
     }
 
-    Set<Sensor<?>> createSensors(Zone zone) {
+    Set<Aspect<?, ?>> createAspects(Zone zone) {
         //DelegateSensorLogic<Integer> logic = new DelegateSensorLogic<Integer>();
-        Set<Sensor<?>> sensors = new HashSet<>();
-        if ( zone.controlType() == DIMMED || zone.controlType() == SWITCHED ) {
-            BooleanSensor sensor = new BooleanSensor(this.key.append(zone.href(), "on"), BooleanMetadata.DEFAULT, (sink)->{
-                zone.addStatusChangeListener((status)->{
-                    if ( status.switchedLevel() == SwitchedLevel.ON || status.level() > 0 ) {
-                        sink.sink(true);
-                    } else {
-                        sink.sink(false);
-                    }
-                });
-            });
-            sensors.add(sensor);
+        Set<Aspect<?, ?>> aspects = new HashSet<>();
+        if (zone.controlType() == DIMMED || zone.controlType() == SWITCHED) {
+            aspects.add(AspectBuilder.of(this.key.append(zone.href(), "on"), Boolean.class, BooleanMetadata.DEFAULT)
+                                .withSensor((sink) -> {
+                                    zone.addStatusChangeListener((status) -> {
+                                        if (status.switchedLevel() == SwitchedLevel.ON || status.level() > 0) {
+                                            sink.sink(true);
+                                        } else {
+                                            sink.sink(false);
+                                        }
+                                    });
+                                }));
         }
-        if ( zone.controlType() == DIMMED ) {
-            PercentageSensor sensor = new PercentageSensor(this.key.append(zone.href(), "level"), IntegerMetadata.DEFAULT, (sink) -> {
-                zone.addStatusChangeListener((status) -> {
-                    sink.sink(status.level());
-                });
-            });
-            sensors.add(sensor);
+        if (zone.controlType() == DIMMED) {
+            aspects.add(AspectBuilder.of(this.key.append(zone.href(), "level"), Integer.class, IntegerMetadata.DEFAULT)
+                                .withSensor((sink) -> {
+                                    zone.addStatusChangeListener((status) -> {
+                                        sink.sink(status.level());
+                                    });
+                                }));
         }
-       return sensors;
+        return aspects;
     }
-
-    Set<Actuator<?>> createActuators(Zone zone) {
-        Set<Actuator<?>> actuators = new HashSet<>();
-        if ( zone.controlType() == DIMMED || zone.controlType() == SWITCHED ) {
-            //BooleanActuator actuator = new BooleanActuator(this.key.append(zone.href(), "on"), BooleanMetadata.DEFAULT);
-
-        }
-        return actuators;
-    }
-
-
-    /*
-    protected void onZoneStatusUpdated(ZoneStatus status) {
-        LOG.info("Zone status updated: {}", status.zone().name());
-        DelegateSensorLogic<Integer> logic = this.logics.get(status.zone());
-        if ( logic == null ) {
-            LOG.warn("No logic for {}", status.zone().name());
-            return;
-        }
-        if ( status.switchedLevel() == SwitchedLevel.OFF ) {
-            LOG.debug("delegate {} to OFF", status.zone().name() );
-            logic.delegate( 0 );
-        } else {
-            LOG.debug("delegate {} to {}", status.zone().name(), status.level() );
-            logic.delegate(status.level());
-        }
-    }
-     */
 
     private Map<Zone, Apparatus> apparatuses = new HashMap<>();
 

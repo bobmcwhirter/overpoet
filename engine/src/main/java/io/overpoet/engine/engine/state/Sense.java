@@ -1,15 +1,15 @@
 package io.overpoet.engine.engine.state;
 
-import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.Key;
 
 public class Sense<T> {
-    public Sense(Sensor<T> sensor, T value) {
-        this.sensor = sensor;
+    public Sense(Key key, T value) {
+        this.key = key;
         this.value = value;
     }
 
-    public Sensor<T> sensor() {
-        return this.sensor;
+    public Key key() {
+        return this.key;
     }
 
     public T value() {
@@ -18,9 +18,9 @@ public class Sense<T> {
 
     @Override
     public String toString() {
-        return "[" + this.sensor.key() + " = " + this.value + "]";
+        return "[" + key + " = " + this.value + "]";
     }
 
-    private final Sensor<T> sensor;
+    private final Key key;
     private final T value;
 }

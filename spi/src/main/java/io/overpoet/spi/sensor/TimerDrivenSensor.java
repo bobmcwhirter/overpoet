@@ -7,17 +7,17 @@ import java.util.TimerTask;
 
 import io.overpoet.spi.chrono.SystemClock;
 
-public abstract class TimerDrivenSensorLogic<T> extends BaseSensorLogic<T> {
+public abstract class TimerDrivenSensor<T> extends BaseSensor<T> {
 
-    protected TimerDrivenSensorLogic(SystemClock clock, Duration period) {
+    protected TimerDrivenSensor(SystemClock clock, Duration period) {
         this.clock = clock;
         this.period = period;
         this.timer = new Timer(true);
     }
 
     @Override
-    public void start(Sink<T> sink) {
-        super.start(sink);
+    public void onChange(Sink<T> sink) {
+        super.onChange(sink);
         this.timer.scheduleAtFixedRate(new Task(), 0, this.period.toMillis());
     }
 

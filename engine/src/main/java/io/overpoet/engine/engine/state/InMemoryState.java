@@ -3,6 +3,7 @@ package io.overpoet.engine.engine.state;
 import java.util.HashMap;
 import java.util.Map;
 
+import io.overpoet.spi.Key;
 import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.spi.sensor.Sensor;
 import org.slf4j.Logger;
@@ -26,12 +27,12 @@ public class InMemoryState implements State {
 
     <T> InMemoryState(InMemoryState previousState, Sense<T> sense) {
         this(previousState);
-        this.senses.put(sense.sensor(), sense.value());
+        this.senses.put(sense.key(), sense.value());
     }
 
     <T> InMemoryState(InMemoryState previousState, Actuation<T> actuation) {
         this(previousState);
-        this.actuations.put(actuation.actuator(), actuation.value());
+        this.actuations.put(actuation.key(), actuation.value());
     }
 
     @Override
@@ -39,7 +40,7 @@ public class InMemoryState implements State {
         if (this.locked) {
             throw new StateException("state locked, branches are not allowed");
         }
-        Object prevValue = this.senses.get(sense.sensor());
+        Object prevValue = this.senses.get(sense.key());
         if (prevValue == null || !prevValue.equals(sense.value())) {
             LOG.debug("state change {}", sense);
             try {
@@ -76,7 +77,7 @@ public class InMemoryState implements State {
 
     private final InMemoryState previousState;
 
-    private Map<Sensor<?>, Object> senses = new HashMap<>();
+    private Map<Key, Object> senses = new HashMap<>();
 
-    private Map<Actuator<?>, Object> actuations = new HashMap<>();
+    private Map<Key, Object> actuations = new HashMap<>();
 }

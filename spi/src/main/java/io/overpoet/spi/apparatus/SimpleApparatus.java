@@ -5,50 +5,43 @@ import java.util.Set;
 
 import io.overpoet.spi.Key;
 import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.spi.aspect.Aspect;
 import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.sensor.Sensor;
 
 public class SimpleApparatus implements Apparatus {
-    public SimpleApparatus(ApparatusMetadata metadata, Key key, Set<Sensor<?>> sensors, Set<Actuator<?>> actuators) {
+
+    public SimpleApparatus(ApparatusMetadata metadata, Key key, Set<Aspect<?, ?>> aspects) {
         this.metadata = metadata;
         this.key = key;
-        if ( sensors != null ) {
-            this.sensors.addAll(sensors);
-        }
-        if ( actuators != null ) {
-            this.actuators.addAll(actuators);
-        }
+        this.aspects.addAll(aspects);
     }
 
-    /*
-    @Override
-    public ApparatusType type() {
-        return this.type;
+    public SimpleApparatus(ApparatusMetadata metadata, Key key, Aspect<?, ?>... aspects) {
+        this.metadata = metadata;
+        this.key = key;
+        for (Aspect<?, ?> aspect : aspects) {
+            this.aspects.add(aspect);
+        }
     }
-
-     */
 
     @Override
     public ApparatusMetadata metadata() {
         return this.metadata;
     }
 
+    @Override
+    public Set<Aspect<?, ?>> aspects() {
+        return this.aspects;
+    }
+
     public Key key() {
         return this.key;
     }
 
-    @Override
-    public Set<Sensor<?>> sensors() {
-        return this.sensors;
-    }
-
-    @Override
-    public Set<Actuator<?>> actuators() {
-        return this.actuators;
-    }
-
     private final ApparatusMetadata metadata;
+
     private final Key key;
-    final private Set<Sensor<?>> sensors = new HashSet<>();
-    final private Set<Actuator<?>> actuators = new HashSet<>();
+
+    final private Set<Aspect<?, ?>> aspects = new HashSet<>();
 }

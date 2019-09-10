@@ -2,7 +2,6 @@ package io.overpoet.netatmo.weather;
 
 import java.io.IOException;
 import java.net.URI;
-import java.util.Collections;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.concurrent.TimeUnit;
@@ -12,15 +11,15 @@ import com.jayway.jsonpath.ReadContext;
 import io.overpoet.spi.Key;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.SimpleApparatus;
+import io.overpoet.spi.aspect.AspectBuilder;
 import io.overpoet.spi.measurement.Temperature;
 import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.metadata.SimpleApparatusMetadata;
 import io.overpoet.spi.metadata.TemperatureMetadata;
 import io.overpoet.spi.platform.Platform;
 import io.overpoet.spi.platform.PlatformContext;
-import io.overpoet.spi.sensor.TemperatureSensor;
-import io.overpoet.spi.json.JSONSensorLogic;
-import io.overpoet.spi.json.JSONSensorLogicFactory;
+import io.overpoet.spi.json.JSONSensor;
+import io.overpoet.spi.json.JSONSensorFactory;
 import okhttp3.FormBody;
 import okhttp3.HttpUrl;
 import okhttp3.OkHttpClient;
@@ -48,12 +47,12 @@ public class NetatmoWeatherPlatform implements Platform {
 
     //@Override
     //public String id() {
-        //return "netatmo-weather";
+    //return "netatmo-weather";
     //}
 
     //@Override
     //public String name() {
-        //return "Netatmo Weather Station";
+    //return "Netatmo Weather Station";
     //}
 
     @Override
@@ -86,7 +85,7 @@ public class NetatmoWeatherPlatform implements Platform {
             String data = getData();
             ReadContext ctx = JsonPath.parse(data);
 
-            for (JSONSensorLogic<?, ?> logic : this.logics) {
+            for (JSONSensor<?, ?> logic : this.logics) {
                 logic.process(ctx);
             }
         } catch (IOException e) {
@@ -97,22 +96,22 @@ public class NetatmoWeatherPlatform implements Platform {
     //private final static JsonPath OUTSIDE_TEMP = JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.Temperature");
     //private final static JsonPath OUTSIDE_TEMP_MIN = JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.min_temp");
     //private final static JsonPath OUTSIDE_TEMP_MAX = JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.max_temp");
-    private final static JSONSensorLogicFactory<Temperature, Double> OUTSIDE_TEMP_CURRENT
-            = new JSONSensorLogicFactory<>(Double.class,
-                                           Temperature::celsius,
-                                           JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.Temperature")
+    private final static JSONSensorFactory<Temperature, Double> OUTSIDE_TEMP_CURRENT
+            = new JSONSensorFactory<>(Double.class,
+                                      Temperature::celsius,
+                                      JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.Temperature")
     );
 
-    private final static JSONSensorLogicFactory<Temperature, Double> OUTSIDE_TEMP_MIN
-            = new JSONSensorLogicFactory<>(Double.class,
-                                           Temperature::celsius,
-                                           JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.min_temp")
+    private final static JSONSensorFactory<Temperature, Double> OUTSIDE_TEMP_MIN
+            = new JSONSensorFactory<>(Double.class,
+                                      Temperature::celsius,
+                                      JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.min_temp")
     );
 
-    private final static JSONSensorLogicFactory<Temperature, Double> OUTSIDE_TEMP_MAX
-            = new JSONSensorLogicFactory<>(Double.class,
-                                           Temperature::celsius,
-                                           JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.max_temp")
+    private final static JSONSensorFactory<Temperature, Double> OUTSIDE_TEMP_MAX
+            = new JSONSensorFactory<>(Double.class,
+                                      Temperature::celsius,
+                                      JsonPath.compile("$.body.devices[0].modules[?(@.type == 'NAModule1')].dashboard_data.max_temp")
     );
 
     private ApparatusMetadata thermometerMetadata(String name) {
@@ -134,44 +133,36 @@ public class NetatmoWeatherPlatform implements Platform {
             LOG.info("Adding outside current temperature");
             Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Current Temperature"),
                                                       key,
-                                                      Collections.singleton(
-                                                              new TemperatureSensor(
-                                                                      key.append("temperature", "current"),
-                                                                      TemperatureMetadata.DEFAULT,
-                                                                      register(OUTSIDE_TEMP_CURRENT.build()))),
-                                                      Collections.emptySet());
+                                                      AspectBuilder.of(key.append("temperature", "current"),
+                                                                       Temperature.class,
+                                                                       TemperatureMetadata.DEFAULT)
+                                                              .withSensor(register(OUTSIDE_TEMP_CURRENT.build()))
+            );
             this.context.connect(apparatus);
         }
         if (OUTSIDE_TEMP_MIN.isApplicable(ctx)) {
             LOG.info("Adding outside min temperature");
             Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Minimum Temperature"),
                                                       key,
-                                                      Collections.singleton(
-                                                              new TemperatureSensor(
-                                                                      key.append("temperature", "minimum"),
-                                                                      TemperatureMetadata.DEFAULT,
-                                                                      register(OUTSIDE_TEMP_MIN.build()))),
-                                                      Collections.emptySet());
+                                                      AspectBuilder.of(key.append("temperature", "minimum"),
+                                                                       Temperature.class,
+                                                                       TemperatureMetadata.DEFAULT)
+                                                              .withSensor(register(OUTSIDE_TEMP_MIN.build()))
+            );
             this.context.connect(apparatus);
         }
         if (OUTSIDE_TEMP_MAX.isApplicable(ctx)) {
             LOG.info("Adding outside max temperature");
             Apparatus apparatus = new SimpleApparatus(thermometerMetadata("Maximum Temperature"),
                                                       key,
-                                                      Collections.singleton(
-                                                              new TemperatureSensor(
-                                                                      key.append("temperature", "maximum"),
-                                                                      TemperatureMetadata.DEFAULT,
-                                                                      register(OUTSIDE_TEMP_MAX.build()))),
-                                                      Collections.emptySet());
+                                                      AspectBuilder.of(key.append("temperature", "maximum"),
+                                                                       Temperature.class,
+                                                                       TemperatureMetadata.DEFAULT)
+                                                              .withSensor(register(OUTSIDE_TEMP_MAX.build()))
+            );
+
             this.context.connect(apparatus);
-            //sensors.add(new TemperatureSensor(key.append("temperature", "maximum"), TemperatureMetadata.DEFAULT, register(OUTSIDE_TEMP_MAX.build())));
         }
-        //if (sensors.isEmpty()) {
-        //return;
-        //}
-        //Apparatus apparatus = new SimpleApparatus(THERMOMETER, key, sensors, Collections.emptySet());
-        //this.context.connect(apparatus);
     }
 
     /*
@@ -266,12 +257,12 @@ public class NetatmoWeatherPlatform implements Platform {
         return response.body().string();
     }
 
-    public <T, JSONTYPE> JSONSensorLogic<T, JSONTYPE> register(JSONSensorLogic<T, JSONTYPE> logic) {
+    public <T, JSONTYPE> JSONSensor<T, JSONTYPE> register(JSONSensor<T, JSONTYPE> logic) {
         this.logics.add(logic);
         return logic;
     }
 
     private PlatformContext context;
 
-    private Set<JSONSensorLogic<?, ?>> logics = new HashSet<>();
+    private Set<JSONSensor<?, ?>> logics = new HashSet<>();
 }

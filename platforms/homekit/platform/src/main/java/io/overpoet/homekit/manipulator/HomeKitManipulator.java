@@ -5,13 +5,12 @@ import java.util.concurrent.atomic.AtomicInteger;
 import io.overpoet.hap.server.model.impl.ServerServiceImpl;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.ApparatusType;
+import io.overpoet.spi.aspect.Aspect;
 import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.measurement.Temperature;
 import io.overpoet.spi.metadata.ApparatusMetadata;
 import io.overpoet.spi.metadata.BooleanMetadata;
-import io.overpoet.spi.sensor.BooleanSensor;
-import io.overpoet.spi.sensor.PercentageSensor;
 import io.overpoet.spi.sensor.Sensor;
-import io.overpoet.spi.sensor.TemperatureSensor;
 import io.overpoet.hap.common.model.Characteristics;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Services;
@@ -34,51 +33,48 @@ public class HomeKitManipulator implements Manipulator {
     public void connect(Apparatus apparatus) {
         ApparatusMetadata metadata = apparatus.metadata();
         ApparatusType type = metadata.type();
-        //if ( type != THERMOMETER ) {
-        //return;
-        //}
+
+        System.err.println( type + " ==> " + apparatus.aspects());
+
         ServerAccessoryImpl accessory = new ServerAccessoryImpl(aid.incrementAndGet(), a -> {
             a.addService(iid.incrementAndGet(), Services.ACCESSORY_INFORMATION, (s) -> {
                 configureAccessoryInformation(metadata, s);
             });
             if (type == THERMOMETER) {
                 a.addService(iid.incrementAndGet(), Services.TEMPERATURE_SENSOR, s -> {
-                    for (Sensor<?> sensor : apparatus.sensors()) {
-                        if (sensor instanceof TemperatureSensor) {
-                            s.addCharacteristic(iid.incrementAndGet(), Characteristics.CURRENT_TEMPERATURE, c -> {
-                                //c.setStoredValue();
-                                c.setStoredValue(0.0);
-                                c.setPermissions(Permission.PAIRED_READ, NOTIFY);
-                                ((TemperatureSensor) sensor).onChange((t) -> {
-                                    c.updateValue(t.celsius());
+                    for (Aspect<?, ?> aspect : apparatus.aspects()) {
+                        if (aspect.datatype() == Temperature.class) {
+                            if (aspect.isSensor()) {
+                                s.addCharacteristic(iid.incrementAndGet(), Characteristics.CURRENT_TEMPERATURE, c -> {
+                                    c.setStoredValue(0.0);
+                                    c.setPermissions(Permission.PAIRED_READ, NOTIFY);
+                                    aspect.sensor(Temperature.class).onChange((t) -> {
+                                        c.updateValue(t.celsius());
+                                    });
                                 });
-                            });
-                            //s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, c-> {
-                            //c.setStoredValue(sensor.key());
-                            //c.setPermissions(Permission.PAIRED_READ);
-                            //});
+                            }
                         }
                     }
                 });
             } else if (type == LIGHT) {
                 a.addService(iid.incrementAndGet(), Services.LIGHTBULB, s -> {
-                    for (Sensor<?> sensor : apparatus.sensors()) {
-                        if (sensor instanceof BooleanSensor) {
+                    for (Aspect<?,?> aspect : apparatus.aspects()) {
+                        if (aspect.datatype() == Boolean.class) {
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.ON, c -> {
                                 c.setStoredValue(false);
                                 c.setPermissions(PAIRED_READ, PAIRED_WRITE, NOTIFY);
                                 //sensor.up(c::updateValue);
-                                sensor.onChange((t) -> {
+                                aspect.sensor(Boolean.class).onChange((t) -> {
                                     System.err.println("updating on/off to: " + t);
                                     c.updateValue(t);
                                 });
                             });
-                        } else if (sensor instanceof PercentageSensor) {
+                        } else if (aspect.datatype() == Integer.class) {
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.BRIGHTNESS, c -> {
                                 c.setStoredValue(0);
                                 c.setPermissions(PAIRED_READ, PAIRED_WRITE, NOTIFY);
                                 //sensor.onChange(c::updateValue);
-                                sensor.onChange((t) -> {
+                                aspect.sensor(Integer.class).onChange((t) -> {
                                     System.err.println("updating brightness to: " + t);
                                     c.updateValue(t);
                                 });

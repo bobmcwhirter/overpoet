@@ -1,15 +1,14 @@
 package io.overpoet.engine.engine;
 
-import java.lang.reflect.InvocationTargetException;
 import java.util.HashSet;
 import java.util.Set;
 
-import io.overpoet.spi.actuator.Actuator;
+import io.overpoet.engine.engine.state.InMemoryStateStream;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.apparatus.SimpleApparatus;
-import io.overpoet.engine.engine.state.InMemoryStateStream;
-import io.overpoet.spi.sensor.Sensor;
+import io.overpoet.spi.aspect.Aspect;
 import io.overpoet.spi.manipulator.Manipulator;
+import io.overpoet.spi.metadata.Metadata;
 
 class ApparatusHolder {
 
@@ -17,43 +16,30 @@ class ApparatusHolder {
         this.state = state;
         this.apparatus = apparatus;
 
-        for (Sensor<?> sensor : apparatus.sensors()) {
-            this.sensors.add(wrap( sensor));
+        for (Aspect<?, ?> aspect : apparatus.aspects()) {
+            this.aspects.add(wrap(aspect));
         }
-        for (Actuator<?> actuator : apparatus.actuators()) {
-            this.actuators.add(wrap(actuator));
-        }
+
     }
 
     Apparatus forManipulator(Manipulator manipulator) {
-        HashSet<Sensor<?>> wrappedSensors = new HashSet<>();
-        for (SensorHolder<?> sensor : this.sensors) {
-            try {
-                wrappedSensors.add( sensor.forManipulator(manipulator));
-            } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException | InstantiationException e) {
-                e.printStackTrace();
-            }
+        Set<Aspect<?,?>> delegates = new HashSet<>();
+        for (AspectHolder<?, ?> aspect : this.aspects) {
+            delegates.add(aspect.forManipulator(manipulator));
         }
 
-        HashSet<Actuator<?>> wrappedActuators = new HashSet<>();
-        for (ActuatorHolder<?> actuator : this.actuators) {
-            wrappedActuators.add( actuator.forManipulator(manipulator));
-        }
-        return new SimpleApparatus(apparatus.metadata(), apparatus.key(), wrappedSensors, wrappedActuators);
+        SimpleApparatus wrapped = new SimpleApparatus(apparatus.metadata(), apparatus.key(), delegates);
+        return wrapped;
     }
 
-    private <T> SensorHolder<T> wrap(Sensor<T> sensor) {
-        return new SensorHolder<>(this.state, sensor);
-    }
-
-    private <T> ActuatorHolder<T> wrap(Actuator<T> actuator) {
-        return new ActuatorHolder<>(this.state, actuator);
+    private <T,MT extends Metadata<T>> AspectHolder<T,MT> wrap(Aspect<T,MT> aspect) {
+        return new AspectHolder<>(this.state, aspect);
     }
 
     private final InMemoryStateStream state;
 
     private final Apparatus apparatus;
-    private final Set<SensorHolder<?>> sensors = new HashSet<>();
-    private final Set<ActuatorHolder<?>> actuators = new HashSet<>();
+
+    private final Set<AspectHolder<?,?>> aspects = new HashSet<>();
 
 }

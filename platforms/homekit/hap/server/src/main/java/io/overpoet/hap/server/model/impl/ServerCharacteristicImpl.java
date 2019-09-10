@@ -1,7 +1,5 @@
 package io.overpoet.hap.server.model.impl;
 
-import java.math.BigDecimal;
-import java.text.DecimalFormat;
 import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Consumer;
@@ -17,7 +15,6 @@ import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
-import io.overpoet.spi.sensor.BooleanSensor;
 
 public class ServerCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
 
