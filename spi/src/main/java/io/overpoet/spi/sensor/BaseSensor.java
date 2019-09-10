@@ -5,7 +5,9 @@ public class BaseSensor<T> implements Sensor<T>, Sink<T> {
     public void sink(T value) {
         this.lastValue = value;
         System.err.println( this + " setLastValue: " + this.lastValue);
-        this.sink.sink(value);
+        if ( this.sink != null ) {
+            this.sink.sink(value);
+        }
     }
 
     @Override

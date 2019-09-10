@@ -1,9 +1,8 @@
 package io.overpoet.automation.rule;
 
-import io.overpoet.spi.Key;
+import io.overpoet.spi.TypedKey;
 import io.overpoet.spi.apparatus.Apparatus;
 import io.overpoet.spi.manipulator.Manipulator;
-import io.overpoet.spi.sensor.Sensor;
 import io.overpoet.spi.geo.Location;
 
 public class RuleEngine implements Manipulator {
@@ -37,7 +36,7 @@ public class RuleEngine implements Manipulator {
     }
      */
 
-    public <T> void assertSensor(Key key, T value) {
+    public <T> void assertSensor(TypedKey<T> key, T value) {
         this.rootNode.assertSensor(key, value);
     }
 

@@ -3,9 +3,11 @@ package io.overpoet.engine.engine;
 import java.util.concurrent.atomic.AtomicReference;
 
 import io.overpoet.engine.engine.state.InMemoryStateStream;
+import io.overpoet.spi.Key;
 import io.overpoet.spi.manipulator.Manipulator;
 import io.overpoet.spi.sensor.BaseSensor;
 import io.overpoet.spi.metadata.StringMetadata;
+import io.overpoet.spi.sensor.Sensor;
 import org.junit.Test;
 
 import static io.overpoet.spi.Key.keyOf;
@@ -13,39 +15,34 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class SensorHolderTest {
 
-    /*
     @Test
     public void wiringToState() throws Exception {
         InMemoryStateStream state = new InMemoryStateStream();
-        BaseSensor<String> logic = new BaseSensor<>();
-        StringSensor sensor = new StringSensor(keyOf("sensor-1"), new StringMetadata(), logic);
-        SensorHolder<String> holder = new SensorHolder<>(state, sensor);
+        Key key = keyOf("sensor-1");
+        BaseSensor<String> sensor = new BaseSensor<>();
+        SensorHolder<String> holder = new SensorHolder<>(state, key, sensor);
 
-        logic.sink("howdy");
-        assertThat(state.currentHead().value(sensor)).isEqualTo("howdy");
+        sensor.sink("howdy");
+        assertThat(state.currentHead().value(key)).isEqualTo("howdy");
 
-        logic.sink("hello");
-        assertThat(state.currentHead().value(sensor)).isEqualTo("hello");
+        sensor.sink("hello");
+        assertThat(state.currentHead().value(key)).isEqualTo("hello");
     }
 
     @Test
     public void wiringToManipulators() throws Exception {
         InMemoryStateStream state = new InMemoryStateStream();
-        BaseSensor<String> logic = new BaseSensor<>();
-        StringSensor sensor = new StringSensor(keyOf("sensor-1"), new StringMetadata(), logic);
-        SensorHolder<String> holder = new SensorHolder<>(state, sensor);
+        Key key = keyOf("sensor-1");
+        BaseSensor<String> sensor = new BaseSensor<String>();
+        SensorHolder<String> holder = new SensorHolder<>(state, key, sensor);
 
         Manipulator manipulator1 = (app)->{};
         Manipulator manipulator2 = (app)->{};
         Manipulator manipulator3 = (app)->{};
 
-        StringSensor msensor1 = (StringSensor) holder.forManipulator(manipulator1);
-        StringSensor msensor2 = (StringSensor) holder.forManipulator(manipulator2);
-        StringSensor msensor3 = (StringSensor) holder.forManipulator(manipulator2);
-
-        assertThat(msensor1.key()).isEqualTo(keyOf("sensor-1"));
-        assertThat(msensor2.key()).isEqualTo(keyOf("sensor-1"));
-        assertThat(msensor3.key()).isEqualTo(keyOf("sensor-1"));
+        Sensor<String> msensor1 = holder.forManipulator(manipulator1);
+        Sensor<String> msensor2 = holder.forManipulator(manipulator2);
+        Sensor<String> msensor3 = holder.forManipulator(manipulator2);
 
         AtomicReference ref1 = new AtomicReference();
         AtomicReference ref2 = new AtomicReference();
@@ -58,10 +55,9 @@ public class SensorHolderTest {
             ref2.set("manipulator2:" + v);
         });
 
-        logic.sink("howdy");
+        sensor.sink("howdy");
 
         assertThat(ref1.get()).isEqualTo("manipulator1:howdy");
         assertThat(ref2.get()).isEqualTo("manipulator2:howdy");
     }
-     */
 }

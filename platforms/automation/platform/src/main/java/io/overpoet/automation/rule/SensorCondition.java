@@ -2,11 +2,11 @@ package io.overpoet.automation.rule;
 
 import java.util.function.Function;
 
-import io.overpoet.spi.Key;
+import io.overpoet.spi.TypedKey;
 
 public class SensorCondition<T> extends Condition {
 
-    public SensorCondition(Key key, Function<T, Boolean> condition) {
+    public SensorCondition(TypedKey<T> key, Function<T, Boolean> condition) {
         this.key = key;
         this.condition = condition;
     }
@@ -19,6 +19,6 @@ public class SensorCondition<T> extends Condition {
     }
 
 
-    private final Key key;
+    private final TypedKey<T> key;
     private final Function<T, Boolean> condition;
 }

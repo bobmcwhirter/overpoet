@@ -7,14 +7,12 @@ import java.time.ZonedDateTime;
 import java.time.temporal.ChronoUnit;
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.overpoet.spi.Key;
-import io.overpoet.spi.measurement.Distance;
+import io.overpoet.spi.TypedKey;
+import io.overpoet.spi.chrono.TimeSlice;
 import io.overpoet.spi.geo.Location;
-import io.overpoet.spi.metadata.IntegerMetadata;
-import io.overpoet.spi.sensor.BaseSensor;
-import io.overpoet.spi.sensor.MockClock;
-import io.overpoet.spi.metadata.TimeMetadata;
 import io.overpoet.spi.geo.Point;
+import io.overpoet.spi.measurement.Distance;
+import io.overpoet.spi.sensor.MockClock;
 import org.junit.Test;
 
 import static io.overpoet.automation.rule.Condition.and;
@@ -27,12 +25,11 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class RuleTest {
 
-    /*
     @Test
     public void testSimple() throws Exception {
 
-        IntegerSensor sensor1 = new IntegerSensor(keyOf("sensor-1"), IntegerMetadata.DEFAULT, new BaseSensor<>());
-        IntegerSensor sensor2 = new IntegerSensor(keyOf("sensor-2"), IntegerMetadata.DEFAULT, new BaseSensor<>());
+        TypedKey<Integer> sensor1 = new TypedKey<>(keyOf("sensor-1"), Integer.class);
+        TypedKey<Integer> sensor2 = new TypedKey<>(keyOf("sensor-2"), Integer.class);
 
         Rule rule = new Rule("yo");
 
@@ -95,7 +92,7 @@ public class RuleTest {
                 00,
                 00);
 
-        TimeSensor sensor = new TimeSensor(Key.keyOf("system.time"), TimeMetadata.INSTANCE, clock);
+        TypedKey<TimeSlice> sensor = new TypedKey<>(keyOf("system.time"), TimeSlice.class);
 
         Rule rule = new Rule("yo");
 
@@ -164,7 +161,8 @@ public class RuleTest {
                 ZoneId.of("America/New_York")
         ));
 
-        TimeSensor sensor = new TimeSensor(Key.keyOf("system.time"), TimeMetadata.INSTANCE, clock);
+        //TimeSensor sensor = new TimeSensor(Key.keyOf("system.time"), TimeMetadata.INSTANCE, clock);
+        TypedKey<TimeSlice> sensor = new TypedKey<>(keyOf("system.time"), TimeSlice.class );
 
         Rule rule = new Rule("yo");
 
@@ -219,5 +217,4 @@ public class RuleTest {
 
 
     }
-     */
 }

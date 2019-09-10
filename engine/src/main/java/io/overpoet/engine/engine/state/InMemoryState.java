@@ -69,8 +69,8 @@ public class InMemoryState implements State {
     }
 
     @Override
-    public <T> T value(Sensor<T> sensor) {
-        return (T) this.senses.get(sensor);
+    public Object value(Key key) {
+        return this.senses.get(key);
     }
 
     private boolean locked;

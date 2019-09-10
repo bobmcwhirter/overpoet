@@ -2,8 +2,7 @@ package io.overpoet.automation.rule;
 
 import java.util.concurrent.atomic.AtomicBoolean;
 
-import io.overpoet.spi.metadata.IntegerMetadata;
-import io.overpoet.spi.sensor.BaseSensor;
+import io.overpoet.spi.TypedKey;
 import org.junit.Test;
 
 import static io.overpoet.spi.Key.keyOf;
@@ -12,16 +11,15 @@ import static org.fest.assertions.api.Assertions.assertThat;
 
 public class DecisionTreeTest {
 
-    /*
     @Test
     public void testTree() {
 
         RootNode root = new RootNode();
 
-        IntegerSensor sensor1 = new IntegerSensor(keyOf("sensor-1"), IntegerMetadata.DEFAULT, new BaseSensor<>());
-        IntegerSensor sensor2 = new IntegerSensor(keyOf("sensor-2"), IntegerMetadata.DEFAULT, new BaseSensor<>());
+        TypedKey<Integer> key1 = new TypedKey<>(keyOf("sensor-1"), Integer.class);
+        TypedKey<Integer> key2 = new TypedKey<>(keyOf("sensor-2"), Integer.class);
 
-        SensorNode<Integer> sensorNode1 = root.getSensorNode(sensor1);
+        SensorNode<Integer> sensorNode1 = root.getSensorNode(key1);
         AlphaNode<Integer> greaterThan3 = sensorNode1.addAlphaNode((v -> v > 3));
         AlphaNode<Integer> lessThan10 = sensorNode1.addAlphaNode(v -> v < 10);
 
@@ -35,33 +33,30 @@ public class DecisionTreeTest {
 
         join.addInput(action);
 
-        root.assertSensor(sensor2, 7);
+        root.assertSensor(key2, 7);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 1);
+        root.assertSensor(key1, 1);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 22);
+        root.assertSensor(key2, 22);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 7);
+        root.assertSensor(key1, 7);
         assertThat(result.get()).isTrue();
 
         result.set(false);
 
-        root.assertSensor(sensor1, 7);
+        root.assertSensor(key1, 7);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 8);
+        root.assertSensor(key1, 8);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 1);
+        root.assertSensor(key1, 1);
         assertThat(result.get()).isFalse();
 
-        root.assertSensor(sensor1, 8);
+        root.assertSensor(key1, 8);
         assertThat(result.get()).isTrue();
-
-
     }
-     */
 }

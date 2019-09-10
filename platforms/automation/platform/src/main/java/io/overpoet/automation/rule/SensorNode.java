@@ -4,11 +4,11 @@ import java.util.HashSet;
 import java.util.Set;
 import java.util.function.Function;
 
-import io.overpoet.spi.Key;
+import io.overpoet.spi.TypedKey;
 
 class SensorNode<T> {
 
-    SensorNode(Key key) {
+    SensorNode(TypedKey<T> key) {
         this.key = key;
     }
 
@@ -34,7 +34,7 @@ class SensorNode<T> {
         return "[SensorNode: " + this.key + "]";
     }
 
-    private final Key key;
+    private final TypedKey<T> key;
     private T value;
     private Set<AlphaNode<T>> alphaNodes = new HashSet<>();
 }
