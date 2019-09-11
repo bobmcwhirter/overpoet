@@ -8,7 +8,7 @@ import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.CharacteristicType;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
 
-public class EventableCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
+public abstract class EventableCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
 
     public EventableCharacteristicImpl(ClientServiceImpl service, int iid, CharacteristicType type) {
         super(service, iid, type);
@@ -16,7 +16,7 @@ public class EventableCharacteristicImpl extends AbstractCharacteristicImpl impl
     }
 
     @Override
-    public void addListener(Consumer<EventableCharacteristic> listener) {
+    public void addChangeListener(Consumer<EventableCharacteristic> listener) {
         try {
             this.listeners.addListener(this, listener);
         } catch (ExecutionException | InterruptedException e) {
@@ -25,7 +25,7 @@ public class EventableCharacteristicImpl extends AbstractCharacteristicImpl impl
     }
 
     @Override
-    public void removeListener(Consumer<EventableCharacteristic> listener) {
+    public void removeChangeListener(Consumer<EventableCharacteristic> listener) {
         try {
             this.listeners.removeListener(this, listener);
         } catch (ExecutionException | InterruptedException e) {
@@ -34,7 +34,7 @@ public class EventableCharacteristicImpl extends AbstractCharacteristicImpl impl
     }
 
     @Override
-    public void removeAllListeners() {
+    public void removeAllChangeListeners() {
         try {
             this.listeners.removeAllListeners(this);
         } catch (ExecutionException | InterruptedException e) {

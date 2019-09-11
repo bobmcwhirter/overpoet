@@ -15,6 +15,7 @@ import org.junit.Test;
 @Ignore
 public class ActualDeviceTest {
 
+    /*
     @Before
     public void setUp() throws IOException {
         this.authStorage = ClientAuthStorage.filesystem("footbridge");
@@ -67,6 +68,8 @@ public class ActualDeviceTest {
                         }
                     });
                 });
+
+     */
         /*
         client.connect("192.168.1.147", 80)
                 .thenCompose( connection->{
@@ -79,9 +82,9 @@ public class ActualDeviceTest {
                     System.err.println( "Paired!");
                     return null;
                 }).get();
-                */
 
     }
+    */
 
     private ClientAuthStorage authStorage;
 }

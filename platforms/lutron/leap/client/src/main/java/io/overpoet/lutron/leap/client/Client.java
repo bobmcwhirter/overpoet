@@ -36,6 +36,7 @@ import io.netty.channel.nio.NioEventLoopGroup;
 import io.netty.channel.socket.nio.NioSocketChannel;
 import io.overpoet.lutron.leap.client.codec.ClientInitializer;
 import io.overpoet.lutron.leap.client.model.Universe;
+import io.overpoet.lutron.leap.client.model.ZoneStatus;
 import io.overpoet.lutron.leap.client.protocol.GetAreas;
 import io.overpoet.lutron.leap.client.protocol.GetDevices;
 import io.overpoet.lutron.leap.client.protocol.GetZones;
@@ -78,6 +79,11 @@ public class Client {
         this.channel.pipeline().writeAndFlush(new GetZones());
         this.channel.pipeline().writeAndFlush(new GetZonesStatus());
 
+    }
+
+    public void send(ZoneStatus status) {
+        System.err.println( "lutron client send: " + status);
+        this.channel.pipeline().writeAndFlush(status);
     }
 
     KeyManager[] keyManagers() throws CertificateException, NoSuchAlgorithmException, IOException, KeyStoreException, InvalidKeySpecException, UnrecoverableKeyException {

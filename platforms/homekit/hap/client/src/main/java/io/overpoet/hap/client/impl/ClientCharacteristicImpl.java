@@ -20,4 +20,9 @@ public class ClientCharacteristicImpl extends AbstractCharacteristicImpl  {
             throw new RuntimeException(e);
         }
     }
+
+    @Override
+    public void requestValueUpdate(Object value) {
+
+    }
 }

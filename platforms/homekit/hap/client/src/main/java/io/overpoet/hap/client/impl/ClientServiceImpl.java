@@ -18,14 +18,14 @@ public class ClientServiceImpl extends AbstractServiceImpl implements ClientServ
     public void addCharacteristic(Characteristic characteristic) {
         super.addCharacteristic(characteristic);
         if (characteristic instanceof EventableCharacteristic) {
-            this.listeners.stream().forEach(((EventableCharacteristic) characteristic)::addListener);
+            //this.listeners.stream().forEach(((EventableCharacteristic) characteristic)::addListener);
         }
     }
 
     public void addListener(Consumer<EventableCharacteristic> listener) {
         getCharacteristics().forEach(e -> {
             if (e instanceof EventableCharacteristicImpl) {
-                ((EventableCharacteristicImpl) e).addListener(listener);
+                //((EventableCharacteristicImpl) e).addListener(listener);
             }
         });
     }
@@ -34,7 +34,7 @@ public class ClientServiceImpl extends AbstractServiceImpl implements ClientServ
     public void removeListener(Consumer<EventableCharacteristic> listener) {
         getCharacteristics().forEach(e -> {
             if (e instanceof EventableCharacteristicImpl) {
-                ((EventableCharacteristicImpl) e).removeListener(listener);
+                //((EventableCharacteristicImpl) e).removeListener(listener);
             }
         });
     }
@@ -43,7 +43,7 @@ public class ClientServiceImpl extends AbstractServiceImpl implements ClientServ
     public void removeAllListeners() {
         getCharacteristics().forEach(e -> {
             if (e instanceof EventableCharacteristicImpl) {
-                ((EventableCharacteristicImpl) e).removeAllListeners();
+                //((EventableCharacteristicImpl) e).removeAllListeners();
             }
         });
     }

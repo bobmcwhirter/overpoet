@@ -64,20 +64,34 @@ public class HomeKitManipulator implements Manipulator {
                                 c.setStoredValue(false);
                                 c.setPermissions(PAIRED_READ, PAIRED_WRITE, NOTIFY);
                                 //sensor.up(c::updateValue);
+                                System.err.println( "adding sensor for " + aspect);
                                 aspect.sensor(Boolean.class).onChange((t) -> {
                                     System.err.println("updating on/off to: " + t);
                                     c.updateValue(t);
                                 });
+                                if ( aspect.isActuator() ) {
+                                    System.err.println( "adding actuator for " + aspect);
+                                    c.addChangeRequestedListener( (chr, value)->{
+                                        aspect.actuator(Boolean.class).actuate((Boolean) value);
+                                    });
+                                }
                             });
                         } else if (aspect.datatype() == Integer.class) {
                             s.addCharacteristic(iid.incrementAndGet(), Characteristics.BRIGHTNESS, c -> {
                                 c.setStoredValue(0);
                                 c.setPermissions(PAIRED_READ, PAIRED_WRITE, NOTIFY);
                                 //sensor.onChange(c::updateValue);
+                                System.err.println( "adding sensor for " + aspect);
                                 aspect.sensor(Integer.class).onChange((t) -> {
                                     System.err.println("updating brightness to: " + t);
                                     c.updateValue(t);
                                 });
+                                if ( aspect.isActuator() ) {
+                                    System.err.println( "adding actuator for " + aspect);
+                                    c.addChangeRequestedListener( (chr, value)->{
+                                        aspect.actuator(Integer.class).actuate((Integer) value);
+                                    });
+                                }
                             });
                         }
                     }

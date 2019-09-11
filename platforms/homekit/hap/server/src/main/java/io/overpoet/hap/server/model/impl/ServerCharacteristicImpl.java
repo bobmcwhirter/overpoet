@@ -2,11 +2,15 @@ package io.overpoet.hap.server.model.impl;
 
 import java.util.HashSet;
 import java.util.Set;
+import java.util.function.BiConsumer;
 import java.util.function.Consumer;
 
 import javax.json.JsonArrayBuilder;
+import javax.json.JsonNumber;
 import javax.json.JsonObject;
 import javax.json.JsonObjectBuilder;
+import javax.json.JsonString;
+import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
 
 import io.overpoet.hap.common.model.CharacteristicType;
@@ -26,11 +30,61 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
 
     @Override
     public void updateValue(Object value) {
+        System.err.println(this + " updateValue " + value + " >> " + this.changeListeners);
+        if (value instanceof JsonValue) {
+            value = fromJsonValue((JsonValue) value);
+        }
         setStoredValue(value);
-        for (Consumer<EventableCharacteristic> listener : this.listeners) {
+        for (Consumer<EventableCharacteristic> listener : this.changeListeners) {
+            System.err.println("propagate: " + listener);
             listener.accept(this);
         }
     }
+
+    @Override
+    public void requestValueUpdate(Object value) {
+        if (value instanceof JsonValue) {
+            value = fromJsonValue((JsonValue) value);
+        }
+        for (BiConsumer<EventableCharacteristic, Object> changeRequestListener : this.changeRequestListeners) {
+            changeRequestListener.accept(this, value);
+        }
+    }
+
+    private Object fromJsonValue(JsonValue json) {
+        if (getType().getFormat() == Format.STRING) {
+            if (json.getValueType() == JsonValue.ValueType.STRING) {
+                return ((JsonString) json).getString();
+            } else {
+                return json.toString();
+            }
+        }
+
+        if (getType().getFormat() == Format.BOOL) {
+            if (json.getValueType() == JsonValue.ValueType.TRUE) {
+                return true;
+            } else if (json.getValueType() == JsonValue.ValueType.FALSE) {
+                return false;
+            } else if (json.getValueType() == JsonValue.ValueType.NUMBER) {
+                return ((JsonNumber) json).intValue() != 0;
+            }
+        }
+
+        if (getType().getFormat() == Format.INT) {
+            if (json.getValueType() == JsonValue.ValueType.NUMBER) {
+                return ((JsonNumber) json).intValue();
+            }
+        }
+
+        if (getType().getFormat() == Format.FLOAT) {
+            if (json.getValueType() == JsonValue.ValueType.NUMBER) {
+                return ((JsonNumber) json).doubleValue();
+            }
+        }
+
+        return null;
+    }
+
 
     public JsonObjectBuilder toJSON() {
         return toJSON(false);
@@ -79,20 +133,36 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
     }
 
     @Override
-    public void addListener(Consumer<EventableCharacteristic> listener) {
-        this.listeners.add(listener);
+    public void addChangeListener(Consumer<EventableCharacteristic> listener) {
+        this.changeListeners.add(listener);
         listener.accept(this);
     }
 
     @Override
-    public void removeListener(Consumer<EventableCharacteristic> listener) {
-        this.listeners.remove(listener);
+    public void removeChangeListener(Consumer<EventableCharacteristic> listener) {
+        this.changeRequestListeners.remove(listener);
     }
 
     @Override
-    public void removeAllListeners() {
-        this.listeners.clear();
+    public void removeAllChangeListeners() {
+        this.changeRequestListeners.clear();
     }
 
-    private final Set<Consumer<EventableCharacteristic>> listeners = new HashSet<>();
+    @Override
+    public void addChangeRequestedListener(BiConsumer<EventableCharacteristic,Object> listener) {
+        this.changeRequestListeners.add(listener);
+    }
+
+    @Override
+    public void removeChangeRequestedListener(BiConsumer<EventableCharacteristic,Object> listener) {
+        this.changeListeners.remove(listener);
+    }
+
+    @Override
+    public void removeAllChangeRequesListeners() {
+        this.changeListeners.clear();
+    }
+
+    private final Set<BiConsumer<EventableCharacteristic,Object>> changeRequestListeners = new HashSet<>();
+    private final Set<Consumer<EventableCharacteristic>> changeListeners = new HashSet<>();
 }

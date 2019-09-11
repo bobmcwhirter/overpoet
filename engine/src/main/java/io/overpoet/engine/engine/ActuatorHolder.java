@@ -26,6 +26,7 @@ class ActuatorHolder<T> {
     void actuate(Manipulator manipulator, T value) {
         try {
             this.state.add(new Actuation<>(this.key, value));
+            this.actuator.actuate(value);
         } catch (StateException e) {
             e.printStackTrace();
         }

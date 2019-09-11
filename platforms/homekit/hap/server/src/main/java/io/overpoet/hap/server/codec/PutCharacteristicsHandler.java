@@ -56,19 +56,26 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
         JsonArray characteristics = obj.getJsonArray("characteristics");
         for (int i = 0; i < characteristics.size(); ++i) {
             JsonObject each = characteristics.getJsonObject(i);
+            System.err.println( each );
             int aid = each.getInt("aid");
             int iid = each.getInt("iid");
             if (each.containsKey("ev")) {
                 boolean ev = each.getBoolean("ev");
                 if (ev) {
-                    ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));
                     LOG.debug(ctx.channel().id() + " enable events on {}:{}", aid, iid );
                     ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
-                    chr.addListener((c) -> {
-                        LOG.debug(ctx.channel().id() + " sending event on {}:{}", aid, iid);
+                    chr.addChangeListener((c) -> {
+                        LOG.debug(ctx.channel().id() + " sending event on {}:{} -> {}", aid, iid, c.getValue());
                         ctx.pipeline().writeAndFlush(new Event((ServerCharacteristicImpl) c));
                     });
+                    ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));
                 }
+            }
+            if (each.containsKey("value")) {
+                ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
+                LOG.debug( "updating value {}:{} -> {}", aid, iid, each.get("value"));
+                chr.requestValueUpdate(each.get("value"));
+                ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));
             }
         }
     }

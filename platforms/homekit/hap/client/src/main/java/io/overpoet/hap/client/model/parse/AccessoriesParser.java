@@ -86,7 +86,7 @@ public class AccessoriesParser {
         AbstractCharacteristicImpl characteristic = null;
 
         if (permissions.contains(Permission.NOTIFY)) {
-            characteristic = new EventableCharacteristicImpl(service, iid, characteristicType);
+            //characteristic = new EventableCharacteristicImpl(service, iid, characteristicType);
         } else {
             characteristic = new ClientCharacteristicImpl(service, iid, characteristicType);
         }

@@ -17,7 +17,7 @@ public class JSONDecoder extends MessageToMessageDecoder<ByteBuf>  {
         try (JsonReader reader = JsonProvider.provider().createReader(new ByteBufInputStream(msg)) ) {
             JsonObject obj = reader.readObject();
             out.add( obj );
-            System.err.println( "decide: " + obj);
+            System.err.println( "decode from lutron: " + obj);
         }
     }
 }

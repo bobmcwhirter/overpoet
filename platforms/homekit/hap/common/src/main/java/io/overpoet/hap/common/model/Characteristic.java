@@ -8,6 +8,7 @@ public interface Characteristic {
     int getIID();
     CharacteristicType getType();
     void updateValue(Object value);
+    void requestValueUpdate(Object value);
     Object getValue();
     <T> T getValue(Class<T> asType);
 

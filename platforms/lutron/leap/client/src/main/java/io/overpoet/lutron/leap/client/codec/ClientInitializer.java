@@ -33,6 +33,7 @@ public class ClientInitializer extends ChannelInitializer<SocketChannel> {
         channel.pipeline().addLast(new DeviceDefinitionDecoder(this.universe));
         channel.pipeline().addLast(new ZoneStatusDecoder(this.universe));
         channel.pipeline().addLast(new ResponseHandler(this.universe));
+        channel.pipeline().addLast(new ZoneStatusEncoder());
         //channel.pipeline().addLast(new DebugHandler());
     }
 

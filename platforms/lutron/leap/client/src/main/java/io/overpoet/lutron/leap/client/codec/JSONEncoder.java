@@ -1,5 +1,6 @@
 package io.overpoet.lutron.leap.client.codec;
 
+import java.nio.charset.Charset;
 import java.util.List;
 
 import javax.json.JsonObjectBuilder;
@@ -21,6 +22,7 @@ public class JSONEncoder extends MessageToMessageEncoder<JsonObjectBuilder>  {
         }
         buf.writeByte('\r');
         buf.writeByte('\n');
+        System.err.println("encode to lutron: " + buf.toString(Charset.forName("UTF8")));
         out.add(buf);
     }
 

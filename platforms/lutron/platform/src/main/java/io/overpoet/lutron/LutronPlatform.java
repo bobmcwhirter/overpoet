@@ -17,6 +17,7 @@ import io.overpoet.lutron.leap.client.model.Device;
 import io.overpoet.lutron.leap.client.model.SwitchedLevel;
 import io.overpoet.lutron.leap.client.model.Universe;
 import io.overpoet.lutron.leap.client.model.Zone;
+import io.overpoet.lutron.leap.client.model.ZoneStatus;
 import io.overpoet.spi.Key;
 import io.overpoet.spi.actuator.Actuator;
 import io.overpoet.spi.apparatus.Apparatus;
@@ -96,6 +97,11 @@ public class LutronPlatform implements Platform, ServiceListener {
                                             sink.sink(false);
                                         }
                                     });
+                                })
+                                .withActuator((v) -> {
+                                    ZoneStatus newStatus = new ZoneStatus(zone);
+                                    newStatus.switchedLevel(v ? SwitchedLevel.ON : SwitchedLevel.OFF);
+                                    this.client.send(newStatus);
                                 }));
         }
         if (zone.controlType() == DIMMED) {
@@ -104,6 +110,12 @@ public class LutronPlatform implements Platform, ServiceListener {
                                     zone.addStatusChangeListener((status) -> {
                                         sink.sink(status.level());
                                     });
+                                })
+                                .withActuator((v) -> {
+                                    ZoneStatus newStatus = new ZoneStatus(zone);
+                                    newStatus.level(v);
+                                    this.client.send(newStatus);
+
                                 }));
         }
         return aspects;
