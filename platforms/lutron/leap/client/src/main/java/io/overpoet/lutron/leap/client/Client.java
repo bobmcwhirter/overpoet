@@ -41,6 +41,7 @@ import io.overpoet.lutron.leap.client.protocol.GetAreas;
 import io.overpoet.lutron.leap.client.protocol.GetDevices;
 import io.overpoet.lutron.leap.client.protocol.GetZones;
 import io.overpoet.lutron.leap.client.protocol.GetZonesStatus;
+import io.overpoet.lutron.leap.client.protocol.Probe;
 
 public class Client {
 
@@ -74,10 +75,11 @@ public class Client {
         this.channel = b.connect(socketAddress.getAddress(),
                                  socketAddress.getPort()).sync().channel();
 
-        this.channel.pipeline().writeAndFlush(new GetAreas());
-        this.channel.pipeline().writeAndFlush(new GetDevices());
-        this.channel.pipeline().writeAndFlush(new GetZones());
-        this.channel.pipeline().writeAndFlush(new GetZonesStatus());
+        this.channel.pipeline().writeAndFlush(new Probe());
+        //this.channel.pipeline().writeAndFlush(new GetAreas());
+        //this.channel.pipeline().writeAndFlush(new GetDevices());
+        //this.channel.pipeline().writeAndFlush(new GetZones());
+        //this.channel.pipeline().writeAndFlush(new GetZonesStatus());
 
     }
 

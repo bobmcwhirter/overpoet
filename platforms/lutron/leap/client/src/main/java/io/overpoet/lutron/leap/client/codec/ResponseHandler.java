@@ -17,7 +17,9 @@ public class ResponseHandler extends ChannelInboundHandlerAdapter {
         //super.channelRead(ctx, msg);
         //System.err.println("HANDLE: " + msg);
         if (msg instanceof Zone) {
-            universe.onZoneAdded((Zone)msg);
+            if ( ((Zone) msg).href().equals("/zone/5")) {
+                universe.onZoneAdded((Zone) msg);
+            }
         } else if ( msg instanceof ZoneStatus ) {
             //universe.onZoneStatusUpdated((ZoneStatus)msg);
             ((ZoneStatus) msg).zone().statusChanged((ZoneStatus)msg);

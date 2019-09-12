@@ -16,7 +16,8 @@ public class ZoneStatusEncoder extends MessageToMessageEncoder<ZoneStatus> {
     @Override
     protected void encode(ChannelHandlerContext ctx, ZoneStatus msg, List<Object> out) throws Exception {
         if ( msg.switchedLevel() != null ) {
-            out.add(new GoToLevel(msg.zone(), msg.switchedLevel() == SwitchedLevel.ON ? 100 : 0 ));
+            //out.add(new GoToLevel(msg.zone(), msg.switchedLevel() == SwitchedLevel.ON ? 100 : 0 ));
+            out.add(new GoToLevel(msg.zone(), msg.switchedLevel()));
         }
         if ( msg.level() != null ) {
             out.add( new GoToLevel(msg.zone(), msg.level()));

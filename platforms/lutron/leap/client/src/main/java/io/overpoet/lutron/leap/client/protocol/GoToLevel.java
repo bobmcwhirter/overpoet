@@ -24,12 +24,11 @@ public class GoToLevel extends AbstractRequestMessage {
         body("Command", command.build());
     }
 
-    /*
     public GoToLevel(Zone zone, SwitchedLevel level) {
         communiqueType("CreateRequest");
         url(zone.href() + "/commandprocessor");
         JsonObjectBuilder command = JsonProvider.provider().createObjectBuilder();
-        command.add("CommandType", "GoToLevel");
+        command.add("CommandType", "SetSwitchedLevel");
         JsonObjectBuilder parameterBody = JsonProvider.provider().createObjectBuilder();
         parameterBody.add("Type", "SwitchedLevel");
         parameterBody.add("Value", level.toString());
@@ -39,5 +38,4 @@ public class GoToLevel extends AbstractRequestMessage {
         command.add( "Parameter", parameter);
         body("Command", command.build());
     }
-     */
 }
