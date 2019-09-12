@@ -1,23 +1,34 @@
 package io.overpoet.hap.common.model;
 
-import java.util.EnumSet;
-
-import io.overpoet.hap.common.model.value.BoolValue;
-import io.overpoet.hap.common.model.value.DataValue;
-import io.overpoet.hap.common.model.value.FloatValue;
-import io.overpoet.hap.common.model.value.IntValue;
-import io.overpoet.hap.common.model.value.StringValue;
-import io.overpoet.hap.common.model.value.TLV8Value;
-import io.overpoet.hap.common.model.value.UInt16Value;
-import io.overpoet.hap.common.model.value.UInt32Value;
-import io.overpoet.hap.common.model.value.UInt64Value;
-import io.overpoet.hap.common.model.value.UInt8Value;
-import io.overpoet.hap.common.model.value.Value;
+import javax.json.JsonValue;
 
 /**
  * Created by bob on 9/14/18.
  */
-public enum Format {
+public abstract class Format<JAVA_TYPE> {
+
+    Format(Class<JAVA_TYPE> datatype, String name) {
+        this.datatype = datatype;
+        this.name = name;
+    }
+
+    public Class<JAVA_TYPE> javaType() {
+        return this.datatype;
+    }
+
+    @Override
+    public String toString() {
+        return this.name;
+    }
+
+    public abstract JAVA_TYPE fromJSON(JsonValue value);
+    public abstract JsonValue toJSON(JAVA_TYPE value);
+
+    private final Class<JAVA_TYPE> datatype;
+    private final String name;
+
+    /*
+    public static SimpelValue<Bool>
 
     BOOL(BoolValue.class),
     UINT8(UInt8Value.class),
@@ -41,4 +52,6 @@ public enum Format {
     }
 
     private final Class<? extends Value> valueFormat;
+
+     */
 }

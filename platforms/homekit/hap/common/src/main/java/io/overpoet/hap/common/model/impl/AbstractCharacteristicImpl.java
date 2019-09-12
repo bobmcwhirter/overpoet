@@ -1,12 +1,15 @@
 package io.overpoet.hap.common.model.impl;
 
+import java.util.Arrays;
+import java.util.EnumSet;
+
 import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.Permission;
-import io.overpoet.hap.common.model.Permissions;
 import io.overpoet.hap.common.model.Service;
 
-public abstract class AbstractCharacteristicImpl implements Characteristic {
+public abstract class AbstractCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>> implements Characteristic<JAVA_TYPE, FORMAT_TYPE> {
     public AbstractCharacteristicImpl(Service service, int iid, CharacteristicType type) {
         this.service = service;
         this.iid = iid;
@@ -24,11 +27,11 @@ public abstract class AbstractCharacteristicImpl implements Characteristic {
     }
 
     @Override
-    public CharacteristicType getType() {
+    public CharacteristicType<JAVA_TYPE, FORMAT_TYPE> getType() {
         return this.type;
     }
 
-    public void setStoredValue(Object value) {
+    public void setStoredValue(JAVA_TYPE value) {
         this.value = value;
     }
 
@@ -43,7 +46,7 @@ public abstract class AbstractCharacteristicImpl implements Characteristic {
     }
      */
 
-    public Object getValue() {
+    public JAVA_TYPE getValue() {
         return this.value;
     }
 
@@ -61,18 +64,17 @@ public abstract class AbstractCharacteristicImpl implements Characteristic {
     }
 
     public void setPermissions(Permission...permissions) {
-        PermissionsImpl p = new PermissionsImpl();
-        for (Permission permission : permissions) {
-            p.addPermission(permission);
-        }
-        setPermissions(p);
+        setPermissions(EnumSet.copyOf(Arrays.asList(permissions)));
     }
 
-    public void setPermissions(Permissions permissions) {
+    public void setPermissions(EnumSet<Permission> permissions) {
         this.permissions = permissions;
     }
 
-    public Permissions getPermissions() {
+    public EnumSet<Permission> getPermissions() {
+        if ( this.permissions.isEmpty() ) {
+            return this.getType().getPermissions();
+        }
         return this.permissions;
     }
 
@@ -83,11 +85,11 @@ public abstract class AbstractCharacteristicImpl implements Characteristic {
 
     private final int iid;
 
-    private final CharacteristicType type;
+    private final CharacteristicType<JAVA_TYPE, FORMAT_TYPE> type;
 
     private final Service service;
 
-    private Permissions permissions;
+    private EnumSet<Permission> permissions = EnumSet.noneOf(Permission.class);
 
-    private Object value;
+    private JAVA_TYPE value;
 }

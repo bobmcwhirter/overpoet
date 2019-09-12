@@ -7,8 +7,8 @@ import javax.json.JsonObjectBuilder;
 import javax.json.spi.JsonProvider;
 
 import io.overpoet.hap.common.model.Accessory;
-import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.CharacteristicType;
+import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.ServiceType;
 import io.overpoet.hap.common.model.impl.AbstractServiceImpl;
 
@@ -18,7 +18,10 @@ public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicI
         config.accept(this);
     }
 
-    public void addCharacteristic(int iid, CharacteristicType type, Consumer<ServerCharacteristicImpl> config) {
+    public <JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>>
+    void addCharacteristic(int iid,
+                           CharacteristicType<JAVA_TYPE, FORMAT_TYPE> type,
+                           Consumer<ServerCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE>> config) {
         addCharacteristic(new ServerCharacteristicImpl(this, iid, type, config));
     }
 

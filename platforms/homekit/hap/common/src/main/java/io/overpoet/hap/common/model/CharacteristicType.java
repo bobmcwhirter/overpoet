@@ -1,21 +1,22 @@
 package io.overpoet.hap.common.model;
 
+import java.util.EnumSet;
 import java.util.UUID;
 
 /**
  * Created by bob on 9/14/18.
  */
-public interface CharacteristicType {
+public interface CharacteristicType<JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>> {
 
     UUID getUUID();
     String getEncodedType();
     String getType();
     String getName();
-    Permissions getPermissions();
+    EnumSet<Permission> getPermissions();
 
     Unit getUnit();
 
-    Format getFormat();
+    FORMAT_TYPE getFormat();
 
     Number getMinimumValue();
     Number getMaximumValue();

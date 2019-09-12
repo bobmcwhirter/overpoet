@@ -1,11 +1,7 @@
 package io.overpoet.hap.server.codec;
 
-import java.util.List;
-
 import javax.json.JsonArray;
-import javax.json.JsonArrayBuilder;
 import javax.json.JsonObject;
-import javax.json.spi.JsonProvider;
 
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelInboundHandlerAdapter;
@@ -63,8 +59,8 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
                 boolean ev = each.getBoolean("ev");
                 if (ev) {
                     LOG.debug(ctx.channel().id() + " enable events on {}:{}", aid, iid );
-                    ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
-                    chr.addChangeListener((c) -> {
+                    ServerCharacteristicImpl<?,?> chr = this.db.findCharacteristic(aid, iid);
+                    chr.addListener((c) -> {
                         LOG.debug(ctx.channel().id() + " sending event on {}:{} -> {}", aid, iid, c.getValue());
                         ctx.pipeline().writeAndFlush(new Event((ServerCharacteristicImpl) c));
                     });
@@ -72,7 +68,7 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
                 }
             }
             if (each.containsKey("value")) {
-                ServerCharacteristicImpl chr = this.db.findCharacteristic(aid, iid);
+                ServerCharacteristicImpl<?,?> chr = this.db.findCharacteristic(aid, iid);
                 LOG.debug( "updating value {}:{} -> {}", aid, iid, each.get("value"));
                 chr.requestValueUpdate(each.get("value"));
                 ctx.pipeline().writeAndFlush(new DefaultFullHttpResponse(HttpVersion.HTTP_1_1, HttpResponseStatus.NO_CONTENT));

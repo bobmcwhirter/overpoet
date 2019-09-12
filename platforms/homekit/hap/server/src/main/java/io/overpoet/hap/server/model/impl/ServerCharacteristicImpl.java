@@ -13,14 +13,18 @@ import javax.json.JsonString;
 import javax.json.JsonValue;
 import javax.json.spi.JsonProvider;
 
+import io.overpoet.hap.common.model.Characteristic;
 import io.overpoet.hap.common.model.CharacteristicType;
-import io.overpoet.hap.common.model.EventableCharacteristic;
 import io.overpoet.hap.common.model.Format;
+import io.overpoet.hap.common.model.Formats;
 import io.overpoet.hap.common.model.Permission;
 import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.impl.AbstractCharacteristicImpl;
+import io.overpoet.hap.server.model.ServerCharacteristic;
 
-public class ServerCharacteristicImpl extends AbstractCharacteristicImpl implements EventableCharacteristic {
+public class ServerCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>>
+        extends AbstractCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE>
+        implements ServerCharacteristic<JAVA_TYPE, FORMAT_TYPE> {
 
     public ServerCharacteristicImpl(Service service, int iid, CharacteristicType type, Consumer<ServerCharacteristicImpl> config) {
         super(service, iid, type);
@@ -29,62 +33,40 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
     }
 
     @Override
-    public void updateValue(Object value) {
+    public void updateValue(JAVA_TYPE value) {
         System.err.println(this + " updateValue " + value + " >> " + this.changeListeners);
         if (value instanceof JsonValue) {
-            value = fromJsonValue((JsonValue) value);
+            //value = fromJsonValue((JsonValue) value);
+            value = getType().getFormat().fromJSON((JsonValue) value);
         }
         setStoredValue(value);
-        for (Consumer<EventableCharacteristic> listener : this.changeListeners) {
+        for (Consumer<Characteristic<JAVA_TYPE, FORMAT_TYPE>> listener : this.changeListeners) {
             System.err.println("propagate: " + listener);
             listener.accept(this);
         }
     }
 
+    public void requestValueUpdate(JsonValue value) {
+        JAVA_TYPE javaValue = getType().getFormat().fromJSON(value);
+        if ( ! javaValue.equals(getValue())) {
+            requestValueUpdate(getType().getFormat().fromJSON(value));
+        }
+    }
+
     @Override
-    public void requestValueUpdate(Object value) {
+    public void setController(Consumer<JAVA_TYPE> controller) {
+        this.controller = controller;
+    }
+
+    @Override
+    public void requestValueUpdate(JAVA_TYPE value) {
         if (value instanceof JsonValue) {
-            value = fromJsonValue((JsonValue) value);
+            value = getType().getFormat().fromJSON((JsonValue) value);
         }
-        for (BiConsumer<EventableCharacteristic, Object> changeRequestListener : this.changeRequestListeners) {
-            changeRequestListener.accept(this, value);
+        if (this.controller != null) {
+            this.controller.accept(value);
         }
     }
-
-    private Object fromJsonValue(JsonValue json) {
-        if (getType().getFormat() == Format.STRING) {
-            if (json.getValueType() == JsonValue.ValueType.STRING) {
-                return ((JsonString) json).getString();
-            } else {
-                return json.toString();
-            }
-        }
-
-        if (getType().getFormat() == Format.BOOL) {
-            if (json.getValueType() == JsonValue.ValueType.TRUE) {
-                return true;
-            } else if (json.getValueType() == JsonValue.ValueType.FALSE) {
-                return false;
-            } else if (json.getValueType() == JsonValue.ValueType.NUMBER) {
-                return ((JsonNumber) json).intValue() != 0;
-            }
-        }
-
-        if (getType().getFormat() == Format.INT) {
-            if (json.getValueType() == JsonValue.ValueType.NUMBER) {
-                return ((JsonNumber) json).intValue();
-            }
-        }
-
-        if (getType().getFormat() == Format.FLOAT) {
-            if (json.getValueType() == JsonValue.ValueType.NUMBER) {
-                return ((JsonNumber) json).doubleValue();
-            }
-        }
-
-        return null;
-    }
-
 
     public JsonObjectBuilder toJSON() {
         return toJSON(false);
@@ -103,20 +85,9 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
             builder.add("perms", permissionsToJSON());
         }
         if (getPermissions().contains(Permission.PAIRED_READ)) {
-            if (getType().getFormat() == Format.STRING) {
-                builder.add("value", getValue().toString());
-            } else if (getType().getFormat() == Format.FLOAT) {
-                Double v = getValue(Double.class);
-                builder.add("value", Math.floor(v * 10) / 10);
-            } else if (Format.INTEGRAL.contains(getType().getFormat())) {
-                Integer v = getValue(Integer.class);
-                builder.add("value", v);
-            } else if (getType().getFormat() == Format.BOOL) {
-                Boolean v = getValue(Boolean.class);
-                builder.add("value", v);
-            } else {
-                builder.add("value", JsonObject.NULL);
-            }
+            System.err.println( "v=" + getValue());
+            System.err.println( "v.json=" + getType().getFormat().toJSON(getValue()));
+            builder.add("value", getType().getFormat().toJSON(getValue()));
         }
 
         return builder;
@@ -125,7 +96,7 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
     public JsonArrayBuilder permissionsToJSON() {
         JsonArrayBuilder builder = JsonProvider.provider().createArrayBuilder();
 
-        for (Permission value : getPermissions().values()) {
+        for (Permission value : getPermissions()) {
             builder.add(value.toString());
         }
 
@@ -133,36 +104,22 @@ public class ServerCharacteristicImpl extends AbstractCharacteristicImpl impleme
     }
 
     @Override
-    public void addChangeListener(Consumer<EventableCharacteristic> listener) {
+    public void addListener(Consumer<Characteristic<JAVA_TYPE, FORMAT_TYPE>> listener) {
         this.changeListeners.add(listener);
         listener.accept(this);
     }
 
     @Override
-    public void removeChangeListener(Consumer<EventableCharacteristic> listener) {
-        this.changeRequestListeners.remove(listener);
-    }
-
-    @Override
-    public void removeAllChangeListeners() {
-        this.changeRequestListeners.clear();
-    }
-
-    @Override
-    public void addChangeRequestedListener(BiConsumer<EventableCharacteristic,Object> listener) {
-        this.changeRequestListeners.add(listener);
-    }
-
-    @Override
-    public void removeChangeRequestedListener(BiConsumer<EventableCharacteristic,Object> listener) {
+    public void removeListener(Consumer<Characteristic<JAVA_TYPE, FORMAT_TYPE>> listener) {
         this.changeListeners.remove(listener);
     }
 
     @Override
-    public void removeAllChangeRequesListeners() {
+    public void removeAllListeners() {
         this.changeListeners.clear();
     }
 
-    private final Set<BiConsumer<EventableCharacteristic,Object>> changeRequestListeners = new HashSet<>();
-    private final Set<Consumer<EventableCharacteristic>> changeListeners = new HashSet<>();
+    private final Set<Consumer<Characteristic<JAVA_TYPE, FORMAT_TYPE>>> changeListeners = new HashSet<>();
+
+    private Consumer<JAVA_TYPE> controller;
 }

@@ -1,5 +1,6 @@
 package io.overpoet.hap.common.model.impl;
 
+import java.util.EnumSet;
 import java.util.Set;
 import java.util.UUID;
 
@@ -31,7 +32,11 @@ public class CharacteristicTypeImpl implements CharacteristicType {
         this.minimumValue = minimumValue;
         this.maximumValue = maximumValue;
         this.stepValue = stepValue;
-        this.permissions = new PermissionsImpl(permissions);
+        if (permissions.isEmpty()) {
+            this.permissions = EnumSet.noneOf(Permission.class);
+        } else {
+            this.permissions = EnumSet.copyOf(permissions);
+        }
     }
 
     @Override
@@ -69,7 +74,7 @@ public class CharacteristicTypeImpl implements CharacteristicType {
     }
 
     @Override
-    public PermissionsImpl getPermissions() {
+    public EnumSet<Permission> getPermissions() {
         return this.permissions;
     }
 
@@ -109,7 +114,7 @@ public class CharacteristicTypeImpl implements CharacteristicType {
 
     private final String name;
 
-    private final PermissionsImpl permissions;
+    private final EnumSet<Permission> permissions;
 
     private final Format format;
 

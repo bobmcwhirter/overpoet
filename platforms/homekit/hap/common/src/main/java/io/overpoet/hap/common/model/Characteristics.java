@@ -5,6 +5,11 @@ import java.util.Map;
 import java.util.UUID;
 import java.util.function.Consumer;
 
+import io.overpoet.hap.common.model.Formats.BoolFormat;
+import io.overpoet.hap.common.model.Formats.FloatFormat;
+import io.overpoet.hap.common.model.Formats.IntFormat;
+import io.overpoet.hap.common.model.Formats.StringFormat;
+
 public class Characteristics {
     private static final Map<UUID, CharacteristicType> INDEX = new HashMap<>();
 
@@ -16,7 +21,9 @@ public class Characteristics {
         return INDEX.get(uuid);
     }
 
-    public static CharacteristicType register(String name, Consumer<CharacteristicTypeBuilder> config) {
+    public static
+    <JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>>
+    CharacteristicType<JAVA_TYPE, FORMAT_TYPE> register(String name, Consumer<CharacteristicTypeBuilder> config) {
         CharacteristicType type = CharacteristicTypeBuilder.configure(name, config );
         INDEX.put(type.getUUID(), type);
         return type;
@@ -35,7 +42,7 @@ public class Characteristics {
             .boolFormat()
     );
 
-    public static final CharacteristicType BRIGHTNESS = register("Brightness", c -> c
+    public static final CharacteristicType<Integer, IntFormat> BRIGHTNESS = register("Brightness", c -> c
             .uuid("08")
             .pairedReadPermission()
             .pairedWritePermission()
@@ -87,7 +94,7 @@ public class Characteristics {
             .unit(Unit.PERCENTAGE)
     );
 
-    public static final CharacteristicType CURRENT_TEMPERATURE = register("Current Temperature", c -> c
+    public static final CharacteristicType<Double, FloatFormat> CURRENT_TEMPERATURE = register("Current Temperature", c -> c
             .uuid("11")
             .type("temperature.current")
             .pairedReadPermission()
@@ -96,11 +103,11 @@ public class Characteristics {
             .unit(Unit.CELSIUS)
     );
 
-    public static final CharacteristicType FIRMWARE_REVISION = register("Firmware Revision", c -> c
+    public static final CharacteristicType<String, StringFormat> FIRMWARE_REVISION = register("Firmware Revision", c -> c
             .uuid("52")
             .type("firmware.revision")
             .pairedReadPermission()
-            .format(Format.STRING)
+            .format(Formats.STRING)
     );
 
     public static final CharacteristicType HARDWARE_REVISION = register("Hardware Revision", c -> c
@@ -130,7 +137,7 @@ public class Characteristics {
             .unit(Unit.ARCDEGREES)
     );
 
-    public static final CharacteristicType IDENTIFY = register("Identify", c -> c
+    public static final CharacteristicType<Boolean,BoolFormat> IDENTIFY = register("Identify", c -> c
             .uuid("14")
             .type("identify")
             .pairedWritePermission()
@@ -202,14 +209,14 @@ public class Characteristics {
             .tlv8Format()
     );
 
-    public static final CharacteristicType MANUFACTURER = register("Manufacturer", c -> c
+    public static final CharacteristicType<String, StringFormat> MANUFACTURER = register("Manufacturer", c -> c
             .uuid("20")
             .type("manufacturer")
             .pairedReadPermission()
             .stringFormat(64)
     );
 
-    public static final CharacteristicType MODEL = register("Model", c -> c
+    public static final CharacteristicType<String, StringFormat> MODEL = register("Model", c -> c
             .uuid("21")
             .type("model")
             .pairedReadPermission()
@@ -224,7 +231,7 @@ public class Characteristics {
             .boolFormat()
     );
 
-    public static final CharacteristicType NAME = register("Name", c -> c
+    public static final CharacteristicType<String, StringFormat> NAME = register("Name", c -> c
             .uuid("23")
             .type("name")
             .pairedReadPermission()
@@ -239,7 +246,7 @@ public class Characteristics {
             .boolFormat()
     );
 
-    public static final CharacteristicType ON = register("On", c -> c
+    public static final CharacteristicType<Boolean, BoolFormat> ON = register("On", c -> c
             .uuid("25")
             .type("on")
             .pairedReadPermission()
@@ -287,7 +294,7 @@ public class Characteristics {
             .unit(Unit.PERCENTAGE)
     );
 
-    public static final CharacteristicType SERIAL_NUMBER = register("Serial Number", c -> c
+    public static final CharacteristicType<String, StringFormat> SERIAL_NUMBER = register("Serial Number", c -> c
             .uuid("30")
             .type("serial-number")
             .pairedReadPermission()

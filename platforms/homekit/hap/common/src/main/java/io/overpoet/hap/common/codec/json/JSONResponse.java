@@ -14,6 +14,7 @@ public class JSONResponse {
         this.httpVersion = httpVersion;
         this.status = status;
         this.content = content;
+        System.err.println("JSON Response: " + content );
     }
 
     public HttpVersion httpVersion() {

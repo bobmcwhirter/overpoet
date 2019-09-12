@@ -7,5 +7,5 @@ import io.overpoet.hap.server.model.impl.ServerCharacteristicImpl;
 public interface ServerAccessoryDatabase {
     JsonObjectBuilder toJSON();
 
-    ServerCharacteristicImpl findCharacteristic(int aid, int iid);
+    ServerCharacteristicImpl<?,?> findCharacteristic(int aid, int iid);
 }

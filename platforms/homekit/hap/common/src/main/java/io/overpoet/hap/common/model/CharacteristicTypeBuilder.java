@@ -13,7 +13,9 @@ public class CharacteristicTypeBuilder {
 
 
 
-    static CharacteristicType configure(String name, Consumer<CharacteristicTypeBuilder> config) {
+
+    static
+    <JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>> CharacteristicType<JAVA_TYPE,FORMAT_TYPE> configure(String name, Consumer<CharacteristicTypeBuilder> config) {
         CharacteristicTypeBuilder builder = new CharacteristicTypeBuilder(name);
         config.accept(builder);
         return builder.build();
@@ -56,46 +58,46 @@ public class CharacteristicTypeBuilder {
     }
 
     public CharacteristicTypeBuilder boolFormat() {
-        return format(Format.BOOL);
+        return format(Formats.BOOL);
     }
 
     public CharacteristicTypeBuilder intFormat(int min, int max, int step) {
-        return format(Format.INT)
+        return format(Formats.INT)
                 .minimumValue(min)
                 .maximumValue(max)
                 .stepValue(step);
     }
 
     public CharacteristicTypeBuilder uint8Format(int min, int max, int step) {
-        return format(Format.UINT8)
+        return format(Formats.UINT8)
                 .minimumValue(min)
                 .maximumValue(max)
                 .stepValue(step);
     }
 
     public CharacteristicTypeBuilder uint32Format() {
-        return format(Format.UINT32);
+        return format(Formats.UINT32);
 
     }
 
     public CharacteristicTypeBuilder floatFormat(double min, double max, double step) {
-        return format(Format.FLOAT)
+        return format(Formats.FLOAT)
                 .minimumValue(min)
                 .maximumValue(max)
                 .stepValue(step);
     }
 
     public CharacteristicTypeBuilder stringFormat() {
-        return format(Format.STRING);
+        return format(Formats.STRING);
     }
 
     public CharacteristicTypeBuilder stringFormat(int maximumLength) {
-        return format(Format.STRING)
+        return format(Formats.STRING)
                 .maximumLength(maximumLength);
     }
 
     public CharacteristicTypeBuilder tlv8Format() {
-        return format(Format.TLV8);
+        return format(Formats.TLV8);
     }
 
     public CharacteristicTypeBuilder unit(Unit unit) {
