@@ -84,7 +84,6 @@ public class Client {
     }
 
     public void send(ZoneStatus status) {
-        System.err.println( "lutron client send: " + status);
         this.channel.pipeline().writeAndFlush(status);
     }
 

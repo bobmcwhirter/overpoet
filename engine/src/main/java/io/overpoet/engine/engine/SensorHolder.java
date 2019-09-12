@@ -28,7 +28,6 @@ class SensorHolder<T> {
         try {
             boolean changed = this.state.add(new Sense<>(this.key, value));
             if ( changed ) {
-                System.err.println( "holder " + key + " setLastValue: " + value);
                 this.lastValue = value;
                 for (SensorDelegate each : this.delegates) {
                     each.delegate(value);

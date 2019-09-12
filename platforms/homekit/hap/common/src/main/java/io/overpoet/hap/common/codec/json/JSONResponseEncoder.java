@@ -26,8 +26,6 @@ public class JSONResponseEncoder extends MessageToMessageEncoder<JSONResponse> {
             writer.write( msg.content() );
         }
 
-        //System.err.println( "JSON OUT: " + msg.content());
-
         DefaultFullHttpResponse response = new DefaultFullHttpResponse(msg.httpVersion(), msg.status(), buf);
         response.headers().set(HttpHeaderNames.CONTENT_TYPE, "application/hap+json");
         response.headers().set(HttpHeaderNames.CONTENT_LENGTH, buf.readableBytes());

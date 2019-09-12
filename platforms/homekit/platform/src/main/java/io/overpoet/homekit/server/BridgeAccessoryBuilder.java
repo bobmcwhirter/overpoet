@@ -18,33 +18,33 @@ public class BridgeAccessoryBuilder {
             a.addService(iid.incrementAndGet(), Services.ACCESSORY_INFORMATION, (s) -> {
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.MANUFACTURER, (c)->{
                     c.setStoredValue("overpoet");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.MODEL, (c)->{
                     c.setStoredValue("opb");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.NAME, (c)->{
                     c.setStoredValue("overpoetbridge");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.SERIAL_NUMBER, (c)->{
                     c.setStoredValue("8675309");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.FIRMWARE_REVISION, (c)->{
                     c.setStoredValue("1.0.0");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.IDENTIFY, (c)->{
-                    c.setStoredValue(null);
-                    c.setPermissions(PAIRED_WRITE);
+                    //c.setStoredValue(null);
+                    //c.setPermissions(PAIRED_WRITE);
                 });
             });
             a.addService(iid.incrementAndGet(), Services.PROTOCOL_INFORMATION, (s) -> {
                 s.addCharacteristic(iid.incrementAndGet(), Characteristics.VERSION, (c)->{
                     c.setStoredValue("1.1.0");
-                    c.setPermissions(PAIRED_READ);
+                    //c.setPermissions(PAIRED_READ);
                 });
             });
         });

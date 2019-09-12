@@ -52,7 +52,6 @@ public class PutCharacteristicsHandler extends ChannelInboundHandlerAdapter {
         JsonArray characteristics = obj.getJsonArray("characteristics");
         for (int i = 0; i < characteristics.size(); ++i) {
             JsonObject each = characteristics.getJsonObject(i);
-            System.err.println( each );
             int aid = each.getInt("aid");
             int iid = each.getInt("iid");
             if (each.containsKey("ev")) {

@@ -14,17 +14,19 @@ import io.overpoet.hap.common.model.Service;
 import io.overpoet.hap.common.model.ServiceType;
 import io.overpoet.hap.common.model.impl.AbstractAccessoryImpl;
 import io.overpoet.hap.server.model.ServerAccessory;
+import io.overpoet.hap.server.model.ServerService;
 
-public class ServerAccessoryImpl extends AbstractAccessoryImpl<ServerServiceImpl> implements ServerAccessory {
+public class ServerAccessoryImpl extends AbstractAccessoryImpl<ServerService> implements ServerAccessory {
 
     public ServerAccessoryImpl(int aid, Consumer<ServerAccessoryImpl> config) {
         super(aid);
         config.accept(this);
     }
 
-    public void addService(int iid, ServiceType type, Consumer<ServerServiceImpl> config) {
+    public void addService(int iid, ServiceType type, Consumer<ServerService> config) {
         addService(new ServerServiceImpl(this, iid, type, config));
     }
+
 
     public JsonObjectBuilder toJSON() {
         JsonObjectBuilder builder = JsonProvider.provider().createObjectBuilder();
@@ -36,7 +38,7 @@ public class ServerAccessoryImpl extends AbstractAccessoryImpl<ServerServiceImpl
     public JsonArrayBuilder servicesToJSON() {
         JsonArrayBuilder builder = JsonProvider.provider().createArrayBuilder();
 
-        for (ServerServiceImpl service : getServices()) {
+        for (ServerService service : getServices()) {
             builder.add( service.toJSON() );
         }
 

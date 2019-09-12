@@ -11,9 +11,11 @@ import io.overpoet.hap.common.model.CharacteristicType;
 import io.overpoet.hap.common.model.Format;
 import io.overpoet.hap.common.model.ServiceType;
 import io.overpoet.hap.common.model.impl.AbstractServiceImpl;
+import io.overpoet.hap.server.model.ServerCharacteristic;
+import io.overpoet.hap.server.model.ServerService;
 
-public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicImpl> {
-    public ServerServiceImpl(Accessory accessory, int iid, ServiceType type, Consumer<ServerServiceImpl> config) {
+public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristic> implements ServerService {
+    public ServerServiceImpl(Accessory accessory, int iid, ServiceType type, Consumer<ServerService> config) {
         super(accessory, iid, type);
         config.accept(this);
     }
@@ -21,7 +23,7 @@ public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicI
     public <JAVA_TYPE, FORMAT_TYPE extends Format<JAVA_TYPE>>
     void addCharacteristic(int iid,
                            CharacteristicType<JAVA_TYPE, FORMAT_TYPE> type,
-                           Consumer<ServerCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE>> config) {
+                           Consumer<ServerCharacteristic<JAVA_TYPE, FORMAT_TYPE>> config) {
         addCharacteristic(new ServerCharacteristicImpl(this, iid, type, config));
     }
 
@@ -36,7 +38,7 @@ public class ServerServiceImpl extends AbstractServiceImpl<ServerCharacteristicI
     public JsonArrayBuilder characteristicsToJSON() {
         JsonArrayBuilder builder = JsonProvider.provider().createArrayBuilder();
 
-        for (ServerCharacteristicImpl characteristic : getCharacteristics()) {
+        for (ServerCharacteristic characteristic : getCharacteristics()) {
             builder.add(characteristic.toJSON());
         }
 

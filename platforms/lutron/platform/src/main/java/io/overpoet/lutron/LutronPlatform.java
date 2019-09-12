@@ -125,12 +125,10 @@ public class LutronPlatform implements Platform, ServiceListener {
 
     @Override
     public void serviceAdded(ServiceEvent event) {
-        //System.err.println("added: " + event);
     }
 
     @Override
     public void serviceRemoved(ServiceEvent event) {
-        //System.err.println("removed: " + event);
     }
 
     @Override

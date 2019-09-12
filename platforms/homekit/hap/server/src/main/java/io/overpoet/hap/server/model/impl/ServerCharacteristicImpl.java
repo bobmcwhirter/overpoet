@@ -34,14 +34,12 @@ public class ServerCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE extends Format<JAVA
 
     @Override
     public void updateValue(JAVA_TYPE value) {
-        System.err.println(this + " updateValue " + value + " >> " + this.changeListeners);
         if (value instanceof JsonValue) {
             //value = fromJsonValue((JsonValue) value);
             value = getType().getFormat().fromJSON((JsonValue) value);
         }
         setStoredValue(value);
         for (Consumer<Characteristic<JAVA_TYPE, FORMAT_TYPE>> listener : this.changeListeners) {
-            System.err.println("propagate: " + listener);
             listener.accept(this);
         }
     }
@@ -85,8 +83,6 @@ public class ServerCharacteristicImpl<JAVA_TYPE, FORMAT_TYPE extends Format<JAVA
             builder.add("perms", permissionsToJSON());
         }
         if (getPermissions().contains(Permission.PAIRED_READ)) {
-            System.err.println( "v=" + getValue());
-            System.err.println( "v.json=" + getType().getFormat().toJSON(getValue()));
             builder.add("value", getType().getFormat().toJSON(getValue()));
         }
 

@@ -1,9 +1,6 @@
 package io.overpoet.hap.common.codec.json;
 
-import javax.json.JsonObject;
-import javax.json.JsonObjectBuilder;
 import javax.json.JsonStructure;
-import javax.json.JsonValue;
 
 import io.netty.handler.codec.http.HttpResponseStatus;
 import io.netty.handler.codec.http.HttpVersion;
@@ -14,7 +11,6 @@ public class JSONResponse {
         this.httpVersion = httpVersion;
         this.status = status;
         this.content = content;
-        System.err.println("JSON Response: " + content );
     }
 
     public HttpVersion httpVersion() {
